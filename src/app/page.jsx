@@ -1,7 +1,7 @@
 const Home = () => {
   return (
     <div>
-      Owls Finderddjehe
+      Owls Finder
     </div>
   )
 }
