@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id               Int      @id @default(autoincrement())
+  names            String
+  paternalSurname  String
+  maternalSurname  String
+  email            String   @unique
+  enrollmentId     Int      @unique
+  groupId          Int?
+  group            Group?    @relation(fields: [groupId], references: [id])
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  active           Boolean  @default(true)
+}
+
+model Professor{
+  id               Int      @id @default(autoincrement())
+  names            String
+  paternalSurname  String
+  maternalSurname  String
+  email            String   @unique
+  class            Class?
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+  active           Boolean  @default(true)
+}
+
+model Class {
+  id            Int       @id @default(autoincrement())
+  name          String
+  description   String 
+  image         String
+  video         String
+  schedule      String
+  professorId   Int       @unique
+  professor     Professor @relation(fields: [professorId], references: [id])
+  groupId       Int       @unique
+  group         Group     @relation(fields: [groupId], references: [id])
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  active        Boolean   @default(true)
+}
+
+model Group {
+  id          Int        @id @default(autoincrement())
+  name        String
+  limit       Int
+  students    Student[]
+  class       Class? 
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  active      Boolean    @default(true)
+}
+
+model Admin {
+  id           Int              @id @default(autoincrement())
+  username     String           @unique
+  password     String
+  permissions  AdminPermission[]
+  created_at   DateTime         @default(now())
+  updated_at   DateTime         @updatedAt
+  active       Boolean          @default(true)
+}
+
+model Permissions {
+  id           Int              @id @default(autoincrement())
+  name         String
+  description  String
+  admins       AdminPermission[]
+  created_at   DateTime         @default(now())
+  updated_at   DateTime         @updatedAt
+  active       Boolean          @default(true)
+}
+
+model AdminPermission {
+  adminId      Int
+  admin        Admin            @relation(fields: [adminId], references: [id])
+  permissionId Int
+  permission   Permissions      @relation(fields: [permissionId], references: [id])
+  created_at   DateTime         @default(now())
+  updated_at   DateTime         @updatedAt
+  active       Boolean          @default(true)
+  @@id([adminId, permissionId])
+}
