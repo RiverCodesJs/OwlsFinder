@@ -33,6 +33,21 @@ jobs:
 
       - name: Build project
         run: npm run build
+  
+  test-vitest:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: build-project
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests with coverage
+        run: npm run test -- --coveraget
 
   deploy-project:
     name: Deploy
