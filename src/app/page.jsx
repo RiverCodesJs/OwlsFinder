@@ -1,14 +1,13 @@
 'use client'
 
-import { Grid2, Button } from '@mui/material'
+import { Grid2, Typography } from '@mui/material'
 
 const Home = () => {
   return (
     <Grid2>
-      Owls Finder
-      <Button variant=''>
-        Hola
-      </Button>
+      <Typography variant='h1'>
+        Owls Finder
+      </Typography>
     </Grid2>
   )
 }

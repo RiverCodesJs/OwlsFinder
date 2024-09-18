@@ -1,5 +1,6 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles'
 import colorUtil from 'color'
+import '@fontsource/inter'
 
 const states = {
   strong: 0.85,
@@ -33,7 +34,7 @@ const grey = getThemeColor('#D0D0D0')
 
 const theme = createTheme({
   typography: {
-    fontFamily: 'Inter',
+    fontFamily: 'inter',
     h1: {
       fontSize: '4rem',
       fontWeight: 'bold',
