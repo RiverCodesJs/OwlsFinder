@@ -1,11 +1,8 @@
 import theme from './themes/theme'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { getMetadata } from './metadata/metadata'
-//import { Inter } from 'next/font/google'
 
 const metadata = getMetadata()
-
-//const inter = Inter({ subsets: ['latin'], display: 'auto' })
 
 const RootLayout = ({ children }) => {
   return (
