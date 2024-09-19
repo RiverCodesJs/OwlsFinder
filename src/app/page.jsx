@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid2, Typography } from '@mui/material'
+import { Button, Grid2, Typography } from '@mui/material'
 
 const Home = () => {
   return (
@@ -8,6 +8,9 @@ const Home = () => {
       <Typography variant='h1'>
         Owls Finder
       </Typography>
+      <Button variant='contained' sx={({palette})=>({ background: palette.colors.guinda.main })}>
+        holiwis
+      </Button>
     </Grid2>
   )
 }
