@@ -1,4 +1,3 @@
-'use client'
 import ThemeRegistry from '~/app/theme'
 import { getMetadata } from './metadata/metadata'
 
