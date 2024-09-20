@@ -1,7 +1,9 @@
 import ThemeRegistry from '~/app/theme'
-import { getMetadata } from './metadata/metadata'
 
-const metadata = getMetadata()
+const metadata = {
+  title: 'OwlsHub',
+  description: 'COBACH 8',
+}
 
 const RootLayout = ({ children }) => {
   return (
