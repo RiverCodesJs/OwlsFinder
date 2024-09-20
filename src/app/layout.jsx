@@ -1,5 +1,5 @@
-import theme from './themes/theme'
-import { ThemeProvider, CssBaseline } from '@mui/material'
+'use client'
+import ThemeRegistry from '~/app/theme'
 import { getMetadata } from './metadata/metadata'
 
 const metadata = getMetadata()
@@ -11,12 +11,11 @@ const RootLayout = ({ children }) => {
         <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
       </head>
-      <body>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
+      <ThemeRegistry>
+        <body>
           {children}
-        </ThemeProvider>
-      </body>
+        </body>
+      </ThemeRegistry>
     </html>
   )
 }

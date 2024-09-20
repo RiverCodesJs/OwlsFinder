@@ -10,7 +10,7 @@ const states = {
   modal: 0.25,
 } 
 
-const getThemeColor = (color) => {
+const getThemeColor = color => {
   const main = colorUtil(color) 
   const variants = Object.entries(states).reduce((acc, [key, value]) => {
     return {
@@ -25,15 +25,17 @@ const getThemeColor = (color) => {
 } 
 
 const contrast = getThemeColor('#FFFFFF') 
-const guinda = getThemeColor('#4F0010') 
+const primary = getThemeColor('#4F0010') 
 const text = getThemeColor('#000000') 
 const background = getThemeColor('#FCFCFC')
 const grey = getThemeColor('#D0D0D0')
 
-export default {
+const colors = {
   contrast,
-  guinda,
+  primary,
   text,
   background,
   grey,
 }
+
+export default colors
