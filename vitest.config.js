@@ -9,7 +9,7 @@ export default defineConfig({
       provider: 'v8', 
       reportsDirectory: './coverage',
       all: true, 
-      reporter: ['text', 'json', 'html'], 
+      reporter: ['json-summary'], 
     },
   },
 })
