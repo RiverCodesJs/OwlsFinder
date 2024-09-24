@@ -62,10 +62,10 @@ jobs:
           name: coverage-${{ env.BRANCH_NAME }}
           path: coverage
       #TODO erease it
-      - name: "Upload Coverage-main"
+      - name: "Upload Coverage-develop"
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-main
+          name: coverage-develop
           path: coverage
 
   report-coverage:
@@ -87,15 +87,15 @@ jobs:
           path: coverage
       - uses: actions/download-artifact@v4
         with:
-          name: coverage-main
-          path: coverage-main
+          name: coverage-develop
+          path: coverage-develop
 
       - name: 'Report Coverage'
         if: always() 
         uses:  davelosert/vitest-coverage-report-action@v2
         with:
           github-token: ${{ secrets.MY_GITHUB_TOKEN }}
-          json-summary-compare-path: coverage-main/coverage-summary.json
+          json-summary-compare-path: coverage-develop/coverage-summary.json
 
   deploy-project:
     name: Deploy
