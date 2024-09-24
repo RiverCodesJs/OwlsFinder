@@ -52,6 +52,9 @@ jobs:
       - name: 'Report Coverage'
         if: always() 
         uses:  davelosert/vitest-coverage-report-action@v2
+        with:
+          github-token: ${{ secrets.MY_GITHUB_TOKEN }}
+
   deploy-project:
     name: Deploy
     runs-on: ubuntu-latest
