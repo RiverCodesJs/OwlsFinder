@@ -61,12 +61,6 @@ jobs:
         with:
           name: coverage-${{ env.BRANCH_NAME }}
           path: coverage
-      #TODO erease it
-      - name: "Upload Coverage-develop"
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-develop
-          path: coverage
 
   report-coverage:
     needs: test-vitest
