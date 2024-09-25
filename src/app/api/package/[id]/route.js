@@ -43,6 +43,29 @@ export const PUT = async (request, { params }) => {
   }
 }
 
+export const PATCH = async (request, { params }) => {
+  const authResult = authenticateToken(request)
+  const { id } = params
+  const partialUpdate = await request.json()
+  
+  if (authResult.status !== 200) {
+    return NextResponse.json({ error: authResult.message }, { status: authResult.status })
+  }
+
+  try {
+    const pack = await db.package.update({
+      where: { id: Number(id) },
+      data: { ...partialUpdate }
+    })
+
+    return NextResponse.json({ pack }, { status: 200 })
+  } catch (error) {
+    console.error('Error updating package partially:', error)
+    return NextResponse.json({ error: 'Error updating package partially' }, { status: 500 })
+  }
+}
+
+
 export const DELETE = async (request, { params }) => {
   const authResult = authenticateToken(request)
   const { id } = params

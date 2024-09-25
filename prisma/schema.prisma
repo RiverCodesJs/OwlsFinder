@@ -19,7 +19,7 @@ model User {
   password         String?
   enrollmentId     Int?                 @unique
   groups           String[]
-  beforeGroup      Int?
+  currentGroup     Int?
   nextGroup        Int?
   clubId           Int?
   club             Club?                @relation(fields: [clubId], references: [id])

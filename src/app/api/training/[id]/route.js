@@ -43,6 +43,29 @@ export const PUT = async (request, { params }) => {
   }
 }
 
+export const PATCH = async (request, { params }) => {
+  const authResult = authenticateToken(request)
+  const { id } = params
+  const partialUpdate = await request.json()
+  
+  if (authResult.status !== 200) {
+    return NextResponse.json({ error: authResult.message }, { status: authResult.status })
+  }
+
+  try {
+    const training = await db.training.update({
+      where: { id: Number(id) },
+      data: { ...partialUpdate }
+    })
+
+    return NextResponse.json({ training }, { status: 200 })
+  } catch (error) {
+    console.error('Error updating training partially:', error)
+    return NextResponse.json({ error: 'Error updating training partially' }, { status: 500 })
+  }
+}
+
+
 export const DELETE = async (request, { params }) => {
   const authResult = authenticateToken(request)
   const { id } = params

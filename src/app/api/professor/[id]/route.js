@@ -43,6 +43,28 @@ export const PUT = async (request, { params }) => {
   }
 }
 
+export const PATCH = async (request, { params }) => {
+  const authResult = authenticateToken(request)
+  const { id } = params
+  const partialUpdate = await request.json()
+  
+  if (authResult.status !== 200) {
+    return NextResponse.json({ error: authResult.message }, { status: authResult.status })
+  }
+
+  try {
+    const professor = await db.professor.update({
+      where: { id: Number(id) },
+      data: { ...partialUpdate }
+    })
+
+    return NextResponse.json({ professor }, { status: 200 })
+  } catch (error) {
+    console.error('Error updating professor partially:', error)
+    return NextResponse.json({ error: 'Error updating professor partially' }, { status: 500 })
+  }
+}
+
 export const DELETE = async (request, { params }) => {
   const authResult = authenticateToken(request)
   const { id } = params

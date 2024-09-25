@@ -12,15 +12,15 @@ export const GET = async (request, { params }) => {
   }
 
   try{
-    const permissions = await db.permision.find({
+    const permission = await db.permision.find({
       where:{ id: Number(id) },
       include:{ user: false }
     })
 
-    return NextResponse.json({ permissions }, { status: 200 })
+    return NextResponse.json({ permission }, { status: 200 })
   } catch (error) {
-    console.error('Error fetching permissions:', error)
-    return NextResponse.json({ error: 'Error fetching permissions' }, { status: 500 })
+    console.error('Error fetching permission:', error)
+    return NextResponse.json({ error: 'Error fetching permission' }, { status: 500 })
   }
 }
 
@@ -34,15 +34,37 @@ export const PUT = async (request, { params }) => {
   }
 
   try{
-    const permissions = await db.permision.find({
+    const permission = await db.permision.find({
       where:{ id: Number(id) },
       data:{ ...permisionData }
     })
 
-    return NextResponse.json({ permissions }, { status: 200 })
+    return NextResponse.json({ permission }, { status: 200 })
   } catch (error) {
-    console.error('Error updating permissions:', error)
-    return NextResponse.json({ error: 'Error updating permissions' }, { status: 500 })
+    console.error('Error updating permission:', error)
+    return NextResponse.json({ error: 'Error updating permission' }, { status: 500 })
+  }
+}
+
+export const PATCH = async (request, { params }) => {
+  const authResult = authenticateToken(request)
+  const { id } = params
+  const partialUpdate = await request.json()
+  
+  if (authResult.status !== 200) {
+    return NextResponse.json({ error: authResult.message }, { status: authResult.status })
+  }
+
+  try {
+    const permission = await db.permission.update({
+      where: { id: Number(id) },
+      data: { ...partialUpdate }
+    })
+
+    return NextResponse.json({ permission }, { status: 200 })
+  } catch (error) {
+    console.error('Error updating permission partially:', error)
+    return NextResponse.json({ error: 'Error updating permission partially' }, { status: 500 })
   }
 }
 
@@ -55,11 +77,11 @@ export const DELETE = async (request, { params }) => {
   }
 
   try {
-    await db.permissions.delete({ where: { id } }) 
+    await db.permission.delete({ where: { id } }) 
     
     return NextResponse.json({ message: 'Permission deleted successfully' }, { status: 200 })
   } catch (error) {
-    console.error('Error deleting permissions:', error)
-    return NextResponse.json({ error: 'Error deleting permissions' }, { status: 500 })
+    console.error('Error deleting permission:', error)
+    return NextResponse.json({ error: 'Error deleting permission' }, { status: 500 })
   }
 }
