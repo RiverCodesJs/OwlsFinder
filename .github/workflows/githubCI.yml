@@ -41,8 +41,8 @@ jobs:
     strategy:
       matrix:
         branch: 
-          - ${{ github.head_ref }}  
-          - "develop" 
+          - ${{ github.head_ref }}  # Current branch (PR)
+          - "main"                  # Main branch for comparison
 
     steps:
       - name: Checkout code
@@ -59,7 +59,7 @@ jobs:
 
       - name: Sanitize branch name
         id: sanitize
-        run: echo "BRANCH_NAME=${{ matrix.branch//\//- }}" >> $GITHUB_ENV
+        run: echo "BRANCH_NAME=${{ matrix.branch }}" | sed 's/\//-/g' >> $GITHUB_ENV
 
       - name: Print environment variables
         run: printenv
@@ -77,7 +77,7 @@ jobs:
     steps:
       - name: Sanitize branch name
         id: sanitize
-        run: echo "BRANCH_NAME=${GITHUB_HEAD_REF//\//-}" >> $GITHUB_ENV
+        run: echo "BRANCH_NAME=${GITHUB_HEAD_REF}" | sed 's/\//-/g' >> $GITHUB_ENV
       
       - name: Print environment variables
         run: printenv
