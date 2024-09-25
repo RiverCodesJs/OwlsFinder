@@ -41,8 +41,8 @@ jobs:
     strategy:
       matrix:
         branch: 
-          - ${{ github.head_ref }}  # Current branch (PR)
-          - "main"                  # Main branch for comparison
+          - ${{ github.head_ref }}
+          - "develop"
 
     steps:
       - name: Checkout code
@@ -88,18 +88,18 @@ jobs:
           name: coverage-${{ env.BRANCH_NAME }}
           path: coverage
 
-      - name: "Download Coverage for Main Branch"
+      - name: "Download Coverage for Develop Branch"
         uses: actions/download-artifact@v4
         with:
-          name: coverage-main
-          path: coverage-main
+          name: coverage-develop
+          path: coverage-develop
 
       - name: 'Report Coverage'
         if: always()
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           github-token: ${{ secrets.MY_GITHUB_TOKEN }}
-          json-summary-compare-path: coverage-main/coverage-summary.json
+          json-summary-compare-path: coverage-develop/coverage-summary.json
 
   deploy-project:
     name: Deploy
