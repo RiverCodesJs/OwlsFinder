@@ -44,11 +44,11 @@ export const GET = async request => {
   }
 
   try{
-    const clubs = await getTraining()
+    const trainings = await getTraining()
 
-    return NextResponse.json({ clubs }, { status: 200 })
+    return NextResponse.json({ trainings }, { status: 200 })
   } catch (error) {
-    console.error('Error fetching clubs:', error)
-    return NextResponse.json({ error: 'Error fetching clubs' }, { status: 500 })
+    console.error('Error fetching trainings:', error)
+    return NextResponse.json({ error: 'Error fetching trainings' }, { status: 500 })
   }
 }
