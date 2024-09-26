@@ -1,43 +1,10 @@
 import * as R from 'ramda'
 import db from '~/libs/db'
 
-export const getAdmin = async id => {
-
-  const adminFound = await db.user.findMany({
-    where:{
-      id: Number(id),
-    },
-    include:{
-      permisions: true,
-    },
-  })
-
-  const filteredAdmin = R.omit([ 'password', 'enrollmentId', 'groups', 'beforeGroup', 'nextGroup', 'clubId', 'isAdmin', 'isCounselor', 'shift', 'created_at', 'updated_at', 'active'], adminFound[0])
-
-  const admin = { ...filteredAdmin }
-
-  return admin 
-}
-
-export const getAdmins = async () => {
-
-  const adminsFound = await db.user.findMany({
-    include:{
-      permisions: true,
-    },
-  })
-
-  const filteredAdmins = adminsFound.map( admin => R.omit(['password', 'enrollmentId', 'groups', 'beforeGroup', 'nextGroup', 'clubId', 'isAdmin', 'isCounselor', 'shift', 'created_at', 'updated_at', 'active'], admin))
-
-  const admins = { ...filteredAdmins }
-
-  return admins 
-}
-
 export const getClub = async id => {
   const clubFound = await db.club.findMany({
     where:{ id: Number(id) }, 
-    include:{ professor: true }
+    include:{ professor: true, users: true  }
   })
 
   const filteredClub = R.omit(['professorId', 'professor', 'created_at', 'updated_at', 'active'], clubFound[0])
@@ -54,14 +21,16 @@ export const getClub = async id => {
 }
 
 export const getClubs = async () => {
-  const clubsFound = await db.club.findMany()
+  const clubsFound = await db.club.findMany({
+    include: { professor: true, users: true }
+  })
 
   const clubs = clubsFound.map(_club => {
     const filteredClub = R.omit(['professorId', 'professor', 'users', 'created_at', 'updated_at', 'active'], _club)
 
     const filteredProfessor = R.omit(['clubs', 'trainings', 'created_at', 'updated_at', 'active'], _club.professor)
 
-    const filteredUsers = _club.users.map(user => {
+    const filteredUsers = _club?.users.map(user => {
       return R.omit(['password', 'clubId', 'club', 'permisions', 'created_at', 'updated_at', 'active'], user)
     })
 
@@ -89,7 +58,9 @@ export const getTraining = async id => {
 }
 
 export const getTrainings = async () => {
-  const trainingsFound = await db.training.findMany()
+  const trainingsFound = await db.training.findMany({
+    include: { professor: true }
+  })
 
   const trainings = trainingsFound.map(_training => {
     const filteredTraining = R.omit(['professorId', 'professor', 'created_at', 'updated_at', 'active'], _training)
@@ -119,7 +90,9 @@ export const getProfessor = async id => {
 }
 
 export const getProfessors = async () => {
-  const professorFound = await db.professor.findMany()
+  const professorFound = await db.professor.findMany({
+    include: { clubs: true, trainings: true }
+  })
 
   const professors = professorFound.map(_professor =>{
     const filteredProfessor = R.omit(['clubs', 'training', 'created_at', 'updated_at', 'active', _professor])
@@ -147,7 +120,9 @@ export const getPackage = async id => {
 }
 
 export const getPackages = async () => {
-  const packagesFound = await db.package.findMany()
+  const packagesFound = await db.package.findMany({
+    include: { trainings: true }
+  })
 
   const packages = packagesFound.map( _package => {
     const packageFiltered = R.omit(['subjects', 'created_at', 'updated_at', 'active'], _package)
@@ -173,7 +148,9 @@ export const getSubject = async id => {
 }
 
 export const getSubjects = async () => {
-  const subjectsFound = await db.subject.findMany()
+  const subjectsFound = await db.subject.findMany({
+    include: { package: false }
+  })
 
   const subjects = subjectsFound.map(subject => {
     const subjectFiltered = R.omit(['package', 'created_at', 'updated_at', 'active'], subject)
@@ -197,7 +174,9 @@ export const getUser = async id => {
 }
 
 export const getUsers = async () => {
-  const usersFound = await db.user.findMany()
+  const usersFound = await db.user.findMany({
+    include: { club: true, permisions: true }
+  })
 
   const users = usersFound.map( _user => {
     const userFiltered = R.omit(['password', 'clubId', 'club', 'permisions', 'created_at', 'updated_at', 'active'], _user)
