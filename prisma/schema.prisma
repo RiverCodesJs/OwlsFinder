@@ -65,7 +65,7 @@ model Subject {
   id                Int              @id @default(autoincrement())
   name              String
   description       String
-  package           Package[]
+  package           Package[]          
   created_at        DateTime         @default(now())
   updated_at        DateTime         @updatedAt
   active            Boolean          @default(true)
