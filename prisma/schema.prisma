@@ -28,9 +28,7 @@ model User {
   nextGroup        Int?
   clubId           Int?
   club             Club?                @relation(fields: [clubId], references: [id])
-  isAdmin          Boolean
-  isCounselor      Boolean
-  isStudent        Boolean
+  type             String
   shift            String?
   permisions       Permission[]
   created_at       DateTime             @default(now())
@@ -45,7 +43,6 @@ model Professor {
   maternalSurname   String
   email             String      @unique
   clubs             Club[]
-  trainings         Training[]
   created_at        DateTime    @default(now())
   updated_at        DateTime    @updatedAt
   active            Boolean     @default(true)
@@ -83,8 +80,7 @@ model Training {
   videos            String[]
   shift             String
   limit             Int
-  professorId       Int?
-  professor         Professor?       @relation(fields: [professorId], references: [id])
+  professor         String?
   created_at        DateTime         @default(now())
   updated_at        DateTime         @updatedAt
   active            Boolean          @default(true)
