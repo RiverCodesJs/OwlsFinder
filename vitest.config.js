@@ -10,7 +10,13 @@ export default defineConfig({
       reportsDirectory: './coverage',
       all: true, 
       reporter: ['text', 'json-summary', 'json'], 
-      reportOnFailure: true
+      reportOnFailure: true,
     },
+    exclude: [
+      'node_modules/**',
+      '**/playwright.config.js',
+      '**/next.config.mjs',
+      '**/tests/**', 
+    ],
   },
 })
