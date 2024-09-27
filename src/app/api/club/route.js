@@ -18,7 +18,7 @@ export const POST = async request => {
         professor:{
           connectOrCreate:{
             where:{
-              id: Number(professorId)
+              id: Number(professorId) || 0
             },
             create:{
               ...professor
@@ -43,7 +43,7 @@ export const GET = async () => {
 
     const clubs = clubsFound.map(club => filter(club))  
 
-    return NextResponse.json({ clubs }, { status: 200 })
+    return NextResponse.json( clubs, { status: 200 })
   } catch (error) {
     console.error('Error fetching clubs:', error)
     return NextResponse.json({ error: 'Error fetching clubs' }, { status: 500 })
