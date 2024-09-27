@@ -16,7 +16,7 @@ export default defineConfig({
       'node_modules/**',
       '**/playwright.config.js',
       '**/next.config.mjs',
-      '**/tests-end-to-end/**', 
+      '**/tests/**', 
     ],
   },
 })
