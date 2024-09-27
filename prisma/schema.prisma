@@ -64,9 +64,8 @@ model Package {
 model Subject {
   id                Int              @id @default(autoincrement())
   name              String
-  description       String
-  packageId         Int
-  package           Package          @relation(fields: [packageId], references: [id])
+  description       Strin
+  package           Package[]
   created_at        DateTime         @default(now())
   updated_at        DateTime         @updatedAt
   active            Boolean          @default(true)
