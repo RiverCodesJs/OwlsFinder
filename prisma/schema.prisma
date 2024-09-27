@@ -30,7 +30,7 @@ model User {
   club             Club?                @relation(fields: [clubId], references: [id])
   type             String
   shift            String?
-  permissions      Permission[]
+  permissions       Permission[]
   created_at       DateTime             @default(now())
   updated_at       DateTime             @updatedAt
   active           Boolean              @default(true)
