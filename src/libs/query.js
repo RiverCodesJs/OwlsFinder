@@ -1,4 +1,5 @@
 import db from '~/libs/db'
+import payloadFormatter from '~/utils/payloadFormatter'
 
 const opts = (filter, includes, data) => {
   const filters = { where: { ...filter } }
@@ -16,21 +17,28 @@ const query = async ({ entity, filter, includes, queryType, data }) => {
   
   const options = opts(filter, includes, data)
 
+  let payload
   switch(queryType){
     case 'findUnique':
-      return await db[entity].findUnique({ ...options })
+      payload = payloadFormatter(await db[entity].findUnique({ ...options }))
+      return payload
 
     case 'findMany':
-      return db[entity].findMany({ ...options })
+      payload = payloadFormatter(await db[entity].findMany({ ...options }))
+      return payload
+      
 
     case 'create':
-      return db[entity].findMany({ ...options })
+      payload = payloadFormatter(await db[entity].create({ ...options }))
+      return payload
     
     case 'update':
-      return db[entity].update({ ...options })
+      payload = payloadFormatter(await db[entity].update({ ...options }))
+      return payload
     
     case 'delete':
-      return db[entity].delete({ ...options })
+      payload = payloadFormatter(await db[entity].delete({ ...options }))
+      return payload
     
     default: 
       return 'query type not allowed'
