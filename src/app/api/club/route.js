@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import db from '~/libs/db'
-import filter from '~/libs/filter'
+import query from '~/libs/query'
 
 
 export const POST = async request => {
@@ -39,9 +39,12 @@ export const POST = async request => {
 export const GET = async () => {
   try{
     
-    const clubsFound = await db.club.findMany()
+    const params = {
+      entity: 'club',
+      queryType: 'findMany',
+    } 
 
-    const clubs = clubsFound.map(club => filter(club))  
+    const clubs = await query({ ...params })
 
     return NextResponse.json( clubs, { status: 200 })
   } catch (error) {
