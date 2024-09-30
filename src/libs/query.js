@@ -8,8 +8,7 @@ const getOptions = ({ filter, includes, data: p, relations }) => {
     include: includes.reduce((acc, include) => ({ 
       ...acc, 
       [include]: { 
-        //TODO Change permisions to permissions
-        select: include === 'permisions' ? { name: true } : { id: true } 
+        select: include === 'permissions' ? { name: true } : { id: true } 
       } 
     }), {}) 
   } : {}
@@ -57,11 +56,13 @@ const query = async ({ entity, filter, includes, queryType, data, relations }) =
       return payload
     
     case 'update':
-      payload = cleanerData(await db[entity].update({ ...opts }))
+      payloadDirty = await db[entity].update({ ...opts })
+      payload = cleanerData({ _payload: payloadDirty, includes })
       return payload
     
     case 'delete':
-      payload = cleanerData(await db[entity].delete({ ...opts }))
+      payloadDirty = await db[entity].delete({ ...opts })
+      payload = cleanerData({ _payload: payloadDirty, includes })
       return payload
     
     default: 
