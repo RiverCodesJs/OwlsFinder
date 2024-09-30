@@ -8,7 +8,8 @@ const getOptions = ({ filter, includes, data: p, relations }) => {
     include: includes.reduce((acc, include) => ({ 
       ...acc, 
       [include]: { 
-        select: include === 'permissions' ? { name: true } : { id: true } 
+        //TODO Change permisions to permissions
+        select: include === 'permisions' ? { name: true } : { id: true } 
       } 
     }), {}) 
   } : {}
