@@ -12,7 +12,6 @@ const getOptions = ({ filter, includes, data: p, relations }) => {
       } 
     }), {}) 
   } : {}
-  const payload = p ? { data: { ...p } } : {}
   const connections = relations ? relations.reduce((acc, relation) => {
     const { entity, data } = relation
     return {
