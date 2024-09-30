@@ -5,7 +5,6 @@ const cleanerData = ({ _payload: obj, includes }) => {
   const payload = R.omit(arr, obj)
 
   includes?.forEach(include => payload[include] = obj[include].map(item => {
-    console.log(item)
     //TODO Change permisions to permissions
     return include == 'permisions' ? item.name : item.id
   }))
