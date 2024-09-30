@@ -4,10 +4,7 @@ const cleanerData = ({ _payload: obj, includes }) => {
   const arr = ['password', 'created_at', 'updated_at', 'active', ...(includes || [])]
   const payload = R.omit(arr, obj)
 
-  includes?.forEach(include => payload[include] = obj[include].map(item => {
-    //TODO Change permisions to permissions
-    return include == 'permisions' ? item.name : item.id
-  }))
+  includes?.forEach(include => payload[include] = obj[include].map(item => include == 'permissions' ? item.name : item.id))
   
   return payload
 }
