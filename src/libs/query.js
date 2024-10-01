@@ -14,6 +14,19 @@ const getOptions = ({ filter, includes, data: p, relations }) => {
   } : {}
   const connections = relations ? relations.reduce((acc, relation) => {
     const { entity, data } = relation
+
+    if(!Array.isArray(data)){
+      return {
+        ...acc,
+        [entity]: {
+          connectOrCreate: {
+            where: { id: data.id || 0 },
+            create: { ...data }
+          }
+        }
+      }
+    }
+    
     return {
       ...acc,
       [entity]: {
