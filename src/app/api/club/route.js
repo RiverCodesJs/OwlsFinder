@@ -1,35 +1,34 @@
 import { NextResponse } from 'next/server'
-import db from '~/libs/db'
 import query from '~/libs/query'
-
 
 export const POST = async request => {
   try {
-    const { name, description, images, videos, limit, schedule, professorId, professor } = await request.json()
+    const { name, description, images, videos, limit, schedule, professor } = await request.json()
 
-    const newClub = await db.club.create({
-      data:{
-        name,
-        description,
-        images,
-        videos,
-        limit,
-        schedule,
-        professor:{
-          connectOrCreate:{
-            where:{
-              id: Number(professorId) || 0
-            },
-            create:{
-              ...professor
-            }
-          }
-        }
-      }
-    })
+    if(!name, !description, !images, !videos, !limit, !schedule, !professor){
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+    }
     
+    const params = {
+      entity: 'club',
+      queryType: 'create',
+      data: {
+        name, 
+        description, 
+        images, 
+        videos, 
+        limit, 
+        schedule
+      },
+      relations: [{
+        entity: 'professor',
+        data: professor
+      }]
+    }
+    
+    const newClub = await query({ ...params })
 
-    return NextResponse.json({ message: 'Club created successfully', newClub }, { status: 201 })
+    return NextResponse.json(newClub, { status: 201 })
   } catch (error) {
     console.error('Club creation failed:', error)
     return NextResponse.json({ error: 'Club creation failed' }, { status: 500 })
