@@ -47,7 +47,6 @@ const getOptions = ({ filter, includes, data: d, relations }) => {
 const query = async ({ entity, filter, includes, queryType, data, relations }) => {
 
   const opts = getOptions({ filter, includes, data, relations })
-  
   let payload
   switch(queryType){
     case 'findUnique':
