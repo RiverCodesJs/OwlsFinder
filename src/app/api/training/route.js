@@ -1,26 +1,32 @@
 import { NextResponse } from 'next/server'
-import db from '~/libs/db'
-import filter from '~/libs/filter'
+import query from '~/libs/query'
 
 export const POST = async request => {
   try {
-    const { name, description, images, videos, limit, shift, schedule, professor } = await request.json()
+    const { name, description, images, videos, limit, shift, professor } = await request.json()
 
-    const newTraining = await db.training.create({
-      data:{
-        name,
-        description,
-        images,
-        videos,
-        limit,
-        shift,
-        schedule,
+    if(!name || !description || !images || !videos || !limit || !shift){
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+    }
+
+    const params = {
+      entity: 'training',
+      queryType: 'create',
+      data: {
+        name, 
+        description, 
+        images, 
+        videos, 
+        limit, 
+        shift, 
         professor
-      }
-    })
-    
+      },
+    }
 
-    return NextResponse.json({ message: 'Training created successfully', newTraining }, { status: 201 })
+    const newTraining = await query({ ...params })
+
+
+    return NextResponse.json(newTraining, { status: 201 })
   } catch (error) {
     console.error('Training creation failed:', error)
     return NextResponse.json({ error: 'Training creation failed' }, { status: 500 })
@@ -29,9 +35,12 @@ export const POST = async request => {
 
 export const GET = async () => {
   try{
-    const trainingsFound = await db.training.findMany()
+    const params = {
+      entity: 'training',
+      queryType: 'findMany',
+    }
 
-    const trainings = trainingsFound.map(training => filter(training))
+    const trainings = await query({ ...params })
 
     return NextResponse.json(trainings, { status: 200 })
   } catch (error) {

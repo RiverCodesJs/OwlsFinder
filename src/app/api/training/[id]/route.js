@@ -1,15 +1,17 @@
 import { NextResponse } from 'next/server'
-import db from '~/libs/db'
-import filter from '~/libs/filter'
+import query from '~/libs/query'
 
 export const GET = async (request, { params }) => {
   const { id } = params
 
   try{
-    const trainingFound = await db.training.findUnique({
-      where: { id: Number(id) }
-    })
-    const training = filter(trainingFound)
+    const params = {
+      entity: 'training',
+      queryType: 'findUnique',
+      filter : { id: Number(id) }
+    }
+
+    const training = await query({ ...params })
 
     return NextResponse.json(training, { status: 200 })
   } catch (error) {
@@ -20,15 +22,31 @@ export const GET = async (request, { params }) => {
 
 export const PUT = async (request, { params }) => {
   const { id } = params
-  const trainingData = await request.json()
 
+  const { name, description, images, videos, limit, shift, professor } = await request.json()
+
+  if(!name || !description || !images || !videos || !limit || !shift){
+    return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+  }
   try{
-    const training = await db.training.find({
-      where:{ id: Number(id) },
-      data:{ ...trainingData }
-    })
+    const params = {
+      entity: 'training',
+      queryType: 'update',
+      filter : { id: Number(id) },
+      data: {
+        name, 
+        description, 
+        images, 
+        videos, 
+        limit, 
+        shift, 
+        professor
+      },
+    }
 
-    return NextResponse.json({ training }, { status: 200 })
+    const training = await query({ ...params })
+
+    return NextResponse.json(training, { status: 200 })
   } catch (error) {
     console.error('Error updating training:', error)
     return NextResponse.json({ error: 'Error updating training' }, { status: 500 })
@@ -40,10 +58,14 @@ export const PATCH = async (request, { params }) => {
   const partialUpdate = await request.json()
 
   try {
-    const training = await db.training.update({
-      where: { id: Number(id) },
-      data: { ...partialUpdate }
-    })
+    const params = {
+      entity: 'training',
+      queryType: 'update',
+      filter : { id: Number(id) },
+      data: { ...partialUpdate },
+    }
+
+    const training = await query({ ...params })
 
     return NextResponse.json(training, { status: 200 })
   } catch (error) {
@@ -57,9 +79,15 @@ export const DELETE = async (request, { params }) => {
   const { id } = params
 
   try {
-    await db.training.delete({ where: { id } }) 
+    const params = {
+      entity: 'training',
+      queryType: 'delete',
+      filter : { id: Number(id) }
+    }
+
+    const training = await query({ ...params })
     
-    return NextResponse.json({ message: 'Deleting training successfully' }, { status: 200 })
+    return NextResponse.json(training, { status: 200 })
   } catch (error) {
     console.error('Error deleting training:', error)
     return NextResponse.json({ error: 'Error deleting training' }, { status: 500 })
