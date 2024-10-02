@@ -1,22 +1,35 @@
 import { NextResponse } from 'next/server'
-import db from '~/libs/db'
-import filter from '~/libs/filter'
-
+import query from '~/libs/query'
 
 export const POST = async request => {
   try {
-    const { name, paternalSurname, maternalSurname, email } = await request.json()
+    const { name, paternalSurname, maternalSurname, email, club } = await request.json()
+   
+    if(!name || !paternalSurname || !maternalSurname || !email){
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+    }
 
-    const newProfessor = await db.professor.create({
-      data:{
+    const relations = club ? ([{
+      entity: 'clubs',
+      data: club 
+    }]) : undefined
+
+    const params = {
+      entity: 'professor',
+      queryType: 'create',
+      includes: ['clubs'],
+      data: {
         name,
-        paternalSurname,
-        maternalSurname,
-        email,
-      }
-    })
+        paternalSurname, 
+        maternalSurname, 
+        email
+      },
+      relations
+    }
+
+    const newProfessor = await query({ ...params })
     
-    return NextResponse.json({ message: 'Professor created successfully', newProfessor }, { status: 201 })
+    return NextResponse.json(newProfessor, { status: 201 })
   } catch (error) {
     console.error('Professor creation failed:', error)
     return NextResponse.json({ error: 'Professor creation failed' }, { status: 500 })
@@ -25,9 +38,13 @@ export const POST = async request => {
 
 export const GET = async () => {
   try{
-    const professorsFound = await db.professor.findMany()
+    const params = {
+      entity: 'professor',
+      queryType: 'findMany',
+      includes: ['clubs'],
+    }
 
-    const professors = professorsFound.map(professor => filter(professor))
+    const professors = await query({ ...params })
 
     return NextResponse.json(professors, { status: 200 })
   } catch (error) {

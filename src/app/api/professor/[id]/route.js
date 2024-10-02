@@ -1,16 +1,17 @@
 import { NextResponse } from 'next/server'
-import db from '~/libs/db'
-import filter from '~/libs/filter'
+import query from '~/libs/query'
 
 export const GET = async (request, { params }) => {
   const { id } = params
 
   try{
-    const professorFound = await db.professor.findUnique({
-      where: { id: Number(id) }
-    })
-
-    const professor = filter(professorFound)
+    const params = {
+      entity: 'professor',
+      queryType: 'findUnique',
+      includes: ['clubs'],
+      filter: { id: Number(id) }
+    }
+    const professor = await query({ ...params })
 
     return NextResponse.json(professor, { status: 200 })
   } catch (error) {
@@ -21,13 +22,34 @@ export const GET = async (request, { params }) => {
 
 export const PUT = async (request, { params }) => {
   const { id } = params
-  const professorData = await request.json()
+  
+  const { name, paternalSurname, maternalSurname, email, club } = await request.json()
+     
+  if(!name || !paternalSurname || !maternalSurname || !email || !id){
+    return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+  }
 
   try{
-    const professor = await db.professor.find({
-      where:{ id: Number(id) },
-      data:{ ...professorData }
-    })
+    const relations = club ? ([{
+      entity: 'clubs',
+      data: club 
+    }]) : undefined
+
+    const params = {
+      entity: 'professor',
+      queryType: 'update',
+      includes: ['clubs'],
+      filter: { id: Number(id) },
+      data: {
+        name,
+        paternalSurname, 
+        maternalSurname, 
+        email
+      },
+      relations
+    }
+
+    const professor = await query({ ...params })
 
     return NextResponse.json(professor, { status: 200 })
   } catch (error) {
@@ -38,13 +60,24 @@ export const PUT = async (request, { params }) => {
 
 export const PATCH = async (request, { params }) => {
   const { id } = params
-  const partialUpdate = await request.json()
+  const { club, ...partialUpdate } = await request.json()
 
   try {
-    const professor = await db.professor.update({
-      where: { id: Number(id) },
-      data: { ...partialUpdate }
-    })
+    const relations = club ? ([{
+      entity: 'clubs',
+      data: club 
+    }]) : undefined
+
+    const params = {
+      entity: 'professor',
+      queryType: 'update',
+      includes: ['clubs'],
+      filter: { id: Number(id) },
+      data: { ...partialUpdate },
+      relations
+    }
+
+    const professor = await query({ ...params })
 
     return NextResponse.json(professor, { status: 200 })
   } catch (error) {
@@ -57,9 +90,17 @@ export const DELETE = async (request, { params }) => {
   const { id } = params
 
   try {
-    await db.professor.delete({ where: { id } }) 
+
+    const params = {
+      entity: 'professor',
+      queryType: 'delete',
+      includes: ['clubs'],
+      filter: { id: Number(id) },
+    }
     
-    return NextResponse.json({ message: 'Deleting professor successfully' }, { status: 200 })
+    const professor = await query({ ...params })
+
+    return NextResponse.json(professor, { status: 200 })
   } catch (error) {
     console.error('Error deleting professor:', error)
     return NextResponse.json({ error: 'Error deleting professor' }, { status: 500 })
