@@ -1,13 +1,24 @@
 import { NextResponse } from 'next/server'
-import db from '~/libs/db'
+import query from '~/libs/query'
 
 export const POST = async request => {
   try {
     const { name } = await request.json()
 
-    const newPermission = await db.permission.create({
-      data: { name }
-    })
+    if(!name){
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 }) 
+    }
+
+    const params = {
+      entity: 'permission',
+      queryType: 'create',
+      data: {
+        name
+      }
+    }
+
+    const newPermission = await query({ ...params })
+
 
     return NextResponse.json( newPermission, { status: 201 })
   } catch (error) {
@@ -19,9 +30,14 @@ export const POST = async request => {
 export const GET = async () => {
 
   try{
-    const permissions = await db.permission.findMany()
+    const params = {
+      entity: 'permission',
+      queryType: 'findMany',
+    }
 
-    return NextResponse.json({ permissions }, { status: 200 })
+    const permissions = await query({ ...params })
+
+    return NextResponse.json(permissions, { status: 200 })
   } catch (error) {
     console.error('Error fetching permissions:', error)
     return NextResponse.json({ error: 'Error fetching permissions' }, { status: 500 })
