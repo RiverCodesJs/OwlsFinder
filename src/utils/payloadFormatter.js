@@ -1,6 +1,3 @@
-const payloadFormatter = arr => {
-  const obj = arr.reduce((acc, ob) => ({ ...acc, [ob.id]: { ...ob } }), {})
-  return obj
-}
+const payloadFormatter = arr => arr.reduce((acc, ob) => ({ ...acc, [ob.id]: { ...ob } }), {})
 
 export default payloadFormatter
