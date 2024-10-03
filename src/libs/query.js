@@ -74,7 +74,7 @@ const query = async ({ entity, filter, includes, queryType, data, relations }) =
       return cleanerData({ payload, includes })
     
     default: 
-      return 'query type not allowed'
+      return { error: 'User query type incorrect' }, { status: 500 }
   }
 }
 
