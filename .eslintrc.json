@@ -179,7 +179,7 @@
     "camelcase": "off",
     "babel/camelcase": "off",
     "new-cap": "off",
-    "babel/new-cap": "error",
+    "babel/new-cap": "off",
     "no-invalid-this": "off",
     "no-nested-ternary": "error",
     "babel/no-invalid-this": "error",
