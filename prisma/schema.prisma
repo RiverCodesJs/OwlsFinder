@@ -1,0 +1,110 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+
+  provider = "postgresql"
+
+  url = env("POSTGRES_PRISMA_URL") 
+
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+
+}
+
+model User {
+  id               Int                  @id @default(autoincrement())
+  names            String
+  paternalSurname  String
+  maternalSurname  String
+  email            String               @unique
+  password         String?
+  enrollmentId     Int?                 @unique
+  groups           Int[]
+  currentGroup     Int?
+  nextGroup        Int?
+  clubId           Int?
+  club             Club?                @relation(fields: [clubId], references: [id])
+  type             String
+  shift            String?
+  permissions      Permission[]
+  created_at       DateTime             @default(now())
+  updated_at       DateTime             @updatedAt
+  active           Boolean              @default(true)
+}
+
+model Professor {
+  id                Int         @id @default(autoincrement())
+  name              String
+  paternalSurname   String
+  maternalSurname   String
+  email             String      @unique
+  clubs             Club[]
+  created_at        DateTime    @default(now())
+  updated_at        DateTime    @updatedAt
+  active            Boolean     @default(true)
+}
+
+model Package {
+  id                Int              @id @default(autoincrement())
+  name              String
+  description       String
+  images            String[]
+  videos            String[]
+  limit             Int
+  subjects          Subject[]  
+  created_at        DateTime         @default(now())
+  updated_at        DateTime         @updatedAt
+  active            Boolean          @default(true)
+}
+
+model Subject {
+  id                Int              @id @default(autoincrement())
+  name              String
+  description       String
+  packageId         Int
+  package           Package          @relation(fields: [packageId], references: [id])
+  created_at        DateTime         @default(now())
+  updated_at        DateTime         @updatedAt
+  active            Boolean          @default(true)
+}
+
+model Training {
+  id                Int              @id @default(autoincrement())
+  name              String
+  description       String
+  images            String[]
+  videos            String[]
+  shift             String
+  limit             Int
+  professor         String?
+  created_at        DateTime         @default(now())
+  updated_at        DateTime         @updatedAt
+  active            Boolean          @default(true)
+}
+
+model Club {
+  id                Int              @id @default(autoincrement())
+  name              String
+  description       String
+  images            String[]
+  videos            String[]
+  limit             Int
+  shift             String?
+  schedule          String
+  users             User[]
+  professorId       Int
+  professor         Professor        @relation(fields: [professorId], references: [id])
+  created_at        DateTime         @default(now())
+  updated_at        DateTime         @updatedAt
+  active            Boolean          @default(true)
+}
+
+model Permission {
+  id                Int              @id @default(autoincrement())
+  name              String
+  users             User[]
+}
