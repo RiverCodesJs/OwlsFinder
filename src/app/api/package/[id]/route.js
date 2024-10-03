@@ -58,8 +58,14 @@ export const PUT = async (request, { params }) => {
 
 export const PATCH = async (request, { params }) => {
   const { id } = params
-  const partialUpdate = await request.json()
-  const { subjects, ...data } = partialUpdate
+  const { subjects, ...partialUpdate } = await request.json()
+
+  const relations = subjects ? ( {
+    relations: [{
+      entity: 'subjects',
+      data: subjects
+    }]
+  }) : undefined
 
   try {
     const params = {
@@ -67,12 +73,8 @@ export const PATCH = async (request, { params }) => {
       queryType: 'update',
       includes: ['subjects'],
       filter: { id: Number(id) },
-      data: { ...data },
-      relations: [{
-        entity: 'subjects',
-        data: subjects
-      }]
-
+      data: { ...partialUpdate },
+      relations
     }
     const pack = await query({ ...params })
 
