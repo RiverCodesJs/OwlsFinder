@@ -1,20 +1,21 @@
 import { NextResponse } from 'next/server'
-import db from '~/libs/db'
-import { authenticateToken } from '~/libs/auth'
-import { getUser } from '~/libs/gets'
+import query from '~/libs/query'
+import bcrypt from 'bcrypt'
 
 export const GET = async (request, { params }) => {
-  const authResult = authenticateToken(request)
   const { id } = params
-  
-  if (authResult.status !== 200) {
-    return NextResponse.json({ error: authResult.message }, { status: authResult.status })
-  }
 
   try{
-    const user = await getUser(id)
+    const params = {
+      entity: 'user',
+      queryType: 'findUnique',
+      includes: ['permissions'],
+      filter: { id: Number(id) }
+    }
 
-    return NextResponse.json({ user }, { status: 200 })
+    const user = await query({ ...params })
+
+    return NextResponse.json(user, { status: 200 })
   } catch (error) {
     console.error('Error fetching user:', error)
     return NextResponse.json({ error: 'Error fetching user' }, { status: 500 })
@@ -22,39 +23,108 @@ export const GET = async (request, { params }) => {
 }
 
 export const PUT = async (request, { params }) => {
-  const authResult = authenticateToken(request)
   const { id } = params
-  const packageUser = await request.json()
-  
-  if (authResult.status !== 200) {
-    return NextResponse.json({ error: authResult.message }, { status: authResult.status })
+
+  const { names, paternalSurname, maternalSurname, email, password, enrollmentId, groups, currentGroup, nextGroup, type, shift, permissions, club } = await request.json()
+
+  if (!names || !paternalSurname || !maternalSurname || !email || !password || !enrollmentId || !groups || !currentGroup || !nextGroup || !type || !shift ) {
+    return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
   }
-
   try{
-    const user = await db.user.find({
-      where:{ id: Number(id) },
-      data:{ ...packageUser }
-    })
+    const hashedPassword = await bcrypt.hash(password, 12)
 
-    return NextResponse.json({ user }, { status: 200 })
+    const relations = club ? ([{
+      entity: 'permissions', 
+      data: permissions
+    },
+    {
+      entity: 'club',
+      data: club
+    }]) : [{
+      entity: 'permissions',
+      data: permissions
+    }]
+
+    const params = {
+      entity: 'user',
+      queryType: 'update',
+      includes: ['permissions'],
+      filter: { id: Number(id) },
+      data: {
+        names, 
+        paternalSurname, 
+        maternalSurname, 
+        email, 
+        password: hashedPassword, 
+        enrollmentId, 
+        groups, 
+        currentGroup, 
+        nextGroup, 
+        type, 
+        shift
+      },
+      relations
+    }
+
+    const user = await query({ ...params })
+
+    return NextResponse.json(user, { status: 200 })
   } catch (error) {
     console.error('Error updating user:', error)
     return NextResponse.json({ error: 'Error updating user' }, { status: 500 })
   }
 }
 
-export const DELETE = async (request, { params }) => {
-  const authResult = authenticateToken(request)
+export const PATCH = async (request, { params }) => {
   const { id } = params
+  const { club, permissions, ...partialUpdate } = await request.json()
 
-  if (authResult.status !== 200) {
-    return NextResponse.json({ error: authResult.message }, { status: authResult.status })
-  }
+  const relations = club ? ([{
+    entity: 'permissions', 
+    data: permissions
+  },
+  {
+    entity: 'club',
+    data: club
+  }]) : [{
+    entity: 'permissions',
+    data: permissions
+  }]
 
   try {
-    await db.user.delete({ where: { id } }) 
+    const params = {
+      entity: 'user',
+      queryType: 'update',
+      includes: ['permissions'],
+      filter: { id: Number(id) },
+      data: { ...partialUpdate },
+      relations
+    }
+
+    const user = await query({ ...params })
+
+    return NextResponse.json(user, { status: 200 })
+  } catch (error) {
+    console.error('Error updating user partially:', error)
+    return NextResponse.json({ error: 'Error updating user partially' }, { status: 500 })
+  }
+}
+
+export const DELETE = async (request, { params }) => {
+  const { id } = params
+
+  try {
+    const params = {
+      entity: 'user',
+      queryType: 'delete',
+      includes: ['permissions'],
+      filter: { id: Number(id) }
+    }
+
+    const user = await query({ ...params })
+
     
-    return NextResponse.json({ message: 'Deleting user successfully' }, { status: 200 })
+    return NextResponse.json(user, { status: 200 })
   } catch (error) {
     console.error('Error deleting user:', error)
     return NextResponse.json({ error: 'Error deleting user' }, { status: 500 })

@@ -1,35 +1,52 @@
 import { NextResponse } from 'next/server'
-import db from '~/libs/db'
+import query from '~/libs/query'
 import bcrypt from 'bcrypt'
-import filter from '~/libs/filter'
-
 
 export const POST = async request => {
   try {
-    const { names, paternalSurname, maternalSurname, email, password, enrollmentId, groups, currentGroup, nextGroup, type, shift, permisions } = await request.json()
+    const { names, paternalSurname, maternalSurname, email, password, enrollmentId, groups, currentGroup, nextGroup, type, shift, permissions, club } = await request.json()
 
-    const hashedPassword = await bcrypt.hash(password, 5)
+    if (!names || !paternalSurname || !maternalSurname || !email || !password || !enrollmentId || !groups || !currentGroup || !nextGroup || !type || !shift || !permissions) {
+      return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+    }
 
-    const newUser = await db.user.create({
+    const relations = club ? ([{
+      entity: 'permissions', 
+      data: permissions
+    },
+    {
+      entity: 'club',
+      data: club
+    }]) : [{
+      entity: 'permissions',
+      data: permissions
+    }]
+
+    const hashedPassword = await bcrypt.hash(password, 12)
+
+    const params = {
+      entity: 'user',
+      queryType: 'create',
+      includes: ['permissions'],
       data: {
-        names,
-        paternalSurname,
-        maternalSurname,
-        email,
-        password: hashedPassword,
-        enrollmentId,
-        groups,
-        currentGroup,
-        nextGroup,
-        type,
-        shift,
-        permisions: {
-          connect: permisions.map( permision => ({ id: Number(permision.id) }))
-        }
-      }
-    })
+        names, 
+        paternalSurname, 
+        maternalSurname, 
+        email, 
+        password: hashedPassword, 
+        enrollmentId, 
+        groups, 
+        currentGroup, 
+        nextGroup, 
+        type, 
+        shift
+      },
+      relations
+    }
 
-    return NextResponse.json({ message: 'User created successfully', newUser }, { status: 201 })
+    const newUser = await query({ ...params })
+
+    return NextResponse.json(newUser, { status: 201 })
   } catch (error) {
     console.error('User creation failed:', error)
     return NextResponse.json({ error: 'User creation failed' }, { status: 500 })
@@ -38,11 +55,13 @@ export const POST = async request => {
 
 export const GET = async () => {
   try{
-    const usersFound = await db.user.findMany({
-      include: { permisions: true }
-    })
+    const params = {
+      entity: 'user',
+      queryType: 'findMany',
+      includes: ['permissions'],
+    }
 
-    const users = usersFound.map(user => filter(user))
+    const users = await query({ ...params })
 
     return NextResponse.json(users, { status: 200 })
   } catch (error) {
