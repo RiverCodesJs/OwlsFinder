@@ -1,3 +1,4 @@
+/* eslint-disable babel/new-cap */
 /**
  * @vitest-environment node
  */
