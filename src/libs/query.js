@@ -41,8 +41,6 @@ const getOptions = ({ filter, includes, data: d, relations }) => {
   const data = d ? { data: { ...d, ...connections } } : {}
 
   return Object.assign(filters, include, data)
-  
- 
 }
 
 //@queryType one of [findUnique, findMany, delete, update, create]
@@ -59,7 +57,6 @@ const query = async ({ entity, filter, includes, queryType, data, relations }) =
     case 'findMany':
       payload = await db[entity].findMany({ ...opts })
       return payloadFormatter(payload.map(p => cleanerData({ payload: p, includes })))
-
 
     case 'create':
       payload = await db[entity].create({ ...opts })
