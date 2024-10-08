@@ -51,11 +51,14 @@ model Professor {
 model Package {
   id                Int              @id @default(autoincrement())
   name              String
+  groupNumber       Int?
   description       String
   images            String[]
   videos            String[]
   limit             Int
-  subjects          Subject[]  
+  subject1          Int
+  subject2          Int
+  subject3          Int
   created_at        DateTime         @default(now())
   updated_at        DateTime         @updatedAt
   active            Boolean          @default(true)
@@ -65,7 +68,6 @@ model Subject {
   id                Int              @id @default(autoincrement())
   name              String
   description       String
-  package           Package[]          
   created_at        DateTime         @default(now())
   updated_at        DateTime         @updatedAt
   active            Boolean          @default(true)
@@ -74,6 +76,7 @@ model Subject {
 model Training {
   id                Int              @id @default(autoincrement())
   name              String
+  groupNumber       Int?
   description       String
   images            String[]
   videos            String[]
@@ -88,6 +91,7 @@ model Training {
 model Club {
   id                Int              @id @default(autoincrement())
   name              String
+  groupNumber       Int?
   description       String
   images            String[]
   videos            String[]
