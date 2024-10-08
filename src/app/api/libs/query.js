@@ -1,8 +1,8 @@
-import db from '~/libs/db'
-import payloadFormatter from '~/utils/payloadFormatter'
-import cleanerData from '~/libs/cleanerData'
+import db from '~/app/api/libs/db'
+import payloadFormatter from '~/app/api/utils/payloadFormatter'
+import cleanerData from '~/app/api/libs/cleanerData'
 
-const getOptions = ({ filter, includes, data: d, relations }) => {
+export const getOptions = ({ filter, includes, data: d, relations }) => {
   const filters = filter ? { where: { ...filter } } : {}
   const include = includes ? { 
     include: includes.reduce((acc, include) => ({ 
@@ -70,7 +70,7 @@ const query = async ({ entity, filter, includes, queryType, data, relations }) =
       return cleanerData({ payload, includes })
     
     default: 
-      return { error: 'User query type incorrect' }, { status: 500 }
+      return null
   }
 }
 
