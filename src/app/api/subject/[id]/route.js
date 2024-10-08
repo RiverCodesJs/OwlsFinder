@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
-import query from '~/libs/query'
+import query from '~/app/api/libs/query'
+import { subjectShape } from '~/app/api/utils/shapes'
 
-export const GET = async (request, { params }) => {
+export const GET = async ({ params }) => {
   const { id } = params
 
   try{
@@ -10,21 +11,21 @@ export const GET = async (request, { params }) => {
       queryType: 'findUnique',
       filter: { id: Number(id) }
     }
-    const subject = await query({ ...params })
+    const subject = await query(params)
 
     return NextResponse.json(subject, { status: 200 })
   } catch (error) {
     console.error('Error fetching subject:', error)
-    return NextResponse.json({ error: 'Error fetching subject' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
 
 export const PUT = async (request, { params }) => {
   const { id } = params
 
-  const { name, description } = await request.json()
+  const data = await request.json()
 
-  if(!name || !description){
+  if (!subjectShape().every(key => key in data)) {
     return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
   }
 
@@ -32,19 +33,15 @@ export const PUT = async (request, { params }) => {
     const params = {
       entity: 'subject',
       queryType: 'update',
-  
       filter: { id: Number(id) },
-      data: {
-        name,
-        description,
-      }
+      data
     }
-    const subject = await query({ ...params })
+    const subject = await query(params)
 
     return NextResponse.json(subject, { status: 200 })
   } catch (error) {
     console.error('Error updating subject:', error)
-    return NextResponse.json({ error: 'Error updating subject' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
 
@@ -61,17 +58,17 @@ export const PATCH = async (request, { params }) => {
     
 
     }
-    const subject = await query({ ...params })
+    const subject = await query(params)
 
     return NextResponse.json(subject, { status: 200 })
   } catch (error) {
     console.error('Error updating subject partially:', error)
-    return NextResponse.json({ error: 'Error updating subject partially' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
 
 
-export const DELETE = async (request, { params }) => {
+export const DELETE = async ({ params }) => {
   const { id } = params
 
   try {
@@ -86,6 +83,6 @@ export const DELETE = async (request, { params }) => {
     return NextResponse.json(subject, { message: 'Deleting subject successfully' }, { status: 200 })
   } catch (error) {
     console.error('Error deleting subject:', error)
-    return NextResponse.json({ error: 'Error deleting subject' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
