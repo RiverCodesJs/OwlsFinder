@@ -56,7 +56,7 @@ model Package {
   images            String[]
   videos            String[]
   limit             Int
-  subject           Int[]
+  subjects          Int[]
   created_at        DateTime         @default(now())
   updated_at        DateTime         @updatedAt
   active            Boolean          @default(true)
