@@ -40,14 +40,14 @@ describe('getOptions libs', () =>{
       filter: null, 
       includes: null, 
       data: {
-        name: 'Salvador',
-        lastName: 'Orozco'
+        name: 'John',
+        lastName: 'Doe'
       }, 
       relations: null,
       result: { 
         data: {
-          name: 'Salvador',
-          lastName: 'Orozco'
+          name: 'John',
+          lastName: 'Doe'
         }
       } 
     },
@@ -56,8 +56,8 @@ describe('getOptions libs', () =>{
       filter: null, 
       includes: ['subjects'], 
       data: {
-        name: 'Salvador',
-        lastName: 'Orozco'
+        name: 'John',
+        lastName: 'Doe'
       }, 
       relations: [
         {
@@ -77,8 +77,8 @@ describe('getOptions libs', () =>{
       ],
       result: { 
         data: {
-          name: 'Salvador',
-          lastName: 'Orozco',
+          name: 'John',
+          lastName: 'Doe',
           subjects: {
             connectOrCreate: [
               {
@@ -117,8 +117,8 @@ describe('getOptions libs', () =>{
       filter: null, 
       includes: ['subjects', 'permissions'], 
       data: {
-        name: 'Salvador',
-        lastName: 'Orozco'
+        name: 'John',
+        lastName: 'Doe'
       }, 
       relations: [
         {
@@ -131,8 +131,8 @@ describe('getOptions libs', () =>{
       ],
       result: { 
         data: {
-          name: 'Salvador',
-          lastName: 'Orozco',
+          name: 'John',
+          lastName: 'Doe',
           subjects: {
             connectOrCreate:{
               create:  {
