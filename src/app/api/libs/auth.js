@@ -1,19 +1,15 @@
+/* eslint-disable consistent-return */
 import jwt from 'jsonwebtoken'
+import ERROR from '~/error'
 
-export const authenticateToken = req => {
-  const authHeader = req.headers.get('authorization')
-
-  const token = authHeader && authHeader.split(' ')[1]
-  if (!token) return { status: 401, message: 'Token required' }
-
-  try {
-    const user = jwt.verify(token, process.env.JWT_SECRET)
-
-    req.user = user
-
-    return { status: 200, message: 'Token valid' }
-  } catch (err) {
-    return { status: 403, message: 'Token invalid' }
+export const authenticateToken = ({ headers }) => {
+  const authHeader = headers.get('authorization')
+  const token = authHeader && authHeader.replace(/authorization /,'')
+  if (token) {
+    const { userId } = jwt.verify(token, process.env.JWT_SECRET)
+    return userId
+  } else {
+    ERROR.FORBIDDEN()
   }
 }
 
