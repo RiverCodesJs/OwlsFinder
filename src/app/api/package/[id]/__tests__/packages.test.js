@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { GET, PUT, PATCH, DELETE } from '~/app/api/package/[id]/route'
 
-//Mock of DB
+//Mock of db
 vi.mock('~/app/api/libs/db', () => {
   return {
     default: {
@@ -14,7 +14,7 @@ vi.mock('~/app/api/libs/db', () => {
           updated_at: 'updated_at',
           active: 'active'  
         }),
-
+        
         update: ({ data }) => ({
           id: 1, 
           name: data.name,
@@ -23,9 +23,7 @@ vi.mock('~/app/api/libs/db', () => {
           images: data.images,
           videos: data.videos,
           limit: data.limit,
-          subject1: data.subject1,
-          subject2: data.subject2,
-          subject3: data.subject3,
+          subjects: data.subjects,
           created_at: 'created_at',
           updated_at: 'updated_at',
           active: 'active'
@@ -39,32 +37,38 @@ vi.mock('~/app/api/libs/db', () => {
           active: 'active' 
         })
       },
-
-      subject: {
-        create: ({ data }) => ({
-          id: 3,
-          name: data.name,
-          description: data.description,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
-          active: 'active' 
-        }), 
- 
+      user:{
         findUnique: ({ where }) => ({
           id: where.id,
-          name: `subject ${where.id}`,
-          description: `description ${where.id}`
-        }),
-
-        update: ({ data, where }) => ({
-          id: where.id,
-          name: data.name,
-          description: data.description,
+          name: 'Jonh',
+          permissions: [
+            {
+              id: 1,
+              name: 'update_package'
+            },
+            {
+              id: 2,
+              name: 'delete_package'
+            }
+          ],
+          created_at: 'created_at',
+          updated_at: 'updated_at',
+          active: 'active'
         })
       }
-
-    } 
+    }, 
+  
   }
+})
+
+//Mock of authenticateToken 
+vi.mock('~/app/api/libs/auth', () => {
+  return { authenticateToken: () => (1) }
+})
+
+//Mock of getPermissionsByEntity
+vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
+  return { default: () => (true) }
 })
 
 //Method GET
@@ -79,24 +83,33 @@ describe('API Package - GET', () => {
       }
     },
     {
+      descr: 'Error has not permission',
+      isNotAllowed: true,
+      expectedStatus: 403,
+      expectedResponse: { error: 'Not Allowed' }
+    },
+    {
       descr: 'Error fetching packages',
       mockImplementation:  new Error('Error fetching packages'),
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching packages' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
-      const db = await import ('~/app/api/libs/db')
-      db.default.package.findUnique = vi.fn().mockRejectedValueOnce(mockImplementation)
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.package, 'findUnique').mockRejectedValueOnce(mockImplementation) 
     }
 
+    if(isNotAllowed){
+      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
+      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+    }
+
+
     const params = { id: '1' }
-
     const response = await GET(null, { params }) 
-    
-    expect(response.status).toBe(expectedStatus)
-
     const jsonResponse = await response.json()
+    expect(response.status).toBe(expectedStatus)
     expect(jsonResponse).toEqual(expectedResponse)
   })
 })
@@ -115,9 +128,7 @@ describe('API Package - PUT', () => {
         images: ['image1'],
         videos: ['video1'],
         limit: 30,
-        subject1: 1,
-        subject2: 2,
-        subject3: 3
+        subjects: [1, 2, 3]
       },
 
       request: {
@@ -128,29 +139,32 @@ describe('API Package - PUT', () => {
         images: ['image1'],
         videos: ['video1'],
         limit: 30,
-        subject1: {
-          id: 1,
-          name: 'subject 1',
-          description: 'description 1'
-        },
-        subject2: {
-          id: 2,
-          name: 'subject',
-          description: 'description'
-        },
-        subject3: {
-          name: 'subject 3',
-          description: 'description 3'
-        }
+        subjects: [
+          {
+            id: 1,
+            name: 'Subject 1',
+            description: 'Description of the subject 1'
+          },
+          {
+            id: 2,
+            name: 'Subject 2',
+            description: 'Description of the subject 2'
+          },
+          {
+            id: 3,
+            name: 'Subject 3',
+            description: 'Description of the subject 3'
+          }
+        ]
       }
     },
     {
-      descr: 'Invalid Input',
+      descr: 'Error Invalid Input',
       expectedStatus: 400,
-      expectedResponse: { error: 'Invalid input' },
+      expectedResponse: { error: 'Invalid Fields' },
       request: {
         id: 1, 
-        name: 'package 1',
+        description: 'package 1',
       }
     },
     {
@@ -166,38 +180,76 @@ describe('API Package - PUT', () => {
         images: ['image1'],
         videos: ['video1'],
         limit: 30,
-        subject1: {
-          id: 1,
-          name: 'subject 1',
-          description: 'description 1'
-        },
-        subject2: {
-          id: 2,
-          name: 'subject 2',
-          description: 'description 2'
-        },
-        subject3: {
-          name: 'subject 3',
-          description: 'description 3'
-        }
+        subjects: [
+          {
+            id: 1,
+            name: 'Subject 1',
+            description: 'Description of the subject 1'
+          },
+          {
+            id: 2,
+            name: 'Subject 2',
+            description: 'Description of the subject 2'
+          },
+          {
+            id: 3,
+            name: 'Subject 3',
+            description: 'Description of the subject 3'
+          }
+        ]
+      }
+    },
+    {
+      descr: 'Error has not permission',
+      isNotAllowed: true,
+      expectedStatus: 403,
+      expectedResponse: { error: 'Not Allowed' },
+      request: {
+        id: 1, 
+        name: 'package 1',
+        groupNumber: 201,
+        description: 'Description about the package',
+        images: ['image1'],
+        videos: ['video1'],
+        limit: 30,
+        subjects: [
+          {
+            id: 1,
+            name: 'Subject 1',
+            description: 'Description of the subject 1'
+          },
+          {
+            id: 2,
+            name: 'Subject 2',
+            description: 'Description of the subject 2'
+          },
+          {
+            id: 3,
+            name: 'Subject 3',
+            description: 'Description of the subject 3'
+          }
+        ]
       }
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation }) =>{
+    
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, 'update').mockRejectedValueOnce(mockImplementation) 
     }
 
-    const params = { id: '1' }
+    if(isNotAllowed){
+      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
+      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
 
+    const params = { id: '1' }
     const mockRequest = {
       json: async () => request, 
     }
     const response = await PUT(mockRequest, { params }) 
-    
-    expect(response.status).toBe(expectedStatus)
-
     const jsonResponse = await response.json()
+    expect(response.status).toBe(expectedStatus)
     expect(jsonResponse).toEqual(expectedResponse)
   })
 })
@@ -216,9 +268,7 @@ describe('API Package - PATCH', () => {
         images: ['image1'],
         videos: ['video1'],
         limit: 30,
-        subject1: 1,
-        subject2: 2,
-        subject3: 3
+        subjects: [1, 2, 3]
       },
 
       request: {
@@ -229,20 +279,23 @@ describe('API Package - PATCH', () => {
         images: ['image1'],
         videos: ['video1'],
         limit: 30,
-        subject1: {
-          id: 1,
-          name: 'subject 1',
-          description: 'description 1'
-        },
-        subject2: {
-          id: 2,
-          name: 'subject',
-          description: 'description'
-        },
-        subject3: {
-          name: 'subject 3',
-          description: 'description 3'
-        }
+        subjects: [
+          {
+            id: 1,
+            name: 'Subject 1',
+            description: 'Description of the subject 1'
+          },
+          {
+            id: 2,
+            name: 'Subject 2',
+            description: 'Description of the subject 2'
+          },
+          {
+            id: 3,
+            name: 'Subject 3',
+            description: 'Description of the subject 3'
+          }
+        ]
       }
     },
     {
@@ -258,43 +311,79 @@ describe('API Package - PATCH', () => {
         images: ['image1'],
         videos: ['video1'],
         limit: 30,
-        subject1: {
-          id: 1,
-          name: 'subject 1',
-          description: 'description 1'
-        },
-        subject2: {
-          id: 2,
-          name: 'subject 2',
-          description: 'description 2'
-        },
-        subject3: {
-          name: 'subject 3',
-          description: 'description 3'
-        }
+        subjects: [
+          {
+            id: 1,
+            name: 'Subject 1',
+            description: 'Description of the subject 1'
+          },
+          {
+            id: 2,
+            name: 'Subject 2',
+            description: 'Description of the subject 2'
+          },
+          {
+            id: 3,
+            name: 'Subject 3',
+            description: 'Description of the subject 3'
+          }
+        ]
+      }
+    },
+    {
+      descr: 'Error has not permission',
+      isNotAllowed: true,
+      expectedStatus: 403,
+      expectedResponse: { error: 'Not Allowed' },
+      request: {
+        id: 1, 
+        name: 'package 1',
+        groupNumber: 201,
+        description: 'Description about the package',
+        images: ['image1'],
+        videos: ['video1'],
+        limit: 30,
+        subjects: [
+          {
+            id: 1,
+            name: 'Subject 1',
+            description: 'Description of the subject 1'
+          },
+          {
+            id: 2,
+            name: 'Subject 2',
+            description: 'Description of the subject 2'
+          },
+          {
+            id: 3,
+            name: 'Subject 3',
+            description: 'Description of the subject 3'
+          }
+        ]
       }
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, 'update').mockRejectedValueOnce(mockImplementation) 
     }
+    if(isNotAllowed){
+      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
+      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
 
     const params = { id: '1' }
-
     const mockRequest = {
       json: async () => request, 
     }
     const response = await PATCH(mockRequest, { params }) 
-    
-    expect(response.status).toBe(expectedStatus)
-    
     const jsonResponse = await response.json()
+    expect(response.status).toBe(expectedStatus)
     expect(jsonResponse).toEqual(expectedResponse)
   })
 })
 
-
+// Method DELETE
 describe('API Package - DELETE', () => {
   it.each([
     {
@@ -310,20 +399,26 @@ describe('API Package - DELETE', () => {
       mockImplementation:  new Error('Error fetching packages'),
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching packages' }
+    },{
+      descr: 'Error has not permission',
+      isNotAllowed: true,
+      expectedStatus: 403,
+      expectedResponse: { error: 'Not Allowed' },
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
-      const db = await import ('~/app/api/libs/db')
-      db.default.package.delete = vi.fn().mockRejectedValueOnce(mockImplementation)
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.package, 'delete').mockRejectedValueOnce(mockImplementation) 
     }
-
-    const params = { id: '1' }
-
-    const response = await DELETE({ params }) 
+    if(isNotAllowed){
+      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
+      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    } 
     
-    expect(response.status).toBe(expectedStatus)
-
+    const params = { id: '1' }
+    const response = await DELETE(null, { params }) 
     const jsonResponse = await response.json()
+    expect(response.status).toBe(expectedStatus)
     expect(jsonResponse).toEqual(expectedResponse)
   })
 })

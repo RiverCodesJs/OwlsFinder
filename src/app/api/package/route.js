@@ -1,60 +1,72 @@
 import { NextResponse } from 'next/server'
-import query from '~/app/api/libs/query'
 import { packageShape } from '~/app/api/utils/shapes'
+import { authenticateToken } from '~/app/api/libs/auth'
+import { Package } from '~/app/api/entities'
+import ERROR from '~/error'
+import query from '~/app/api/libs/query'
+import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 
 export const POST = async request => {
   try {
-    const data = await request.json()
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'create' })
     
-    if (!packageShape().every(key => key in data)) {
-      return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
-    }
-   
-    for (let i = 1; i <= 3; i++) {
-      const subjectKey = `subject${i}`
-      if (!data[subjectKey].id) {
-        const subjectParams = {
-          entity: 'subject',
-          queryType: 'create',
-          data: { ...data[subjectKey] }
-        }
-
-        const newSubject = await query(subjectParams)
-        data[subjectKey] = newSubject.id 
-
-      }else{
-        data[subjectKey] = data[subjectKey].id 
+    if(hasPermission){
+      const data = await request.json()
+      
+      if (!packageShape().every(key => key in data)) {
+        return ERROR.INVALID_FIELDS()
       }
+
+      const newPackage = await query({
+        entity: 'package',
+        queryType: 'create',
+        data: {
+          ...data,
+          subjects: data.subjects.map(({ id }) => id)
+        }
+      })
+
+
+      return NextResponse.json(newPackage, { status: 201 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
 
-    const params = {
-      entity: 'package',
-      queryType: 'create',
-      data
-    }
-    
-    const newPackage = await query(params)
-
-    return NextResponse.json(newPackage, { status: 201 })
   } catch (error) {
-    console.error('Package creation failed:', error)
-
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
-export const GET = async () => {
-  try{
-    const params = {
-      entity: 'package',
-      queryType: 'findMany',
+export const GET = async request => {
+  try {
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'findMany' })
+
+    if(hasPermission){
+      const response = await query({
+        entity: 'package',
+        queryType: 'findMany',
+      })
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
 
-    const packages = await query(params)
-
-    return NextResponse.json(packages, { status: 200 })
   } catch (error) {
-    console.error('Error fetching packages:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
+    
   }
 }
