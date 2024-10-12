@@ -99,6 +99,17 @@ describe('query libs', () =>{
       },
     },
     {
+      descr: 'Find Many case but the response is null',
+      entity: 'package',
+      queryType: 'findMany',
+      filter: null, 
+      includes: ['subjects'], 
+      data: null, 
+      relations: null,
+      result: 'Not Found',
+      mockImplementation: true
+    },
+    {
       descr: 'Find Unique case',
       entity: 'package',
       queryType: 'findUnique',
@@ -111,6 +122,17 @@ describe('query libs', () =>{
         name: 'package1', 
         subjects: [1, 2] 
       },
+    },
+    {
+      descr: 'Find Unique case but the response is null',
+      entity: 'package',
+      queryType: 'findUnique',
+      filter: { id: 1 }, 
+      includes: ['subjects'], 
+      data: null, 
+      relations: null,
+      result: 'Not Found',
+      mockImplementation: true
     },
     {
       descr: 'Create case',
@@ -169,7 +191,15 @@ describe('query libs', () =>{
         subjects: [1, 2] 
       }
     }
-  ])('$descr', async ({ result, ...props }) => {
-    expect(await query(props)).toEqual(result)
+  ])('$descr', async ({ result, mockImplementation, queryType, ...props }) => {
+    if (mockImplementation) {
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.package, queryType).mockReturnValueOnce(null) 
+      expect(async () => await query({ queryType, ...props })).rejects.toThrowError(result)
+
+    } else {
+      expect(await query({ queryType, ...props })).toEqual(result)
+    }
+
   })
 })

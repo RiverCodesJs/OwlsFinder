@@ -29,7 +29,6 @@ describe('auth libs', () =>{
   ])('$descr', async ({ headers, isAllowed, result, mockImplementation }) => {
 
     if (isAllowed) {
-      
       expect(authenticateToken({ headers })).toEqual(result)
     } else {
       const jwt = await import('jsonwebtoken')

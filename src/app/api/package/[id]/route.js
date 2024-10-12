@@ -21,7 +21,7 @@ export const GET = async (request, { params }) => {
 
     if(hasPermission){
       const pack = await query({
-        entity: Package.name,
+        entity: 'package',
         queryType: 'findUnique',
         filter: { id: Number(id) }
       })
@@ -53,7 +53,13 @@ export const PUT = async (request, { params }) => {
       if (!packageShape().every(key => key in data)) {
         return ERROR.INVALID_FIELDS()
       }
-  
+
+      await query({
+        entity: 'package',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
+
       const pack = await query({
         entity: 'package',
         queryType: 'update',
@@ -87,6 +93,12 @@ export const PATCH = async (request, { params }) => {
 
     if(hasPermission){
       const data = await request.json()
+      
+      await query({
+        entity: 'package',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
   
       const pack = await query({
         entity: 'package',
@@ -121,6 +133,11 @@ export const DELETE = async (request, { params }) => {
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'delete' })
 
     if(hasPermission){
+      await query({
+        entity: 'package',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
       const pack = await query({
         entity: 'package',
         queryType: 'delete',

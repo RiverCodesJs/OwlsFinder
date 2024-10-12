@@ -1,6 +1,7 @@
 import db from '~/app/api/libs/db'
 import payloadFormatter from '~/app/api/utils/payloadFormatter'
 import cleanerData from '~/app/api/libs/cleanerData'
+import ERROR from '~/error'
 
 export const getOptions = ({ filter, includes, data: d, relations }) => {
   const filters = filter ? { where: { ...filter } } : {}
@@ -43,6 +44,14 @@ export const getOptions = ({ filter, includes, data: d, relations }) => {
   return Object.assign(filters, include, data)
 }
 
+const isEmptyObject = ({ payload }) => {
+  if(payload == null){
+    return true
+  } else {
+    return false
+  }
+}
+
 //@queryType one of [findUnique, findMany, delete, update, create]
 const query = async ({ entity, filter, includes, queryType, data, relations, password = false }) => {
 
@@ -51,10 +60,16 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
   switch(queryType){
     case 'findUnique':
       payload = await db[entity].findUnique({ ...opts })
+      if(isEmptyObject({ payload })){
+        ERROR.NOT_FOUND()
+      }
       return cleanerData({ payload, includes, password })
 
     case 'findMany':
       payload = await db[entity].findMany({ ...opts })
+      if(isEmptyObject({ payload })){
+        ERROR.NOT_FOUND()
+      }
       return payloadFormatter(payload.map(p => cleanerData({ payload: p, includes, password })))
 
     case 'create':
