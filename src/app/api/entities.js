@@ -6,12 +6,3 @@ export const Package = {
     delete: true
   }
 }
-
-export const Club = {
-  name: 'club',
-  permissions: {
-    create: true,
-    update: true,
-    delete: true
-  }
-}
