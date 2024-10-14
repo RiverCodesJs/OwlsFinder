@@ -24,7 +24,7 @@ export const POST = async request => {
         return ERROR.INVALID_FIELDS()
       }
 
-      const newPackage = await query({
+      const response = await query({
         entity: 'package',
         queryType: 'create',
         data: {
@@ -34,7 +34,7 @@ export const POST = async request => {
       })
 
 
-      return NextResponse.json(newPackage, { status: 201 })
+      return NextResponse.json(response, { status: 201 })
     } else {
       return ERROR.FORBIDDEN()
     }

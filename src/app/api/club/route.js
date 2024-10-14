@@ -1,53 +1,76 @@
 import { NextResponse } from 'next/server'
-import query from '~/libs/query'
+import { clubShape } from '~/app/api/utils/shapes'
+import { authenticateToken } from '~/app/api/libs/auth'
+import { Club } from '~/app/api/entities'
+import ERROR from '~/error'
+import query from '~/app/api/libs/query'
+import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+
 
 export const POST = async request => {
   try {
-    const { name, description, images, videos, limit, schedule, professor } = await request.json()
-
-    if(!name, !description, !images, !videos, !limit, !schedule, !professor){
-      return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
-    }
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'create' })
     
-    const params = {
-      entity: 'club',
-      queryType: 'create',
-      data: {
-        name, 
-        description, 
-        images, 
-        videos, 
-        limit, 
-        schedule
-      },
-      relations: [{
-        entity: 'professor',
-        data: professor
-      }]
-    }
-    
-    const newClub = await query({ ...params })
+    if(hasPermission){
+      const data = await request.json()
+      
+      if (!clubShape().every(key => key in data)) {
+        return ERROR.INVALID_FIELDS()
+      }
 
-    return NextResponse.json(newClub, { status: 201 })
+      const { professor, ...partialData } = data
+
+      const response = await query({
+        entity: 'club',
+        queryType: 'create',
+        data: {
+          ...partialData,
+        },
+        relations: [{
+          entity: 'professor',
+          data: professor
+        }]
+      })
+
+      return NextResponse.json(response, { status: 201 })
+    } else {
+      return ERROR.FORBIDDEN()
+    }
+
   } catch (error) {
-    console.error('Club creation failed:', error)
-    return NextResponse.json({ error: 'Club creation failed' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
-export const GET = async () => {
+export const GET = async request => {
   try{
-    
-    const params = {
-      entity: 'club',
-      queryType: 'findMany',
-    } 
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'findMany' })
 
-    const clubs = await query({ ...params })
+    if(hasPermission){
+      const response = await query({
+        entity: 'club',
+        queryType: 'findMany',
+      })
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
+    }
 
-    return NextResponse.json( clubs, { status: 200 })
   } catch (error) {
-    console.error('Error fetching clubs:', error)
-    return NextResponse.json({ error: 'Error fetching clubs' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }

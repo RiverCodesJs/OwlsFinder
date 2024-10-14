@@ -17,15 +17,15 @@ export const GET = async (request, { params }) => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'create' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'findUnique' })
 
     if(hasPermission){
-      const pack = await query({
+      const response = await query({
         entity: 'package',
         queryType: 'findUnique',
         filter: { id: Number(id) }
       })
-      return NextResponse.json(pack, { status: 200 })
+      return NextResponse.json(response, { status: 200 })
     } else {
       return ERROR.FORBIDDEN()
     }
@@ -60,7 +60,7 @@ export const PUT = async (request, { params }) => {
         filter: { id: Number(id) }
       })
 
-      const pack = await query({
+      const response = await query({
         entity: 'package',
         queryType: 'update',
         filter: { id: Number(id) },
@@ -70,7 +70,7 @@ export const PUT = async (request, { params }) => {
         }
       })
   
-      return NextResponse.json(pack, { status: 200 })
+      return NextResponse.json(response, { status: 200 })
     } else {
       return ERROR.FORBIDDEN()
     }
@@ -100,7 +100,7 @@ export const PATCH = async (request, { params }) => {
         filter: { id: Number(id) }
       })
   
-      const pack = await query({
+      const response = await query({
         entity: 'package',
         queryType: 'update',
         filter: { id: Number(id) },
@@ -110,7 +110,7 @@ export const PATCH = async (request, { params }) => {
         }
       })
   
-      return NextResponse.json(pack, { status: 200 })
+      return NextResponse.json(response, { status: 200 })
     } else {
       return ERROR.FORBIDDEN()
     }
@@ -138,13 +138,13 @@ export const DELETE = async (request, { params }) => {
         queryType: 'findUnique',
         filter: { id: Number(id) }
       })
-      const pack = await query({
+      const response = await query({
         entity: 'package',
         queryType: 'delete',
         filter: { id: Number(id) },
       })
       
-      return NextResponse.json(pack, { status: 200 })
+      return NextResponse.json(response, { status: 200 })
     } else {
       return ERROR.FORBIDDEN()
     }
