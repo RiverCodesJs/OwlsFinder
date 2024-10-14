@@ -1,8 +1,9 @@
-import db from '~/libs/db'
-import payloadFormatter from '~/utils/payloadFormatter'
-import cleanerData from '~/libs/cleanerData'
+import db from '~/app/api/libs/db'
+import payloadFormatter from '~/app/api/utils/payloadFormatter'
+import cleanerData from '~/app/api/libs/cleanerData'
+import ERROR from '~/error'
 
-const getOptions = ({ filter, includes, data: d, relations }) => {
+export const getOptions = ({ filter, includes, data: d, relations }) => {
   const filters = filter ? { where: { ...filter } } : {}
   const include = includes ? { 
     include: includes.reduce((acc, include) => ({ 
@@ -43,35 +44,48 @@ const getOptions = ({ filter, includes, data: d, relations }) => {
   return Object.assign(filters, include, data)
 }
 
+const isEmptyObject = ({ payload }) => {
+  if(payload == null){
+    return true
+  } else {
+    return false
+  }
+}
+
 //@queryType one of [findUnique, findMany, delete, update, create]
-const query = async ({ entity, filter, includes, queryType, data, relations }) => {
+const query = async ({ entity, filter, includes, queryType, data, relations, password = false }) => {
 
   const opts = getOptions({ filter, includes, data, relations })
-  
   let payload
   switch(queryType){
     case 'findUnique':
       payload = await db[entity].findUnique({ ...opts })
-      return cleanerData({ payload, includes })
+      if(isEmptyObject({ payload })){
+        ERROR.NOT_FOUND()
+      }
+      return cleanerData({ payload, includes, password })
 
     case 'findMany':
       payload = await db[entity].findMany({ ...opts })
-      return payloadFormatter(payload.map(p => cleanerData({ payload: p, includes })))
+      if(isEmptyObject({ payload })){
+        ERROR.NOT_FOUND()
+      }
+      return payloadFormatter(payload.map(p => cleanerData({ payload: p, includes, password })))
 
     case 'create':
       payload = await db[entity].create({ ...opts })
-      return cleanerData({ payload, includes })
+      return cleanerData({ payload, includes, password })
     
     case 'update':
       payload = await db[entity].update({ ...opts })
-      return cleanerData({ payload, includes })
+      return cleanerData({ payload, includes, password })
     
     case 'delete':
       payload = await db[entity].delete({ ...opts })
-      return cleanerData({ payload, includes })
+      return cleanerData({ payload, includes, password })
     
     default: 
-      return { error: 'User query type incorrect' }, { status: 500 }
+      return null
   }
 }
 
