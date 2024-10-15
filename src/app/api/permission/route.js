@@ -1,45 +1,62 @@
 import { NextResponse } from 'next/server'
-import query from '~/libs/query'
+import { permissionShape } from '~/app/api/utils/shapes'
+import { authenticateToken } from '~/app/api/libs/auth'
+import { Permission } from '~/app/api/entities'
+import ERROR from '~/error'
+import query from '~/app/api/libs/query'
+import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 
 export const POST = async request => {
   try {
-    const { name } = await request.json()
-
-    if(!name){
-      return NextResponse.json({ error: 'Invalid input' }, { status: 400 }) 
-    }
-
-    const params = {
-      entity: 'permission',
-      queryType: 'create',
-      data: {
-        name
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'create' })
+    
+    if(hasPermission){
+      const data = await request.json()
+      if (!permissionShape().every(key => key in data)) {
+        return ERROR.INVALID_FIELDS()
       }
+      const response = await query({
+        entity: 'permission',
+        queryType: 'create',
+        data
+      })
+      return NextResponse.json(response, { status: 201 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-
-    const newPermission = await query({ ...params })
-
-
-    return NextResponse.json( newPermission, { status: 201 })
   } catch (error) {
-    console.error('Permission creation failed:', error)
-    return NextResponse.json({ error: 'Permission creation failed' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
-export const GET = async () => {
-
+export const GET = async request => {
   try{
-    const params = {
-      entity: 'permission',
-      queryType: 'findMany',
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'findMany' })
+
+    if(hasPermission){
+      const response = await query({
+        entity: 'permission',
+        queryType: 'findMany',
+      })
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-
-    const permissions = await query({ ...params })
-
-    return NextResponse.json(permissions, { status: 200 })
   } catch (error) {
-    console.error('Error fetching permissions:', error)
-    return NextResponse.json({ error: 'Error fetching permissions' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }

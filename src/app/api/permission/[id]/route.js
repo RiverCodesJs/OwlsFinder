@@ -1,87 +1,143 @@
 import { NextResponse } from 'next/server'
-import query from '~/libs/query'
+import { permissionShape } from '~/app/api/utils/shapes'
+import { authenticateToken } from '~/app/api/libs/auth'
+import { Permission } from '~/app/api/entities'
+import ERROR from '~/error'
+import query from '~/app/api/libs/query'
+import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 
 export const GET = async (request, { params }) => {
-  const { id } = params
-
   try{
-    const params = {
-      entity: 'permission',
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
       queryType: 'findUnique',
-      filter: { id: Number(id) }
-    }
-    const permission = await query({ ...params })
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'findUnique' })
 
-    return NextResponse.json(permission, { status: 200 })
+    if(hasPermission){
+      const response = await query({
+        entity: 'permission',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
+    }
   } catch (error) {
-    console.error('Error fetching permission:', error)
-    return NextResponse.json({ error: 'Error fetching permission' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
 export const PUT = async (request, { params }) => {
-  const { id } = params
-  const { name } = await request.json()
-
-  if(!name){
-    return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
-  }
-
   try{
-    const params = {
-      entity: 'permission',
-      queryType: 'update',
-      filter: { id: Number(id) },
-      data:{
-        name
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'update' })
+    const data = await request.json()
+    
+    if(hasPermission){
+      if (!permissionShape().every(key => key in data)) {
+        return ERROR.INVALID_FIELDS()
       }
+      await query({
+        entity: 'permission',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
+
+      const response = await query({
+        entity: 'permission',
+        queryType: 'update',
+        filter: { id: Number(id) },
+        data,
+      })
+  
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-
-    const permission = await query({ ...params })
-
-    return NextResponse.json(permission, { status: 200 })
   } catch (error) {
-    console.error('Error updating permission:', error)
-    return NextResponse.json({ error: 'Error updating permission' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
 export const PATCH = async (request, { params }) => {
-  const { id } = params
-  const partialUpdate = await request.json()
+  try{
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'update' })
+    const data = await request.json()
+    
+    if(hasPermission){
+      await query({
+        entity: 'permission',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
 
-  try {
-    const params = {
-      entity: 'permission',
-      queryType: 'update',
-      filter: { id: Number(id) },
-      data:{ ...partialUpdate }
+      const response = await query({
+        entity: 'permission',
+        queryType: 'update',
+        filter: { id: Number(id) },
+        data,
+      })
+  
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-
-    const permission = await query({ ...params })
-
-    return NextResponse.json(permission, { status: 200 })
   } catch (error) {
-    console.error('Error updating permission partially:', error)
-    return NextResponse.json({ error: 'Error updating permission partially' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
 export const DELETE = async (request, { params }) => {
-  const { id } = params
-
   try {
-    const params = {
-      entity: 'permission',
-      queryType: 'delete',
-      filter: { id: Number(id) },
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'delete' })
+
+    if(hasPermission){
+      await query({
+        entity: 'permission',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
+      const response = await query({
+        entity: 'permission',
+        queryType: 'delete',
+        filter: { id: Number(id) },
+      })
+      
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
 
-    const permission = await query({ ...params })
-    
-    return NextResponse.json(permission, { message: 'Permission deleted successfully' }, { status: 200 })
   } catch (error) {
-    console.error('Error deleting permission:', error)
-    return NextResponse.json({ error: 'Error deleting permission' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }

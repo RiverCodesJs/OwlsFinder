@@ -15,3 +15,12 @@ export const Club = {
     delete: true
   }
 }
+
+export const Permission = {
+  name: 'permission',
+  permissions: {
+    create: true,
+    update: true,
+    delete: true
+  }
+}
