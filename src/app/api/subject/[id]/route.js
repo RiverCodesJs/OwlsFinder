@@ -1,88 +1,140 @@
 import { NextResponse } from 'next/server'
-import query from '~/app/api/libs/query'
 import { subjectShape } from '~/app/api/utils/shapes'
+import { authenticateToken } from '~/app/api/libs/auth'
+import { Subject } from '~/app/api/entities'
+import ERROR from '~/error'
+import query from '~/app/api/libs/query'
+import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 
-export const GET = async ({ params }) => {
-  const { id } = params
-
+export const GET = async (request, { params }) => {
   try{
-    const params = {
-      entity: 'subject',
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
       queryType: 'findUnique',
-      filter: { id: Number(id) }
-    }
-    const subject = await query(params)
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'findUnique' })
 
-    return NextResponse.json(subject, { status: 200 })
+    if(hasPermission){
+      const response = await query({
+        entity: 'subject',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
+    }
   } catch (error) {
-    console.error('Error fetching subject:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
 export const PUT = async (request, { params }) => {
-  const { id } = params
-
-  const data = await request.json()
-
-  if (!subjectShape().every(key => key in data)) {
-    return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
-  }
-
   try{
-    const params = {
-      entity: 'subject',
-      queryType: 'update',
-      filter: { id: Number(id) },
-      data
-    }
-    const subject = await query(params)
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'update' })
+    const data = await request.json()
 
-    return NextResponse.json(subject, { status: 200 })
+    if(hasPermission){
+      if (!subjectShape().every(key => key in data)) {
+        return ERROR.INVALID_FIELDS()
+      }
+      await query({
+        entity: 'subject',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
+      const response = await query({
+        entity: 'subject',
+        queryType: 'update',
+        filter: { id: Number(id) },
+        data
+      })
+  
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
+    }
   } catch (error) {
-    console.error('Error updating subject:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
 export const PATCH = async (request, { params }) => {
-  const { id } = params
-  const partialUpdate = await request.json()
-
   try {
-    const params = {
-      entity: 'subject',
-      queryType: 'update',
-      filter: { id: Number(id) },
-      data: { ...partialUpdate },
-    
-
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'update' })
+    if(hasPermission){
+      await query({
+        entity: 'subject',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
+      const data = await request.json()
+      const response = await query({
+        entity: 'subject',
+        queryType: 'update',
+        filter: { id: Number(id) },
+        data
+      })
+  
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-    const subject = await query(params)
-
-    return NextResponse.json(subject, { status: 200 })
   } catch (error) {
-    console.error('Error updating subject partially:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
 
-export const DELETE = async ({ params }) => {
-  const { id } = params
-
+export const DELETE = async (request, { params }) => {
   try {
-    const params = {
-      entity: 'subject',
-      queryType: 'delete',
-      filter: { id: Number(id) },
-    }
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'delete' })
 
-    const subject = await query({ ...params })
-    
-    return NextResponse.json(subject, { message: 'Deleting subject successfully' }, { status: 200 })
+    if(hasPermission){
+      await query({
+        entity: 'subject',
+        queryType: 'findUnique',
+        filter: { id: Number(id) }
+      })
+      const response = await query({
+        entity: 'subject',
+        queryType: 'delete',
+        filter: { id: Number(id) },
+      })
+      
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
+    }
   } catch (error) {
-    console.error('Error deleting subject:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }

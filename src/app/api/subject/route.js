@@ -1,43 +1,65 @@
 import { NextResponse } from 'next/server'
-import query from '~/app/api/libs/query'
 import { subjectShape } from '~/app/api/utils/shapes'
+import { authenticateToken } from '~/app/api/libs/auth'
+import { Subject } from '~/app/api/entities'
+import ERROR from '~/error'
+import query from '~/app/api/libs/query'
+import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 
 export const POST = async request => {
   try {
-    const data = await request.json()
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'create' })
+    
+    if(hasPermission){
+      const data = await request.json()
+      
+      if (!subjectShape().every(key => key in data)) {
+        return ERROR.INVALID_FIELDS()
+      }
 
-    if (!subjectShape().every(key => key in data)) {
-      return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+      const response = await query({
+        entity: 'subject',
+        queryType: 'create',
+        data
+      })
+
+      return NextResponse.json(response, { status: 201 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-
-    const params = {
-      entity: 'subject',
-      queryType: 'create',
-      data
-    }
-
-    const newSubject = await query(params)
-
-    return NextResponse.json(newSubject, { status: 201 })
   } catch (error) {
-    console.error('Subject creation failed:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
-export const GET = async () => {
+export const GET = async request => {
   try{
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'findMany' })
 
-    const params = {
-      entity: 'subject',
-      queryType: 'findMany',
+    if(hasPermission){
+      const response = await query({
+        entity: 'subject',
+        queryType: 'findMany',
+      })
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-
-    const subjects = await query(params)
-
-    return NextResponse.json(subjects, { status: 200 })
   } catch (error) {
-    console.error('Error fetching subjects:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }

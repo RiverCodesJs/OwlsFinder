@@ -36,6 +36,15 @@ export const Professor = {
   }
 }
 
+export const Subject = {
+  name: 'subject',
+  permissions: {
+    create: true,
+    update: true,
+    delete: true
+  }
+}
+
 export const Training = {
   name: 'training',
   permissions: {
