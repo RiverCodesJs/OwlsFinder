@@ -59,30 +59,19 @@ export const PUT = async (request, { params }) => {
         filter: { id: Number(id) }
       })
       const { professor, ...partialData } = data
-      const response = data.professor.id ? (
-        await query({
-          entity: 'club',
-          queryType: 'update',
-          filter: { id: Number(id) },
-          data: {
-            professorId: professor.id,
-            ...partialData
-          }
-        })
-      ) : (
-        await query({
-          entity: 'club',
-          queryType: 'update',
-          filter: { id: Number(id) },
-          data: {
-            ...partialData,
-          },
-          relations: [{
-            entity: 'professor',
-            data: professor
-          }]
-        })
-      )
+      const response = await query({
+        entity: 'club',
+        queryType: 'update',
+        filter: { id: Number(id) },
+        data: {
+          professorId: professor?.id ?? undefined,
+          ...partialData
+        },
+        relations: data?.professor?.id ? null : [{
+          entity: 'professor',
+          data: professor
+        }]
+      })
   
       return NextResponse.json(response, { status: 200 })
     } else {
@@ -113,44 +102,13 @@ export const PATCH = async (request, { params }) => {
         queryType: 'findUnique',
         filter: { id: Number(id) }
       })
-      const { professor, ...partialData } = data
-    
-      if(professor){
-        const response = data.professor?.id ? (
-          await query({
-            entity: 'club',
-            queryType: 'update',
-            filter: { id: Number(id) },
-            data: {
-              professorId: professor.id,
-              ...partialData
-            }
-          })
-        ) : (
-          await query({
-            entity: 'club',
-            queryType: 'update',
-            filter: { id: Number(id) },
-            data: {
-              ...partialData,
-            },
-            relations: [{
-              entity: 'professor',
-              data: professor
-            }]
-          })
-        )
-        return NextResponse.json(response, { status: 200 })
-      } else {
-        const response = await query({
-          entity: 'club',
-          queryType: 'update',
-          filter: { id: Number(id) },
-          data,
-        })
-    
-        return NextResponse.json(response, { status: 200 })
-      }
+      const response = await query({
+        entity: 'club',
+        queryType: 'update',
+        filter: { id: Number(id) },
+        data
+      })
+      return NextResponse.json(response, { status: 200 })
     } else {
       return ERROR.FORBIDDEN()
     } 

@@ -263,38 +263,6 @@ describe('API Club - PUT', () => {
 describe('API Club - PATCH', () => {
   it.each([
     {
-      descr: 'Successful Request with professor Data',
-      expectedStatus: 200,
-      expectedResponse: { 
-        id: 1,
-        name: 'club 1',
-        groupNumber: 201,
-        description: 'Description about the club',
-        images: ['image1'],
-        videos: ['video1'],
-        schedule: 'schedule',
-        limit: 30,
-        professorId: 1
-      },
-      request: {
-        id: 1, 
-        name: 'club 1',
-        groupNumber: 201,
-        description: 'Description about the club',
-        images: ['image1'],
-        videos: ['video1'],
-        schedule: 'schedule',
-        limit: 30,
-        professor:{
-          id: 1,
-          name: 'Professor 1',
-          paternalSurname: 'Paternal Surname',
-          maternalSurname: 'Maternal Surname',
-          email: 'email@email.com'
-        }
-      },
-    },
-    {
       descr: 'Successful Request with no data professor',
       expectedStatus: 200,
       expectedResponse: { 
@@ -318,37 +286,6 @@ describe('API Club - PATCH', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: 1
-      },
-    },
-    {
-      descr: 'Successful Request but new professor',
-      expectedStatus: 200,
-      expectedResponse: { 
-        id: 1,
-        name: 'club 1',
-        groupNumber: 201,
-        description: 'Description about the club',
-        images: ['image1'],
-        videos: ['video1'],
-        schedule: 'schedule',
-        limit: 30,
-        professorId: 2
-      },
-      request: {
-        id: 1, 
-        name: 'club 1',
-        groupNumber: 201,
-        description: 'Description about the club',
-        images: ['image1'],
-        videos: ['video1'],
-        schedule: 'schedule',
-        limit: 30,
-        professor:{
-          name: 'Professor 1',
-          paternalSurname: 'Paternal Surname',
-          maternalSurname: 'Maternal Surname',
-          email: 'email@email.com'
-        }
       },
     },
     {
