@@ -49,17 +49,9 @@ export const PUT = async (request, { params }) => {
     const data = await request.json()
     
     if(hasPermission){
-
       if (!packageShape().every(key => key in data)) {
         return ERROR.INVALID_FIELDS()
       }
-
-      await query({
-        entity: 'package',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
-
       const response = await query({
         entity: 'package',
         queryType: 'update',
@@ -69,7 +61,6 @@ export const PUT = async (request, { params }) => {
           subjects: data.subjects.map(({ id }) => id)
         }
       })
-  
       return NextResponse.json(response, { status: 200 })
     } else {
       return ERROR.FORBIDDEN()
@@ -90,16 +81,8 @@ export const PATCH = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'update' })
-
     if(hasPermission){
       const data = await request.json()
-      
-      await query({
-        entity: 'package',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
-  
       const response = await query({
         entity: 'package',
         queryType: 'update',
@@ -109,7 +92,6 @@ export const PATCH = async (request, { params }) => {
           subjects: data.subjects?.map(({ id }) => id)
         }
       })
-  
       return NextResponse.json(response, { status: 200 })
     } else {
       return ERROR.FORBIDDEN()
@@ -118,7 +100,6 @@ export const PATCH = async (request, { params }) => {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
-
 
 export const DELETE = async (request, { params }) => {
   try {
@@ -131,24 +112,16 @@ export const DELETE = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'delete' })
-
     if(hasPermission){
-      await query({
-        entity: 'package',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
       const response = await query({
         entity: 'package',
         queryType: 'delete',
         filter: { id: Number(id) },
-      })
-      
+      })    
       return NextResponse.json(response, { status: 200 })
     } else {
       return ERROR.FORBIDDEN()
     }
-
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }

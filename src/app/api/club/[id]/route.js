@@ -45,19 +45,11 @@ export const PUT = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'update' })
-    
-    
     if(hasPermission){
       const data = await request.json()
       if (!clubShape().every(key => key in data)) {
         return ERROR.INVALID_FIELDS()
       }
-
-      await query({
-        entity: 'club',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
       const { professor, ...partialData } = data
       const response = await query({
         entity: 'club',
@@ -72,7 +64,6 @@ export const PUT = async (request, { params }) => {
           data: professor
         }]
       })
-  
       return NextResponse.json(response, { status: 200 })
     } else {
       return ERROR.FORBIDDEN()
@@ -83,7 +74,6 @@ export const PUT = async (request, { params }) => {
 }
 
 export const PATCH = async (request, { params }) => {
-
   try {
     const { id } = params
     const userId = authenticateToken(request)
@@ -94,14 +84,8 @@ export const PATCH = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'update' })
-
     if(hasPermission){
       const data = await request.json()
-      await query({
-        entity: 'club',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
       const response = await query({
         entity: 'club',
         queryType: 'update',
@@ -128,13 +112,7 @@ export const DELETE = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'delete' })
-
     if(hasPermission){
-      await query({
-        entity: 'club',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
       const response = await query({
         entity: 'club',
         queryType: 'delete',

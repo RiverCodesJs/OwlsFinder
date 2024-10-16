@@ -61,17 +61,14 @@ vi.mock('~/app/api/libs/db', () => {
   }
 })
 
-//Mock of authenticateToken 
 vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-//Mock of getPermissionsByEntity
 vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
   return { default: () => (true) }
 })
 
-//Method GET
 describe('API Package - GET', () => {
   it.each([
     {
@@ -114,7 +111,6 @@ describe('API Package - GET', () => {
   })
 })
 
-//Method PUT
 describe('API Package - PUT', () => {
   it.each([
     {
@@ -231,7 +227,6 @@ describe('API Package - PUT', () => {
         ]
       }
     }
-    
   ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
@@ -254,7 +249,6 @@ describe('API Package - PUT', () => {
   })
 })
 
-//Method PATCH
 describe('API Package - PATCH', () => {
   it.each([
     {
@@ -383,7 +377,6 @@ describe('API Package - PATCH', () => {
   })
 })
 
-// Method DELETE
 describe('API Package - DELETE', () => {
   it.each([
     {
