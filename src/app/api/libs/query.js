@@ -56,6 +56,9 @@ const isEmptyObject = ({ payload }) => {
 const query = async ({ entity, filter, includes, queryType, data, relations, password = false }) => {
 
   const opts = getOptions({ filter, includes, data, relations })
+  if (opts?.where?.id !== undefined && isNaN(opts.where.id)) {
+    ERROR.NOT_FOUND()
+  }
   let payload
   switch(queryType){
     case 'findUnique':
