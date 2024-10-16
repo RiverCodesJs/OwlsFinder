@@ -135,6 +135,17 @@ describe('query libs', () =>{
       mockImplementation: true
     },
     {
+      descr: 'Find Unique case but the id is a NaN',
+      entity: 'package',
+      queryType: 'findUnique',
+      filter: { id: NaN }, 
+      includes: ['subjects'], 
+      data: null, 
+      relations: null,
+      error: true,
+      result: 'Not Found',
+    },
+    {
       descr: 'Create case',
       entity: 'package',
       queryType: 'create',
@@ -178,6 +189,19 @@ describe('query libs', () =>{
       }
     },
     {
+      descr: 'Update case but the element to modify does not exist',
+      entity: 'package',
+      queryType: 'update',
+      filter: { id: 1 }, 
+      includes: ['subjects'], 
+      data: {
+        name: 'packageUpdated'
+      }, 
+      relations: null,
+      error: 'findUnique',
+      result: 'Not Found',
+    },
+    {
       descr: 'Delete case',
       entity: 'package',
       queryType: 'delete',
@@ -190,13 +214,31 @@ describe('query libs', () =>{
         name: 'package1', 
         subjects: [1, 2] 
       }
+    },
+    {
+      descr: 'Delete case but the element to modify does not exist',
+      entity: 'package',
+      queryType: 'delete',
+      filter: { id: 1 }, 
+      includes: ['subjects'], 
+      data: null,
+      relations: null,
+      error: 'findUnique',
+      result: 'Not Found',
     }
-  ])('$descr', async ({ result, mockImplementation, queryType, ...props }) => {
+  ])('$descr', async ({ result, error, mockImplementation, queryType, ...props }) => {
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, queryType).mockReturnValueOnce(null) 
       expect(async () => await query({ queryType, ...props })).rejects.toThrowError(result)
 
+    } else if(error) {
+      if(error === 'findUnique'){
+        const db = await import('~/app/api/libs/db')
+        vi.spyOn(db.default.package, 'findUnique').mockReturnValueOnce(null)
+      }
+      
+      expect(async () => await query({ queryType, ...props })).rejects.toThrowError(result)
     } else {
       expect(await query({ queryType, ...props })).toEqual(result)
     }
