@@ -50,11 +50,6 @@ export const PUT = async (request, { params }) => {
       if (!subjectShape().every(key => key in data)) {
         return ERROR.INVALID_FIELDS()
       }
-      await query({
-        entity: 'subject',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
       const response = await query({
         entity: 'subject',
         queryType: 'update',
@@ -83,11 +78,6 @@ export const PATCH = async (request, { params }) => {
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'update' })
     if(hasPermission){
-      await query({
-        entity: 'subject',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
       const data = await request.json()
       const response = await query({
         entity: 'subject',
@@ -117,13 +107,7 @@ export const DELETE = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'delete' })
-
     if(hasPermission){
-      await query({
-        entity: 'subject',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
       const response = await query({
         entity: 'subject',
         queryType: 'delete',
