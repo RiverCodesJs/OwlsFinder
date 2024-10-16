@@ -77,7 +77,7 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
       return cleanerData({ payload, includes, password })
     
     case 'update':
-      if(isEmptyObject({ payload: db[entity].findUnique(getOptions({ filter })) })){ 
+      if(isEmptyObject({ payload: await db[entity].findUnique(getOptions({ filter })) })){ 
         ERROR.NOT_FOUND()
       }
       
@@ -85,7 +85,7 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
       return cleanerData({ payload, includes, password })
     
     case 'delete':
-      if(isEmptyObject({ payload: db[entity].findUnique(getOptions({ filter })) })){ 
+      if(isEmptyObject({ payload: await db[entity].findUnique(getOptions({ filter })) })){ 
         ERROR.NOT_FOUND()
       }
       payload = await db[entity].delete({ ...opts })
