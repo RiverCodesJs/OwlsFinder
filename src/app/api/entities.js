@@ -35,3 +35,12 @@ export const Professor = {
     delete: true
   }
 }
+
+export const Training = {
+  name: 'training',
+  permissions: {
+    create: true,
+    update: true,
+    delete: true
+  }
+}

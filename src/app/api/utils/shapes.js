@@ -45,7 +45,6 @@ export const trainingShape = () => [
   'images',
   'limit',
   'name',
-  'professor',
   'shift',
   'videos',
 ]

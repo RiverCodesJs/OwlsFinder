@@ -1,50 +1,61 @@
 import { NextResponse } from 'next/server'
-import query from '~/libs/query'
+import { trainingShape } from '~/app/api/utils/shapes'
+import { authenticateToken } from '~/app/api/libs/auth'
+import { Training } from '~/app/api/entities'
+import ERROR from '~/error'
+import query from '~/app/api/libs/query'
+import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 
 export const POST = async request => {
   try {
-    const { name, description, images, videos, limit, shift, professor } = await request.json()
-
-    if(!name || !description || !images || !videos || !limit || !shift){
-      return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Training, action: 'create' })
+    if(hasPermission){
+      const data = await request.json()
+      if (!trainingShape().every(key => key in data)) {
+        return ERROR.INVALID_FIELDS()
+      }
+      const response = await query({
+        entity: 'training',
+        queryType: 'create',
+        data
+      })
+      return NextResponse.json(response, { status: 201 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-
-    const params = {
-      entity: 'training',
-      queryType: 'create',
-      data: {
-        name, 
-        description, 
-        images, 
-        videos, 
-        limit, 
-        shift, 
-        professor
-      },
-    }
-
-    const newTraining = await query({ ...params })
-
-
-    return NextResponse.json(newTraining, { status: 201 })
   } catch (error) {
-    console.error('Training creation failed:', error)
-    return NextResponse.json({ error: 'Training creation failed' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
-export const GET = async () => {
+export const GET = async request => {
   try{
-    const params = {
-      entity: 'training',
-      queryType: 'findMany',
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Training, action: 'findMany' })
+
+    if(hasPermission){
+      const response = await query({
+        entity: 'training',
+        queryType: 'findMany',
+      })
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-
-    const trainings = await query({ ...params })
-
-    return NextResponse.json(trainings, { status: 200 })
   } catch (error) {
-    console.error('Error fetching trainings:', error)
-    return NextResponse.json({ error: 'Error fetching trainings' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
