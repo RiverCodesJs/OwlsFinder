@@ -1,108 +1,119 @@
 import { NextResponse } from 'next/server'
-import query from '~/libs/query'
+import { professorShape } from '~/app/api/utils/shapes'
+import { authenticateToken } from '~/app/api/libs/auth'
+import { Professor } from '~/app/api/entities'
+import ERROR from '~/error'
+import query from '~/app/api/libs/query'
+import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+
 
 export const GET = async (request, { params }) => {
-  const { id } = params
-
-  try{
-    const params = {
-      entity: 'professor',
+  try {
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
       queryType: 'findUnique',
-      includes: ['clubs'],
-      filter: { id: Number(id) }
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Professor, action: 'findUnique' })
+    if(hasPermission){
+      const response = await query({
+        entity: 'professor',
+        queryType: 'findUnique',
+        filter: { id: Number(id) },
+      })
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-    const professor = await query({ ...params })
-
-    return NextResponse.json(professor, { status: 200 })
   } catch (error) {
-    console.error('Error fetching professor:', error)
-    return NextResponse.json({ error: 'Error fetching professor' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
 export const PUT = async (request, { params }) => {
-  const { id } = params
-  
-  const { name, paternalSurname, maternalSurname, email, club } = await request.json()
-     
-  if(!name || !paternalSurname || !maternalSurname || !email || !id){
-    return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
-  }
-
   try{
-    const relations = club ? ([{
-      entity: 'clubs',
-      data: club 
-    }]) : undefined
-
-    const params = {
-      entity: 'professor',
-      queryType: 'update',
-      includes: ['clubs'],
-      filter: { id: Number(id) },
-      data: {
-        name,
-        paternalSurname, 
-        maternalSurname, 
-        email
-      },
-      relations
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Professor, action: 'update' })
+    const data = await request.json()
+    if(hasPermission){
+      if (!professorShape().every(key => key in data)) {
+        return ERROR.INVALID_FIELDS()
+      }
+      const response = await query({
+        entity: 'professor',
+        queryType: 'update',
+        filter: { id: Number(id) },
+        data
+      })
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-
-    const professor = await query({ ...params })
-
-    return NextResponse.json(professor, { status: 200 })
   } catch (error) {
-    console.error('Error updating professor:', error)
-    return NextResponse.json({ error: 'Error updating professor' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
 export const PATCH = async (request, { params }) => {
-  const { id } = params
-  const { club, ...partialUpdate } = await request.json()
-
-  try {
-    const relations = club ? ([{
-      entity: 'clubs',
-      data: club 
-    }]) : undefined
-
-    const params = {
-      entity: 'professor',
-      queryType: 'update',
-      includes: ['clubs'],
-      filter: { id: Number(id) },
-      data: { ...partialUpdate },
-      relations
+  try{
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Professor, action: 'update' })
+    const data = await request.json()
+    if(hasPermission){
+      const response = await query({
+        entity: 'professor',
+        queryType: 'update',
+        filter: { id: Number(id) },
+        data
+      })
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-
-    const professor = await query({ ...params })
-
-    return NextResponse.json(professor, { status: 200 })
   } catch (error) {
-    console.error('Error updating professor partially:', error)
-    return NextResponse.json({ error: 'Error updating professor partially' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
 export const DELETE = async (request, { params }) => {
-  const { id } = params
-
   try {
-
-    const params = {
-      entity: 'professor',
-      queryType: 'delete',
-      includes: ['clubs'],
-      filter: { id: Number(id) },
+    const { id } = params
+    const userId = authenticateToken(request)
+    const { permissions } = await query({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { id: Number(userId) },
+      includes: ['permissions']
+    })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Professor, action: 'delete' })
+    if(hasPermission){
+      const response = await query({
+        entity: 'professor',
+        queryType: 'delete',
+        filter: { id: Number(id) },
+      })    
+      return NextResponse.json(response, { status: 200 })
+    } else {
+      return ERROR.FORBIDDEN()
     }
-    
-    const professor = await query({ ...params })
-
-    return NextResponse.json(professor, { status: 200 })
   } catch (error) {
-    console.error('Error deleting professor:', error)
-    return NextResponse.json({ error: 'Error deleting professor' }, { status: 500 })
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }

@@ -6,7 +6,6 @@ import ERROR from '~/error'
 import query from '~/app/api/libs/query'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 
-
 export const POST = async request => {
   try {
     const userId = authenticateToken(request)
