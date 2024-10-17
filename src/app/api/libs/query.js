@@ -60,6 +60,8 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
     ERROR.NOT_FOUND()
   }
   let payload
+  let element
+  let options
   switch(queryType){
     case 'findUnique':
       payload = await db[entity].findUnique({ ...opts })
@@ -80,7 +82,9 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
       return cleanerData({ payload, includes, password })
     
     case 'update':
-      if(isEmptyObject({ payload: await db[entity].findUnique(getOptions({ filter })) })){ 
+      options = getOptions({ filter })
+      element = await db[entity].findUnique(options)
+      if(isEmptyObject({ payload: element })){ 
         ERROR.NOT_FOUND()
       }
       
@@ -88,9 +92,12 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
       return cleanerData({ payload, includes, password })
     
     case 'delete':
-      if(isEmptyObject({ payload: await db[entity].findUnique(getOptions({ filter })) })){ 
+      options = getOptions({ filter })
+      element = await db[entity].findUnique(options)
+      if(isEmptyObject({ payload: element })){ 
         ERROR.NOT_FOUND()
       }
+      
       payload = await db[entity].delete({ ...opts })
       return cleanerData({ payload, includes, password })
     
