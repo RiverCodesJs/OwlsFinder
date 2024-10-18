@@ -72,10 +72,12 @@ describe('API Professor - GET', () => {
         1: { 
           id: 1, 
           name: 'professor 1', 
+          active: 'active'
         }, 
         2: { 
           id: 2, 
           name: 'professor 2', 
+          active: 'active'
         } 
       }
     },
@@ -126,6 +128,7 @@ describe('API Professor - POST', () => {
         paternalSurname: 'paternal surname',
         maternalSurname: 'maternal surname',
         email: 'professor@mail.com',
+        active: 'active'
       }
     },
     {

@@ -77,6 +77,7 @@ describe('API Professor - GET', () => {
       expectedResponse: {
         id: 1, 
         name: 'professor 1', 
+        active: 'active'
       }
     },
     {
@@ -122,6 +123,7 @@ describe('API Professor - PUT', () => {
         paternalSurname: 'paternal surname',
         maternalSurname: 'maternal surname',
         email: 'professor@mail.com',
+        active: 'active'
       },
       request: {
         id: 1,
@@ -140,6 +142,7 @@ describe('API Professor - PUT', () => {
         paternalSurname: 'paternal surname',
         maternalSurname: 'maternal surname',
         email: 'professor@mail.com',
+        active: 'active'
       },
       request: {
         id: 1, 
@@ -216,6 +219,7 @@ describe('API Professor - PATCH', () => {
         paternalSurname: 'paternal surname',
         maternalSurname: 'maternal surname',
         email: 'professor@mail.com',
+        active: 'active'
       },
       request: {
         id: 1, 
@@ -280,6 +284,7 @@ describe('API Professor - Delete', () => {
       expectedResponse: {
         id: 1, 
         name: 'professor 1', 
+        active: 'active'
       }
     },
     {
