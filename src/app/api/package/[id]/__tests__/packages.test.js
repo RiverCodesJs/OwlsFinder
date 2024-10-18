@@ -77,6 +77,7 @@ describe('API Package - GET', () => {
       expectedResponse: {
         id: 1, 
         name: 'package 1', 
+        active: 'active'
       }
     },
     {
@@ -96,13 +97,10 @@ describe('API Package - GET', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, 'findUnique').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
     }
-
-
     const params = { id: '1' }
     const response = await GET(null, { params }) 
     const jsonResponse = await response.json()
@@ -124,9 +122,9 @@ describe('API Package - PUT', () => {
         images: ['image1'],
         videos: ['video1'],
         limit: 30,
-        subjects: [1, 2, 3]
+        subjects: [1, 2, 3],
+        active: 'active'
       },
-
       request: {
         id: 1, 
         name: 'package 1',
@@ -232,12 +230,10 @@ describe('API Package - PUT', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, 'update').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
-
     const params = { id: '1' }
     const mockRequest = {
       json: async () => request, 
@@ -262,9 +258,9 @@ describe('API Package - PATCH', () => {
         images: ['image1'],
         videos: ['video1'],
         limit: 30,
-        subjects: [1, 2, 3]
+        subjects: [1, 2, 3],
+        active: 'active'
       },
-
       request: {
         id: 1, 
         name: 'package 1',
@@ -365,7 +361,6 @@ describe('API Package - PATCH', () => {
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
-
     const params = { id: '1' }
     const mockRequest = {
       json: async () => request, 
@@ -385,6 +380,7 @@ describe('API Package - DELETE', () => {
       expectedResponse: {
         id: 1, 
         name: 'package 1', 
+        active: 'false'
       }
     },
     {
@@ -401,13 +397,21 @@ describe('API Package - DELETE', () => {
   ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.package, 'delete').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.package, 'update').mockRejectedValueOnce(mockImplementation) 
+    } else {
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.package, 'update').mockReturnValueOnce({
+        id: 1,
+        name: 'package 1',
+        created_at: 'created_at',
+        updated_at: 'updated_at',
+        active: 'false'
+      }) 
     }
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     } 
-    
     const params = { id: '1' }
     const response = await DELETE(null, { params }) 
     const jsonResponse = await response.json()

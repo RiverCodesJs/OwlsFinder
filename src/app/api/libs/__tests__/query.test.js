@@ -89,12 +89,14 @@ describe('query libs', () =>{
         1: { 
           id: 1, 
           name: 'package1', 
-          subjects: [1, 2] 
+          subjects: [1, 2], 
+          active: 'active'
         }, 
         2: { 
           id: 2, 
           name: 'package2', 
-          subjects: [1, 2] 
+          subjects: [1, 2],
+          active: 'active' 
         } 
       },
     },
@@ -120,7 +122,8 @@ describe('query libs', () =>{
       result: {
         id: 1, 
         name: 'package1', 
-        subjects: [1, 2] 
+        subjects: [1, 2],
+        active: 'active'
       },
     },
     {
@@ -169,7 +172,8 @@ describe('query libs', () =>{
       result: {
         id: 1, 
         name: 'package1', 
-        subjects: [1, 2] 
+        subjects: [1, 2],
+        active: 'active'
       },
     },
     {
@@ -185,7 +189,8 @@ describe('query libs', () =>{
       result: {
         id: 1, 
         name: 'packageUpdated', 
-        subjects: [1, 2] 
+        subjects: [1, 2],
+        active: 'active'
       }
     },
     {
@@ -212,7 +217,8 @@ describe('query libs', () =>{
       result: {
         id: 1, 
         name: 'package1', 
-        subjects: [1, 2] 
+        subjects: [1, 2],
+        active: 'active'
       }
     },
     {
