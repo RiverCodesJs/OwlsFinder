@@ -12,7 +12,7 @@ vi.mock('~/app/api/libs/db', () => {
           name: 'package 1',
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'  
+          active: true 
         }),
         
         update: ({ data }) => ({
@@ -26,7 +26,7 @@ vi.mock('~/app/api/libs/db', () => {
           subjects: data.subjects,
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         }),
 
         delete: () => ({
@@ -34,7 +34,7 @@ vi.mock('~/app/api/libs/db', () => {
           name: 'package 1',
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active' 
+          active: true
         })
       },
       user:{
@@ -53,7 +53,7 @@ vi.mock('~/app/api/libs/db', () => {
           ],
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         })
       }
     }, 
@@ -77,7 +77,7 @@ describe('API Package - GET', () => {
       expectedResponse: {
         id: 1, 
         name: 'package 1', 
-        active: 'active'
+        active: true
       }
     },
     {
@@ -123,7 +123,7 @@ describe('API Package - PUT', () => {
         videos: ['video1'],
         limit: 30,
         subjects: [1, 2, 3],
-        active: 'active'
+        active: true
       },
       request: {
         id: 1, 
@@ -259,7 +259,7 @@ describe('API Package - PATCH', () => {
         videos: ['video1'],
         limit: 30,
         subjects: [1, 2, 3],
-        active: 'active'
+        active: true
       },
       request: {
         id: 1, 
@@ -380,7 +380,7 @@ describe('API Package - DELETE', () => {
       expectedResponse: {
         id: 1, 
         name: 'package 1', 
-        active: 'false'
+        active: false
       }
     },
     {
@@ -405,7 +405,7 @@ describe('API Package - DELETE', () => {
         name: 'package 1',
         created_at: 'created_at',
         updated_at: 'updated_at',
-        active: 'false'
+        active: false
       }) 
     }
     if(isNotAllowed){

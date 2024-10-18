@@ -12,7 +12,7 @@ vi.mock('~/app/api/libs/db', () => {
             name: 'package1',
             created_at: 'created_at',
             updated_at: 'updated_at',
-            active: 'active'
+            active: true
             
           },
           {
@@ -20,7 +20,7 @@ vi.mock('~/app/api/libs/db', () => {
             name: 'package2',
             created_at: 'created_at',
             updated_at: 'updated_at',
-            active: 'active'
+            active: true
           }
         ]),
         
@@ -35,7 +35,7 @@ vi.mock('~/app/api/libs/db', () => {
           subjects: data.subjects,
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         }),
       },
       user:{
@@ -50,7 +50,7 @@ vi.mock('~/app/api/libs/db', () => {
           ],
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         })
       }
     }, 
@@ -75,12 +75,12 @@ describe('API Package - GET', () => {
         1: { 
           id: 1, 
           name: 'package1', 
-          active: 'active'
+          active: true
         }, 
         2: { 
           id: 2, 
           name: 'package2', 
-          active: 'active'
+          active: true
         } 
       }
     },
@@ -101,12 +101,10 @@ describe('API Package - GET', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, 'findMany').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
     }
-
     const response = await GET()
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
@@ -153,7 +151,7 @@ describe('API Package - POST', () => {
         videos: ['video1'],
         limit: 30,
         subjects: [1, 2, 3],
-        active: 'active'
+        active: true
       }
     },
     {
@@ -231,16 +229,13 @@ describe('API Package - POST', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, 'create').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
-
     const mockRequest = {
       json: async () => request, 
     }
-  
     const response = await POST(mockRequest)
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
