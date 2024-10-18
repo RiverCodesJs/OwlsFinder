@@ -105,8 +105,11 @@ export const DELETE = async (request, { params }) => {
     if(hasPermission){
       const response = await query({
         entity: 'training',
-        queryType: 'delete',
+        queryType: 'update',
         filter: { id: Number(id) },
+        data: {
+          active: false
+        }
       })    
       return NextResponse.json(response, { status: 200 })
     } else {
