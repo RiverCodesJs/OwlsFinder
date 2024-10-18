@@ -143,6 +143,33 @@ describe('API Club - PUT', () => {
       },
     },
     {
+      descr: 'Successful Request',
+      expectedStatus: 200,
+      expectedResponse: { 
+        id: 1,
+        name: 'club 1',
+        groupNumber: 201,
+        description: 'Description about the club',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+        professorId: 1,
+        active: 'active'
+      },
+      request: {
+        id: 1, 
+        name: 'club 1',
+        groupNumber: 201,
+        description: 'Description about the club',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+        professorId: 1
+      },
+    },
+    {
       descr: 'Error Invalid Input',
       expectedStatus: 400,
       expectedResponse: { error: 'Invalid Fields' },
