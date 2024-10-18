@@ -12,7 +12,7 @@ vi.mock('~/app/api/libs/db', () => {
             name: 'professor 1',
             created_at: 'created_at',
             updated_at: 'updated_at',
-            active: 'active'
+            active: true
             
           },
           {
@@ -20,7 +20,7 @@ vi.mock('~/app/api/libs/db', () => {
             name: 'professor 2',
             created_at: 'created_at',
             updated_at: 'updated_at',
-            active: 'active'
+            active: true
           }
         ]),
         
@@ -32,7 +32,7 @@ vi.mock('~/app/api/libs/db', () => {
           email: data.email,
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         }),
       },
       user:{
@@ -47,7 +47,7 @@ vi.mock('~/app/api/libs/db', () => {
           ],
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         })
       }
     }, 
@@ -72,12 +72,12 @@ describe('API Professor - GET', () => {
         1: { 
           id: 1, 
           name: 'professor 1', 
-          active: 'active'
+          active: true
         }, 
         2: { 
           id: 2, 
           name: 'professor 2', 
-          active: 'active'
+          active: true
         } 
       }
     },
@@ -98,12 +98,10 @@ describe('API Professor - GET', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.professor, 'findMany').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
     }
-
     const response = await GET()
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
@@ -128,7 +126,7 @@ describe('API Professor - POST', () => {
         paternalSurname: 'paternal surname',
         maternalSurname: 'maternal surname',
         email: 'professor@mail.com',
-        active: 'active'
+        active: true
       }
     },
     {
@@ -168,16 +166,13 @@ describe('API Professor - POST', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.professor, 'create').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
-
     const mockRequest = {
       json: async () => request, 
     }
-  
     const response = await POST(mockRequest)
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
