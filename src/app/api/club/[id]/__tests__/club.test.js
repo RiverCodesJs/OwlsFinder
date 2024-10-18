@@ -12,9 +12,7 @@ vi.mock('~/app/api/libs/db', () => {
           created_at: 'created_at',
           updated_at: 'updated_at',
           active: 'active'
-          
         }),
-        
         update: ({ data, where }) => ({
           id: where.id, 
           name: data.name,
@@ -24,23 +22,12 @@ vi.mock('~/app/api/libs/db', () => {
           videos: data.videos,
           limit: data.limit,
           schedule: data.schedule,
-          professorId: data.professorId || 2,
+          professorId: data.professorId,
           created_at: 'created_at',
           updated_at: 'updated_at',
           active: 'active'
-        }),
-        delete: ({ where }) => ( { 
-          id: where.id,
-          name: 'club 1',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
-          active: 'active'
-          
-        }),
+        })
       },
-
-    
-
       user:{
         findUnique: ({ where }) => ({
           id: where.id,
@@ -85,6 +72,7 @@ describe('API Club - GET', () => {
       expectedResponse: {
         id: 1, 
         name: 'club 1', 
+        active: 'active'
       }
     },
     {
@@ -133,7 +121,8 @@ describe('API Club - PUT', () => {
         videos: ['video1'],
         schedule: 'schedule',
         limit: 30,
-        professorId: 1
+        professorId: 1,
+        active: 'active'
       },
       request: {
         id: 1, 
@@ -146,37 +135,6 @@ describe('API Club - PUT', () => {
         limit: 30,
         professor:{
           id: 1,
-          name: 'Professor 1',
-          paternalSurname: 'Paternal Surname',
-          maternalSurname: 'Maternal Surname',
-          email: 'email@email.com'
-        }
-      },
-    },
-    {
-      descr: 'Successful Request but new professor',
-      expectedStatus: 200,
-      expectedResponse: { 
-        id: 1,
-        name: 'club 1',
-        groupNumber: 201,
-        description: 'Description about the club',
-        images: ['image1'],
-        videos: ['video1'],
-        schedule: 'schedule',
-        limit: 30,
-        professorId: 2
-      },
-      request: {
-        id: 1, 
-        name: 'club 1',
-        groupNumber: 201,
-        description: 'Description about the club',
-        images: ['image1'],
-        videos: ['video1'],
-        schedule: 'schedule',
-        limit: 30,
-        professor:{
           name: 'Professor 1',
           paternalSurname: 'Paternal Surname',
           maternalSurname: 'Maternal Surname',
@@ -274,7 +232,8 @@ describe('API Club - PATCH', () => {
         videos: ['video1'],
         schedule: 'schedule',
         limit: 30,
-        professorId: 1
+        professorId: 1,
+        active: 'active'
       },
       request: {
         id: 1, 
@@ -363,6 +322,7 @@ describe('API Club - Delete', () => {
       expectedResponse: {
         id: 1, 
         name: 'club 1', 
+        active: 'false'
       }
     },
     {
@@ -380,15 +340,23 @@ describe('API Club - Delete', () => {
   ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'delete').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
+    } else {
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.club, 'update').mockReturnValueOnce({
+        id: 1,
+        name: 'club 1',
+        created_at: 'created_at',
+        updated_at: 'updated_at',
+        active: 'false'
+      }) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
     }
 
-
+    
     const params = { id: '1' }
     const response = await DELETE(null, { params }) 
     const jsonResponse = await response.json()

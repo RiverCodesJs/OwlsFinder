@@ -66,10 +66,8 @@ export const GET = async request => {
         queryType: 'findMany',
       })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
     }
-
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }

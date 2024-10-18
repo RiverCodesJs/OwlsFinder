@@ -76,10 +76,12 @@ describe('API Package - GET', () => {
         1: { 
           id: 1, 
           name: 'club 1', 
+          active: 'active'
         }, 
         2: { 
           id: 2, 
           name: 'club 2', 
+          active: 'active'
         } 
       }
     },
@@ -143,7 +145,8 @@ describe('API Package - POST', () => {
         videos: ['video1'],
         schedule: 'schedule',
         limit: 30,
-        professorId: 1
+        professorId: 1,
+        active: 'active'
       }
     },
     {
@@ -173,7 +176,8 @@ describe('API Package - POST', () => {
         videos: ['video1'],
         schedule: 'schedule',
         limit: 30,
-        professorId: 1
+        professorId: 1,
+        active: 'active'
       }
     },
     {

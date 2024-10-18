@@ -18,7 +18,6 @@ export const GET = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'findUnique' })
-
     if(hasPermission){
       const response = await query({
         entity: 'package',
@@ -26,10 +25,8 @@ export const GET = async (request, { params }) => {
         filter: { id: Number(id) }
       })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
     }
-    
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -47,7 +44,6 @@ export const PUT = async (request, { params }) => {
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'update' })
     const data = await request.json()
-    
     if(hasPermission){
       if (!packageShape().every(key => key in data)) {
         return ERROR.INVALID_FIELDS()
@@ -62,9 +58,8 @@ export const PUT = async (request, { params }) => {
         }
       })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
     }
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -93,9 +88,8 @@ export const PATCH = async (request, { params }) => {
         }
       })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
     }
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -115,8 +109,11 @@ export const DELETE = async (request, { params }) => {
     if(hasPermission){
       const response = await query({
         entity: 'package',
-        queryType: 'delete',
+        queryType: 'update',
         filter: { id: Number(id) },
+        data: {
+          active: false
+        }
       })    
       return NextResponse.json(response, { status: 200 })
     } else {

@@ -16,14 +16,11 @@ export const POST = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'create' })
-    
     if(hasPermission){
       const data = await request.json()
-      
       if (!packageShape().every(key => key in data)) {
         return ERROR.INVALID_FIELDS()
       }
-
       const response = await query({
         entity: 'package',
         queryType: 'create',
@@ -32,13 +29,9 @@ export const POST = async request => {
           subjects: data.subjects.map(({ id }) => id)
         }
       })
-
-
       return NextResponse.json(response, { status: 201 })
-    } else {
-      return ERROR.FORBIDDEN()
-    }
-
+    } 
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -54,17 +47,14 @@ export const GET = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'findMany' })
-
     if(hasPermission){
       const response = await query({
         entity: 'package',
         queryType: 'findMany',
       })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
-    }
-
+    } 
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
     

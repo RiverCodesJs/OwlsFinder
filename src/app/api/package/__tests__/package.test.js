@@ -75,10 +75,12 @@ describe('API Package - GET', () => {
         1: { 
           id: 1, 
           name: 'package1', 
+          active: 'active'
         }, 
         2: { 
           id: 2, 
           name: 'package2', 
+          active: 'active'
         } 
       }
     },
@@ -150,7 +152,8 @@ describe('API Package - POST', () => {
         images: ['image1'],
         videos: ['video1'],
         limit: 30,
-        subjects: [1, 2, 3]
+        subjects: [1, 2, 3],
+        active: 'active'
       }
     },
     {

@@ -25,10 +25,8 @@ export const GET = async (request, { params }) => {
         filter: { id: Number(id) }
       })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
-    }
-
+    } 
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -56,18 +54,13 @@ export const PUT = async (request, { params }) => {
         queryType: 'update',
         filter: { id: Number(id) },
         data: {
-          professorId: professor?.id ?? undefined,
-          ...partialData
-        },
-        relations: data?.professor?.id ? null : [{
-          entity: 'professor',
-          data: professor
-        }]
+          ...partialData,
+          professorId: professor ? professor.id : data.professorId
+        }
       })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
-    }
+    } 
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -86,16 +79,19 @@ export const PATCH = async (request, { params }) => {
     const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'update' })
     if(hasPermission){
       const data = await request.json()
+      const { professor, ...partialData } = data
       const response = await query({
         entity: 'club',
         queryType: 'update',
         filter: { id: Number(id) },
-        data
+        data: {
+          ...partialData,
+          ...(professor ? { professorId: professor.id } : {})
+        }
       })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
     } 
+    return ERROR.FORBIDDEN() 
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -115,15 +111,15 @@ export const DELETE = async (request, { params }) => {
     if(hasPermission){
       const response = await query({
         entity: 'club',
-        queryType: 'delete',
+        queryType: 'update',
         filter: { id: Number(id) },
+        data: {
+          active: false
+        }
       })
-      
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
     }
-
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }

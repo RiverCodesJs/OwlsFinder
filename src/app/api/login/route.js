@@ -21,12 +21,9 @@ export const POST = async request => {
       if(isPasswordValid){
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET)
         return NextResponse.json(token, { status: 200 })
-      } else {
-        return ERROR.INVALID_FIELDS()
-      }  
-    } else{
-      return ERROR.INVALID_FIELDS()
+      }
     }
+    return ERROR.INVALID_FIELDS()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
