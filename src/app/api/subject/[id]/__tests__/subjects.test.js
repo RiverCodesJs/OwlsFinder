@@ -12,19 +12,25 @@ vi.mock('~/app/api/libs/db', () => {
           description: 'description 1',
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         }),
 
         update: ({ where, data }) => ({
           id: where.id,
           name: data.name || 'subject updated',
-          description: data.description || 'description updated'
+          description: data.description || 'description updated',
+          created_at: 'created_at',
+          updated_at: 'updated_at',
+          active: true
         }),
 
         delete: ({ where }) => ({
           id: where.id,
           name: 'subject 1',
-          description: 'description 1'
+          description: 'description 1',
+          created_at: 'created_at',
+          updated_at: 'updated_at',
+          active: true
         })
       },
       user:{
@@ -43,7 +49,7 @@ vi.mock('~/app/api/libs/db', () => {
           ],
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         })
       }
     } 
@@ -66,7 +72,8 @@ describe('API subjects - GET', () => {
       expectedResponse: {
         id: 1, 
         name: 'subject 1',
-        description: 'description 1'
+        description: 'description 1',
+        active: true
       }, 
     },
     {
@@ -86,13 +93,10 @@ describe('API subjects - GET', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.subject, 'findUnique').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
     }
-
-
     const params = { id: '1' }
     const response = await GET(null, { params }) 
     const jsonResponse = await response.json()
@@ -113,7 +117,8 @@ describe('API subjects - PUT', () => {
       expectedResponse: {
         id: 1,
         name: 'subject 1',
-        description: 'description 1'
+        description: 'description 1',
+        active: true
       }
     },
     {
@@ -149,12 +154,10 @@ describe('API subjects - PUT', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.subject, 'update').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
-
     const params = { id: '1' }
     const mockRequest = {
       json: async () => request, 
@@ -177,7 +180,8 @@ describe('API subjects - PATCH', () => {
       expectedResponse: {
         id: 1,
         name: 'subject 1',
-        description: 'description updated'
+        description: 'description updated',
+        active: true
       }
     },
     {
@@ -208,7 +212,6 @@ describe('API subjects - PATCH', () => {
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
-
     const params = { id: '1' }
     const mockRequest = {
       json: async () => request, 
@@ -228,7 +231,7 @@ describe('API subjects - DELETE', () => {
       expectedResponse: {
         id: 1,
         name: 'subject 1',
-        description: 'description 1'
+        active: false
       }
     },
     {
@@ -239,10 +242,6 @@ describe('API subjects - DELETE', () => {
     },
     {
       descr: 'Error fetching subjects',
-      request: {
-        name: 'subject 1',
-        description: 'description 1'
-      },
       mockImplementation:  new Error('Error fetching subjects'),
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching subjects' }
@@ -250,13 +249,21 @@ describe('API subjects - DELETE', () => {
   ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.subject, 'delete').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.subject, 'update').mockRejectedValueOnce(mockImplementation) 
+    } else {
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.subject, 'update').mockReturnValueOnce({
+        id: 1,
+        name: 'subject 1',
+        created_at: 'created_at',
+        updated_at: 'updated_at',
+        active: false
+      }) 
     }
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     } 
-    
     const params = { id: '1' }
     const response = await DELETE(null, { params }) 
     const jsonResponse = await response.json()

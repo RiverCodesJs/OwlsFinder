@@ -13,7 +13,7 @@ vi.mock('~/app/api/libs/db', () => {
             description: 'description 1',
             created_at: 'created_at',
             updated_at: 'updated_at',
-            active: 'active'
+            active: true
             
           },
           {
@@ -22,14 +22,17 @@ vi.mock('~/app/api/libs/db', () => {
             description: 'description 2',
             created_at: 'created_at',
             updated_at: 'updated_at',
-            active: 'active'
+            active: true
           }
         ]),
 
         create: ({ data }) => ({
           id: 1,
           name: data.name,
-          description: data.description
+          description: data.description,
+          created_at: 'created_at',
+          updated_at: 'updated_at',
+          active: true
         })
       },
       user:{
@@ -44,7 +47,7 @@ vi.mock('~/app/api/libs/db', () => {
           ],
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         })
       }
     } 
@@ -68,12 +71,14 @@ describe('API subjects - GET', () => {
         1: { 
           id: 1, 
           name: 'subject 1',
-          description: 'description 1'
+          description: 'description 1',
+          active: true
         }, 
         2: { 
           id: 2, 
           name: 'subject 2',
           description: 'description 2',
+          active: true
         } 
       }
     },
@@ -119,7 +124,8 @@ describe('API subjects - POST', () => {
       expectedResponse: {
         id: 1,
         name: 'subject 1',
-        description: 'description 1'
+        description: 'description 1',
+        active: true
       }
     },
     {
@@ -155,16 +161,13 @@ describe('API subjects - POST', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.subject, 'create').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
-
     const mockRequest = {
       json: async () => request, 
     }
-  
     const response = await POST(mockRequest)
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
