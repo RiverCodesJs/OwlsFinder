@@ -6,8 +6,9 @@ class CustomError extends Error {
 }
 
 const ERROR = {
-  FORBIDDEN: () => {throw new CustomError({ message: 'Not Allowed', status: 403 })},
   INVALID_FIELDS: () => {throw new CustomError({ message: 'Invalid Fields', status: 400 })},
+  BAD_EMAIL: () => { throw new CustomError({ message: 'Email Sending Failed', status: 400 })},
+  FORBIDDEN: () => {throw new CustomError({ message: 'Not Allowed', status: 403 })},
   NOT_FOUND: () => {throw new CustomError({ message: 'Not Found', status: 404 })}
 }
 
