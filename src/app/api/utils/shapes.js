@@ -1,71 +1,3 @@
-export const clubShape = () => [
-  'name',
-  'groupNumber',
-  'description',
-  'images',
-  'videos',
-  'limit',
-  'shift',
-  'schedule',
-]
-
-export const loginShape = () => [
-  'email',
-  'password',
-]
-
-export const packageShape = () => [
-  'name',
-  'groupNumber',
-  'description',
-  'images',
-  'videos',
-  'limit',
-  'subjects',
-]
-
-export const permissionShape = () => [
-  'name',
-]
-
-export const professorShape = () => [
-  'name',
-  'paternalSurname',
-  'maternalSurname',
-  'email',
-]
-
-export const subjectShape = () => [
-  'name',
-  'description',
-]
-
-export const trainingShape = () => [
-  'name',
-  'groupNumber',
-  'description',
-  'images',
-  'videos',
-  'shift',
-  'limit',
-  'professor',
-]
-
-export const userShape = () => [
-  'names',
-  'paternalSurname',
-  'maternalSurname',
-  'email',
-  'password',
-  'enrollmentId',
-  'groups',
-  'currentGroup',
-  'nextGroup',
-  'type',
-  'shift',
-  'permissions',
-]
-
 export const meShape = () => [
   'names',
   'paternalSurname',
@@ -107,4 +39,72 @@ export const studentShape = () => [
   'type',
   'shift',
   'permissions',
+]
+
+export const clubShape = () => [
+  'description',
+  'groupNumber',
+  'images',
+  'limit',
+  'name',
+  'schedule',
+  'videos',
+]
+
+export const loginShape = () => [
+  'email',
+  'password',
+]
+
+export const packageShape = () => [
+  'description',
+  'groupNumber',
+  'images',
+  'limit',
+  'name',
+  'subjects',
+  'videos',
+]
+
+export const permissionShape = () => [
+  'name',
+]
+
+export const professorShape = () => [
+  'email',
+  'maternalSurname',
+  'name',
+  'paternalSurname',
+]
+
+export const subjectShape = () => [
+  'description',
+  'name',
+]
+
+export const trainingShape = () => [
+  'description',
+  'groupNumber',
+  'images',
+  'limit',
+  'name',
+  'professor',
+  'shift',
+  'videos',
+]
+
+export const userShape = () => [
+  'clubId',
+  'currentGroup',
+  'email',
+  'enrollmentId',
+  'groups',
+  'maternalSurname',
+  'names',
+  'nextGroup',
+  'password',
+  'paternalSurname',
+  'permissions',
+  'shift',
+  'type',
 ]
