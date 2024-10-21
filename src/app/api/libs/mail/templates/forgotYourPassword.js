@@ -35,8 +35,8 @@ const forgotYourPassword = ({ token }) => ({
           .btn {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #4F0010;
-            color: #FCFCFC;
+            background-color: #E0E0E0;
+            color: #000000f1;
             text-decoration: none;
             border-radius: 5px;
             font-size: 16px;
