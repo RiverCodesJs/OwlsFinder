@@ -97,14 +97,10 @@ export const studentShape = [
   'names',
   'paternalSurname',
   'maternalSurname',
-  'email',
-  'enrollmentId',
-  'groups',
   'currentGroup',
-  'nextGroup',
-  'clubId',
+  'grade',
+  'enrollmentId',
+  'email',
   'type',
   'shift',
-  'permissions',
 ]
-
