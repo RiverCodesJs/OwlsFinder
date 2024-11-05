@@ -6,7 +6,6 @@ import ERROR from '~/error'
 import query from '~/app/api/libs/query'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 
-
 export const GET = async (request, { params }) => {
   try {
     const { id } = params
