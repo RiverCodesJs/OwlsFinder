@@ -18,18 +18,15 @@ export const POST = async request => {
     const hasPermission = getPermissionsByEntity({ permissions, entity: Professor, action: 'create' })
     if(hasPermission){
       const data = await request.json()
-      if (!professorShape().every(key => key in data)) {
-        return ERROR.INVALID_FIELDS()
-      }
+      if (!professorShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
       const response = await query({
         entity: 'professor',
         queryType: 'create',
         data,
       })
       return NextResponse.json(response, { status: 201 })
-    } else {
-      return ERROR.FORBIDDEN()
     }
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -45,17 +42,14 @@ export const GET = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Professor, action: 'findMany' })
-
     if(hasPermission){
       const response = await query({
         entity: 'professor',
         queryType: 'findMany',
       })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
-    }
-
+    } 
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
