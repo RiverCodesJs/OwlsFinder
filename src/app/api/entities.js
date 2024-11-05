@@ -51,15 +51,6 @@ export const Permission = {
 export const Professor = {
   name: 'professor',
   permissions: {
-    update: true,
-    delete: true
-  }
-}
-export const Students = {
-  name: 'students',
-  permissions: {
-    findUnique: true,
-    findMany :true,
     create: true,
     update: true,
     delete: true
