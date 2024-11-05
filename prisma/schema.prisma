@@ -13,12 +13,12 @@ datasource db {
 
 model User {
   id               Int                  @id @default(autoincrement())
-  names            String
-  paternalSurname  String
-  maternalSurname  String
+  names            String?
+  paternalSurname  String?
+  maternalSurname  String?
   email            String               @unique
   password         String?
-  enrollmentId     String?                 @unique
+  enrollmentId     String?              @unique
   grade            String?
   groups           String[]
   currentGroup     String?
@@ -103,6 +103,6 @@ model Club {
 
 model Permission {
   id                Int              @id @default(autoincrement())
-  name              String
+  name              String           @unique  
   users             User[]
 }
