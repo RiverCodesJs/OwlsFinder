@@ -31,9 +31,8 @@ export const POST = async request => {
         data: processedData,
       })
       return NextResponse.json(response, { status: 201 })
-    } else {
-      return ERROR.FORBIDDEN()
-    }
+    } 
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
