@@ -66,7 +66,7 @@ const createStudents = async data => {
 }
 
 //@queryType one of [findUnique, findMany, delete, update, create, createMany]
-const query = async ({ entity, filter, includes, queryType, data, relations, password = false }) => {
+const query = async ({ entity, filter, includes, queryType, data, relations, password = false, error = true }) => {
   const opts = queryType !== 'createMany' ? getOptions({ filter, includes, data, relations }) : { data }
   if (opts?.where?.id !== undefined && isNaN(opts.where.id)) {
     return ERROR.NOT_FOUND()
@@ -77,14 +77,14 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
   switch(queryType){
     case 'findUnique':
       payload = await db[entity].findUnique({ ...opts })
-      if(isEmptyObject({ payload })){
+      if(isEmptyObject({ payload }) && error){
         return ERROR.NOT_FOUND()
       }
       return cleanerData({ payload, includes, password })
 
     case 'findMany':
       payload = await db[entity].findMany({ ...opts })
-      if(isEmptyObject({ payload })){
+      if(isEmptyObject({ payload }) && error){
         return ERROR.NOT_FOUND()
       }
       return payloadFormatter(payload.map(p => cleanerData({ payload: p, includes, password })))

@@ -13,7 +13,7 @@ export const POST = async request => {
       filter: { email: email },
       includes: ['permissions']
     })    
-    const token = jwt.sign({ userId: user.id, email: user.email, newPassword: true }, process.env.JWT_SECRET)
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET)
     await emailSender({ reciver: email, template: forgotYourPassword({ token }) })
     return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 })
   } catch (error) {

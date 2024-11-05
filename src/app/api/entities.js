@@ -75,3 +75,14 @@ export const Students = {
     delete: true
   }
 }
+
+export const Counselor = {
+  name: 'counselor',
+  permissions: {
+    findUnique: true,
+    findMany :true,
+    create: true,
+    update: true,
+    delete: true
+  }
+}
