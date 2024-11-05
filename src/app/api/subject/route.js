@@ -18,9 +18,7 @@ export const POST = async request => {
     const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'create' })
     if(hasPermission){
       const data = await request.json()
-      if (!subjectShape().every(key => key in data)) {
-        return ERROR.INVALID_FIELDS()
-      }
+      if (!subjectShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
       const response = await query({
         entity: 'subject',
         queryType: 'create',
