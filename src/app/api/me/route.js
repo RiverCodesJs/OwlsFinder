@@ -5,6 +5,7 @@ import { Me } from '~/app/api/entities'
 import ERROR from '~/error'
 import query from '~/app/api/libs/query'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+import bcrypt from 'bcrypt'
 
 export const GET = async request => {
   try {
@@ -35,16 +36,18 @@ export const PUT = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'update' })
-    const data = await request.json()
+    const { password, ...data } = await request.json()
     if(hasPermission){
-      if (!meShape().every(key => key in data)) {
-        return ERROR.INVALID_FIELDS()
-      }
+      if (!meShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
       const response = await query({
         entity: 'user',
         queryType: 'update',
         filter: { id: Number(userId) },
-        data
+        includes: ['permissions'],
+        data: {
+          ...data,
+          ...(password ? { password: await bcrypt.hash(password, 10) } : {})
+        }
       })
       return NextResponse.json(response, { status: 200 })
     }
@@ -65,12 +68,16 @@ export const PATCH = async request => {
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'update' })
     if(hasPermission){
-      const data = await request.json()
+      const { password, ...data } = await request.json()
       const response = await query({
         entity: 'user',
         queryType: 'update',
         filter: { id: Number(userId) },
-        data
+        includes: ['permissions'],
+        data: {
+          ...data,
+          ...(password ? { password: await bcrypt.hash(password, 10) } : {})
+        }
       })
       return NextResponse.json(response, { status: 200 })
     }

@@ -34,6 +34,16 @@ vi.mock('~/app/api/libs/db', () => {
           currentGroup: data.currentGroup || 'currentGroup',
           nextGroup: data.nextGroup || 'nextGroup',
           shift: data.shift || 'shift',
+          permissions: [
+            {
+              id: 1,
+              name: 'permission 1',
+            },
+            {
+              id: 2,
+              name: 'permissions 2',
+            },
+          ],
           created_at: 'created_at',
           updated_at: 'updated_at',
           active: data.active || true
@@ -108,6 +118,7 @@ describe('API Me - PUT', () => {
         currentGroup: 'new currentGroup',
         nextGroup: 'new nextGroup',
         shift: 'new shift',
+        permissions: ['permission 1','permissions 2'],
         active: true
       },
       request: {
@@ -121,6 +132,7 @@ describe('API Me - PUT', () => {
         currentGroup: 'new currentGroup',
         nextGroup: 'new nextGroup',
         shift: 'new shift',
+        password:'password',        
       },
     },
     {
@@ -133,7 +145,7 @@ describe('API Me - PUT', () => {
       }
     },
     {
-      descr: 'Error updatin me',
+      descr: 'Error updating me',
       mockImplementation:  new Error('Error updatin me'),
       expectedStatus: 500,
       expectedResponse: { error: 'Error updatin me' },
@@ -203,11 +215,13 @@ describe('API Me - PATCH', () => {
         currentGroup: 'currentGroup',
         nextGroup: 'nextGroup',
         shift: 'shift',
+        permissions: ['permission 1','permissions 2'],
         active: true
       },
       request: {
         id: 1,
         names: 'new name',
+        password:'password'
       },
     },
     {
