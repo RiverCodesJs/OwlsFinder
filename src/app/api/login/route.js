@@ -9,7 +9,6 @@ import { loginShape } from '~/app/api/utils/shapes'
 export const POST = async request => {
   try {
     const data = await request.json()
-
     if (loginShape().every(key => key in data)) {
       const user = await query({
         entity: 'user',

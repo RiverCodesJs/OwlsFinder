@@ -18,9 +18,7 @@ export const POST = async request => {
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'create' })
     if(hasPermission){
       const data = await request.json()
-      if (!packageShape().every(key => key in data)) {
-        return ERROR.INVALID_FIELDS()
-      }
+      if (!packageShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
       const response = await query({
         entity: 'package',
         queryType: 'create',

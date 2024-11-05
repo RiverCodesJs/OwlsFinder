@@ -17,16 +17,10 @@ export const POST = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'create' })
-    
     if(hasPermission){
       const data = await request.json()
-      
-      if (!clubShape().every(key => key in data)) {
-        return ERROR.INVALID_FIELDS()
-      }
-
+      if (!clubShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
       const { professor, ...partialData } = data
-
       const response = await query({
         entity: 'club',
         queryType: 'create',
@@ -38,12 +32,9 @@ export const POST = async request => {
           data: professor
         }]
       })
-
       return NextResponse.json(response, { status: 201 })
-    } else {
-      return ERROR.FORBIDDEN()
-    }
-
+    } 
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -59,7 +50,6 @@ export const GET = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'findMany' })
-
     if(hasPermission){
       const response = await query({
         entity: 'club',

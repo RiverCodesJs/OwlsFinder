@@ -45,9 +45,7 @@ export const PUT = async (request, { params }) => {
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'update' })
     const data = await request.json()
     if(hasPermission){
-      if (!packageShape().every(key => key in data)) {
-        return ERROR.INVALID_FIELDS()
-      }
+      if (!packageShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
       const response = await query({
         entity: 'package',
         queryType: 'update',
