@@ -16,7 +16,6 @@ export const POST = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'create' })
-    
     if(hasPermission){
       const data = await request.json()
       if (!permissionShape().every(key => key in data)) {
@@ -28,9 +27,8 @@ export const POST = async request => {
         data
       })
       return NextResponse.json(response, { status: 201 })
-    } else {
-      return ERROR.FORBIDDEN()
-    }
+    } 
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -46,16 +44,14 @@ export const GET = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'findMany' })
-
     if(hasPermission){
       const response = await query({
         entity: 'permission',
         queryType: 'findMany',
       })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
-    }
+    } 
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
