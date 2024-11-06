@@ -8,7 +8,7 @@ import ERROR from '~/error'
 export const POST = async request => {
   try {
     const { email } = await request.json()
-    if(!email) return ERROR.INVALID_FIELDS();
+    if(!email) return ERROR.INVALID_FIELDS()
     const user = await query({
       entity: 'user',
       queryType: 'findUnique',

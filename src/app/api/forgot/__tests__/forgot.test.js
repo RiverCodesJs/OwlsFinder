@@ -62,7 +62,7 @@ describe('API Login - POST', () => {
     },
     {
       descr: 'Incomplete data',
-      request: {  },
+      request: {},
       expectedStatus: 400,
       expectedResponse: { error: 'Invalid Fields' }
     },
