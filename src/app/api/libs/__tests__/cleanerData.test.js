@@ -22,6 +22,7 @@ describe('cleanerData libs', () => {
       includes: undefined,
       result: {
         entity: 'Entity',
+        active: 'active'
       }
     },
     {
@@ -42,7 +43,8 @@ describe('cleanerData libs', () => {
       includes: ['subject'],
       result: {
         entity: 'Entity',
-        subject: [1, 2]
+        subject: [1, 2],
+        active: 'active'
       }
     },
     {
@@ -70,7 +72,8 @@ describe('cleanerData libs', () => {
       result: {
         entity: 'Entity',
         subject: [1, 2],
-        permissions: ['DELETE_CLUBS', 'EDIT_CLUBS']
+        permissions: ['DELETE_CLUBS', 'EDIT_CLUBS'],
+        active: 'active'
       }
     },
     {
@@ -101,6 +104,7 @@ describe('cleanerData libs', () => {
         password: 'password',
         subject: [1, 2],
         permissions: ['DELETE_CLUBS', 'EDIT_CLUBS'],
+        active: 'active'
       }
     }
   ])('$descr', ({ payload, includes, result, password }) =>{

@@ -56,7 +56,12 @@ const isEmptyObject = ({ payload }) => {
 const query = async ({ entity, filter, includes, queryType, data, relations, password = false }) => {
 
   const opts = getOptions({ filter, includes, data, relations })
+  if (opts?.where?.id !== undefined && isNaN(opts.where.id)) {
+    ERROR.NOT_FOUND()
+  }
   let payload
+  let element
+  let options
   switch(queryType){
     case 'findUnique':
       payload = await db[entity].findUnique({ ...opts })
@@ -77,10 +82,22 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
       return cleanerData({ payload, includes, password })
     
     case 'update':
+      options = getOptions({ filter })
+      element = await db[entity].findUnique(options)
+      if(isEmptyObject({ payload: element })){ 
+        ERROR.NOT_FOUND()
+      }
+      
       payload = await db[entity].update({ ...opts })
       return cleanerData({ payload, includes, password })
     
     case 'delete':
+      options = getOptions({ filter })
+      element = await db[entity].findUnique(options)
+      if(isEmptyObject({ payload: element })){ 
+        ERROR.NOT_FOUND()
+      }
+      
       payload = await db[entity].delete({ ...opts })
       return cleanerData({ payload, includes, password })
     

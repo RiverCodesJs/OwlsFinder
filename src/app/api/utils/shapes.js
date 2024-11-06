@@ -4,9 +4,7 @@ export const clubShape = () => [
   'images',
   'limit',
   'name',
-  'professorId',
   'schedule',
-  'shift',
   'videos',
 ]
 

@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server'
-import { packageShape } from '~/app/api/utils/shapes'
+import { clubShape } from '~/app/api/utils/shapes'
 import { authenticateToken } from '~/app/api/libs/auth'
-import { Package } from '~/app/api/entities'
+import { Club } from '~/app/api/entities'
 import ERROR from '~/error'
 import query from '~/app/api/libs/query'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 
-
 export const GET = async (request, { params }) => {
-  try {
+  try{
     const { id } = params
     const userId = authenticateToken(request)
     const { permissions } = await query({
@@ -17,15 +16,16 @@ export const GET = async (request, { params }) => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'findUnique' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'findUnique' })
+
     if(hasPermission){
       const response = await query({
-        entity: 'package',
+        entity: 'club',
         queryType: 'findUnique',
         filter: { id: Number(id) }
       })
       return NextResponse.json(response, { status: 200 })
-    }
+    } 
     return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
@@ -42,21 +42,24 @@ export const PUT = async (request, { params }) => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'update' })
-    const data = await request.json()
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'update' })
     if(hasPermission){
-      if (!packageShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
+      const data = await request.json()
+      if (!clubShape().every(key => key in data)) {
+        return ERROR.INVALID_FIELDS()
+      }
+      const { professor, ...partialData } = data
       const response = await query({
-        entity: 'package',
+        entity: 'club',
         queryType: 'update',
         filter: { id: Number(id) },
         data: {
-          ...data,
-          subjects: data.subjects.map(({ id }) => id)
+          ...partialData,
+          professorId: professor ? professor.id : data.professorId
         }
       })
       return NextResponse.json(response, { status: 200 })
-    }
+    } 
     return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
@@ -73,21 +76,22 @@ export const PATCH = async (request, { params }) => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'update' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'update' })
     if(hasPermission){
       const data = await request.json()
+      const { professor, ...partialData } = data
       const response = await query({
-        entity: 'package',
+        entity: 'club',
         queryType: 'update',
         filter: { id: Number(id) },
         data: {
-          ...data,
-          subjects: data.subjects?.map(({ id }) => id)
+          ...partialData,
+          ...(professor ? { professorId: professor.id } : {})
         }
       })
       return NextResponse.json(response, { status: 200 })
-    }
-    return ERROR.FORBIDDEN()
+    } 
+    return ERROR.FORBIDDEN() 
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -103,20 +107,19 @@ export const DELETE = async (request, { params }) => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'delete' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'delete' })
     if(hasPermission){
       const response = await query({
-        entity: 'package',
+        entity: 'club',
         queryType: 'update',
         filter: { id: Number(id) },
         data: {
           active: false
         }
-      })    
+      })
       return NextResponse.json(response, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
     }
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }

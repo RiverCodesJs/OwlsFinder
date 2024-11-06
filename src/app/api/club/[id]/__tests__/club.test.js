@@ -1,40 +1,31 @@
 /* eslint-disable babel/new-cap */
 import { describe, it, expect, vi } from 'vitest'
-import { GET, PUT, PATCH, DELETE } from '~/app/api/package/[id]/route'
+import { GET, PUT, PATCH, DELETE } from '~/app/api/club/[id]/route'
 
-//Mock of db
 vi.mock('~/app/api/libs/db', () => {
   return {
     default: {
-      package: {
-        findUnique: ({ where }) => ({ 
+      club: {
+        findUnique: ({ where }) => ( { 
           id: where.id,
-          name: 'package 1',
+          name: 'club 1',
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: true 
+          active: 'active'
         }),
-        
-        update: ({ data }) => ({
-          id: 1, 
+        update: ({ data, where }) => ({
+          id: where.id, 
           name: data.name,
           groupNumber: data.groupNumber,
           description: data.description,
           images: data.images,
           videos: data.videos,
           limit: data.limit,
-          subjects: data.subjects,
+          schedule: data.schedule,
+          professorId: data.professorId,
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: true
-        }),
-
-        delete: () => ({
-          id: 1,
-          name: 'package 1',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
-          active: true
+          active: 'active'
         })
       },
       user:{
@@ -44,16 +35,20 @@ vi.mock('~/app/api/libs/db', () => {
           permissions: [
             {
               id: 1,
-              name: 'update_package'
+              name: 'create_club'
             },
             {
               id: 2,
-              name: 'delete_package'
+              name: 'update_club'
+            },
+            {
+              id: 3,
+              name: 'delete_club'
             }
           ],
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: true
+          active: 'active'
         })
       }
     }, 
@@ -69,15 +64,15 @@ vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
   return { default: () => (true) }
 })
 
-describe('API Package - GET', () => {
+describe('API Club - GET', () => {
   it.each([
     {
       descr: 'Successful response',
       expectedStatus: 200,
       expectedResponse: {
         id: 1, 
-        name: 'package 1', 
-        active: true
+        name: 'club 1', 
+        active: 'active'
       }
     },
     {
@@ -87,20 +82,23 @@ describe('API Package - GET', () => {
       expectedResponse: { error: 'Not Allowed' }
     },
     {
-      descr: 'Error fetching packages',
-      mockImplementation:  new Error('Error fetching packages'),
+      descr: 'Error fetching club',
+      mockImplementation:  new Error('Error fetching club'),
       expectedStatus: 500,
-      expectedResponse: { error: 'Error fetching packages' }
+      expectedResponse: { error: 'Error fetching club' }
     }
   ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.package, 'findUnique').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'findUnique').mockRejectedValueOnce(mockImplementation) 
     }
+
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
     }
+
+
     const params = { id: '1' }
     const response = await GET(null, { params }) 
     const jsonResponse = await response.json()
@@ -109,48 +107,67 @@ describe('API Package - GET', () => {
   })
 })
 
-describe('API Package - PUT', () => {
+describe('API Club - PUT', () => {
   it.each([
     {
       descr: 'Successful Request',
       expectedStatus: 200,
       expectedResponse: { 
-        id: 1, 
-        name: 'package 1',
+        id: 1,
+        name: 'club 1',
         groupNumber: 201,
-        description: 'Description about the package',
+        description: 'Description about the club',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [1, 2, 3],
-        active: true
+        professorId: 1,
+        active: 'active'
       },
       request: {
         id: 1, 
-        name: 'package 1',
+        name: 'club 1',
         groupNumber: 201,
-        description: 'Description about the package',
+        description: 'Description about the club',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [
-          {
-            id: 1,
-            name: 'Subject 1',
-            description: 'Description of the subject 1'
-          },
-          {
-            id: 2,
-            name: 'Subject 2',
-            description: 'Description of the subject 2'
-          },
-          {
-            id: 3,
-            name: 'Subject 3',
-            description: 'Description of the subject 3'
-          }
-        ]
-      }
+        professor:{
+          id: 1,
+          name: 'Professor 1',
+          paternalSurname: 'Paternal Surname',
+          maternalSurname: 'Maternal Surname',
+          email: 'email@email.com'
+        }
+      },
+    },
+    {
+      descr: 'Successful Request',
+      expectedStatus: 200,
+      expectedResponse: { 
+        id: 1,
+        name: 'club 1',
+        groupNumber: 201,
+        description: 'Description about the club',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+        professorId: 1,
+        active: 'active'
+      },
+      request: {
+        id: 1, 
+        name: 'club 1',
+        groupNumber: 201,
+        description: 'Description about the club',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+        professorId: 1
+      },
     },
     {
       descr: 'Error Invalid Input',
@@ -168,30 +185,21 @@ describe('API Package - PUT', () => {
       expectedResponse: { error: 'Error fetching packages' },
       request: {
         id: 1, 
-        name: 'package 1',
+        name: 'club 1',
         groupNumber: 201,
-        description: 'Description about the package',
+        description: 'Description about the club',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [
-          {
-            id: 1,
-            name: 'Subject 1',
-            description: 'Description of the subject 1'
-          },
-          {
-            id: 2,
-            name: 'Subject 2',
-            description: 'Description of the subject 2'
-          },
-          {
-            id: 3,
-            name: 'Subject 3',
-            description: 'Description of the subject 3'
-          }
-        ]
-      }
+        professor:{
+          id: 1,
+          name: 'Professor 1',
+          paternalSurname: 'Paternal Surname',
+          maternalSurname: 'Maternal Surname',
+          email: 'email@email.com'
+        }
+      },
     },
     {
       descr: 'Error has not permission',
@@ -200,40 +208,32 @@ describe('API Package - PUT', () => {
       expectedResponse: { error: 'Not Allowed' },
       request: {
         id: 1, 
-        name: 'package 1',
+        name: 'club 1',
         groupNumber: 201,
-        description: 'Description about the package',
+        description: 'Description about the club',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [
-          {
-            id: 1,
-            name: 'Subject 1',
-            description: 'Description of the subject 1'
-          },
-          {
-            id: 2,
-            name: 'Subject 2',
-            description: 'Description of the subject 2'
-          },
-          {
-            id: 3,
-            name: 'Subject 3',
-            description: 'Description of the subject 3'
-          }
-        ]
-      }
+        professor:{
+          id: 1,
+          name: 'Professor 1',
+          paternalSurname: 'Paternal Surname',
+          maternalSurname: 'Maternal Surname',
+          email: 'email@email.com'
+        }
+      },
     }
   ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.package, 'update').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
+
     const params = { id: '1' }
     const mockRequest = {
       json: async () => request, 
@@ -245,48 +245,34 @@ describe('API Package - PUT', () => {
   })
 })
 
-describe('API Package - PATCH', () => {
+describe('API Club - PATCH', () => {
   it.each([
     {
-      descr: 'Successful Request',
+      descr: 'Successful Request with no data professor',
       expectedStatus: 200,
       expectedResponse: { 
-        id: 1, 
-        name: 'package 1',
+        id: 1,
+        name: 'club 1',
         groupNumber: 201,
-        description: 'Description about the package',
+        description: 'Description about the club',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [1, 2, 3],
-        active: true
+        professorId: 1,
+        active: 'active'
       },
       request: {
         id: 1, 
-        name: 'package 1',
+        name: 'club 1',
         groupNumber: 201,
-        description: 'Description about the package',
+        description: 'Description about the club',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [
-          {
-            id: 1,
-            name: 'Subject 1',
-            description: 'Description of the subject 1'
-          },
-          {
-            id: 2,
-            name: 'Subject 2',
-            description: 'Description of the subject 2'
-          },
-          {
-            id: 3,
-            name: 'Subject 3',
-            description: 'Description of the subject 3'
-          }
-        ]
-      }
+        professorId: 1
+      },
     },
     {
       descr: 'Error fetching packages',
@@ -295,30 +281,21 @@ describe('API Package - PATCH', () => {
       expectedResponse: { error: 'Error fetching packages' },
       request: {
         id: 1, 
-        name: 'package 1',
+        name: 'club 1',
         groupNumber: 201,
-        description: 'Description about the package',
+        description: 'Description about the club',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [
-          {
-            id: 1,
-            name: 'Subject 1',
-            description: 'Description of the subject 1'
-          },
-          {
-            id: 2,
-            name: 'Subject 2',
-            description: 'Description of the subject 2'
-          },
-          {
-            id: 3,
-            name: 'Subject 3',
-            description: 'Description of the subject 3'
-          }
-        ]
-      }
+        professor:{
+          id: 1,
+          name: 'Professor 1',
+          paternalSurname: 'Paternal Surname',
+          maternalSurname: 'Maternal Surname',
+          email: 'email@email.com'
+        }
+      },
     },
     {
       descr: 'Error has not permission',
@@ -327,40 +304,32 @@ describe('API Package - PATCH', () => {
       expectedResponse: { error: 'Not Allowed' },
       request: {
         id: 1, 
-        name: 'package 1',
+        name: 'club 1',
         groupNumber: 201,
-        description: 'Description about the package',
+        description: 'Description about the club',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [
-          {
-            id: 1,
-            name: 'Subject 1',
-            description: 'Description of the subject 1'
-          },
-          {
-            id: 2,
-            name: 'Subject 2',
-            description: 'Description of the subject 2'
-          },
-          {
-            id: 3,
-            name: 'Subject 3',
-            description: 'Description of the subject 3'
-          }
-        ]
-      }
+        professor:{
+          id: 1,
+          name: 'Professor 1',
+          paternalSurname: 'Paternal Surname',
+          maternalSurname: 'Maternal Surname',
+          email: 'email@email.com'
+        }
+      },
     }
   ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.package, 'update').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
+
     const params = { id: '1' }
     const mockRequest = {
       json: async () => request, 
@@ -372,46 +341,49 @@ describe('API Package - PATCH', () => {
   })
 })
 
-describe('API Package - DELETE', () => {
+describe('API Club - Delete', () => {
   it.each([
     {
       descr: 'Successful response',
       expectedStatus: 200,
       expectedResponse: {
         id: 1, 
-        name: 'package 1', 
-        active: false
+        name: 'club 1', 
+        active: 'false'
       }
     },
     {
-      descr: 'Error fetching packages',
-      mockImplementation:  new Error('Error fetching packages'),
-      expectedStatus: 500,
-      expectedResponse: { error: 'Error fetching packages' }
-    },{
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
-      expectedResponse: { error: 'Not Allowed' },
+      expectedResponse: { error: 'Not Allowed' }
+    },
+    {
+      descr: 'Error fetching club',
+      mockImplementation:  new Error('Error fetching club'),
+      expectedStatus: 500,
+      expectedResponse: { error: 'Error fetching club' }
     }
   ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.package, 'update').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
     } else {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.package, 'update').mockReturnValueOnce({
+      vi.spyOn(db.default.club, 'update').mockReturnValueOnce({
         id: 1,
-        name: 'package 1',
+        name: 'club 1',
         created_at: 'created_at',
         updated_at: 'updated_at',
-        active: false
+        active: 'false'
       }) 
     }
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
-    } 
+      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+    }
+
+    
     const params = { id: '1' }
     const response = await DELETE(null, { params }) 
     const jsonResponse = await response.json()

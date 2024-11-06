@@ -1,26 +1,26 @@
 /* eslint-disable babel/new-cap */
 import { describe, it, expect, vi } from 'vitest'
-import { GET, POST } from '~/app/api/package/route'
+import { GET, POST } from '~/app/api/club/route'
 
 vi.mock('~/app/api/libs/db', () => {
   return {
     default: {
-      package: {
+      club: {
         findMany: () => ([
           { 
             id: 1,
-            name: 'package1',
+            name: 'club 1',
             created_at: 'created_at',
             updated_at: 'updated_at',
-            active: true
+            active: 'active'
             
           },
           {
             id : 2,
-            name: 'package2',
+            name: 'club 2',
             created_at: 'created_at',
             updated_at: 'updated_at',
-            active: true
+            active: 'active'
           }
         ]),
         
@@ -32,10 +32,11 @@ vi.mock('~/app/api/libs/db', () => {
           images: data.images,
           videos: data.videos,
           limit: data.limit,
-          subjects: data.subjects,
+          schedule: data.schedule,
+          professorId: data.professor.id || 1,
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: true
+          active: 'active'
         }),
       },
       user:{
@@ -45,12 +46,12 @@ vi.mock('~/app/api/libs/db', () => {
           permissions: [
             {
               id: 1,
-              name: 'create_package'
+              name: 'create_club'
             }
           ],
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: true
+          active: 'active'
         })
       }
     }, 
@@ -74,13 +75,13 @@ describe('API Package - GET', () => {
       expectedResponse: {
         1: { 
           id: 1, 
-          name: 'package1', 
-          active: true
+          name: 'club 1', 
+          active: 'active'
         }, 
         2: { 
           id: 2, 
-          name: 'package2', 
-          active: true
+          name: 'club 2', 
+          active: 'active'
         } 
       }
     },
@@ -91,20 +92,22 @@ describe('API Package - GET', () => {
       expectedResponse: { error: 'Not Allowed' }
     },
     {
-      descr: 'Error fetching packages',
-      mockImplementation:  new Error('Error fetching packages'),
+      descr: 'Error fetching clubs',
+      mockImplementation:  new Error('Error fetching clubs'),
       expectedStatus: 500,
-      expectedResponse: { error: 'Error fetching packages' }
+      expectedResponse: { error: 'Error fetching clubs' }
     }
   ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.package, 'findMany').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'findMany').mockRejectedValueOnce(mockImplementation) 
     }
+
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
     }
+
     const response = await GET()
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
@@ -117,29 +120,51 @@ describe('API Package - POST', () => {
     {
       descr: 'Successful response',
       request: {
+        name: 'club 1',
+        groupNumber: 201,
+        description: 'Description about the club',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+        professor:{
+          id: 1,
+          name: 'Professor 1',
+          paternalSurname: 'Paternal Surname',
+          maternalSurname: 'Maternal Surname',
+          email: 'email@email.com'
+        }
+      },
+      expectedStatus: 201,
+      expectedResponse: {
+        id: 1,
+        name: 'club 1',
+        groupNumber: 201,
+        description: 'Description about the club',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+        professorId: 1,
+        active: 'active'
+      }
+    },
+    {
+      descr: 'Successful response but with a new professor',
+      request: {
         name: 'package1',
         groupNumber: 201,
         description: 'Description about the package',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [
-          {
-            id: 1,
-            name: 'Subject 1',
-            description: 'Description of the subject 1'
-          },
-          {
-            id: 2,
-            name: 'Subject 2',
-            description: 'Description of the subject 2'
-          },
-          {
-            id: 3,
-            name: 'Subject 3',
-            description: 'Description of the subject 3'
-          }
-        ]
+        professor:{
+          name: 'Professor 1',
+          paternalSurname: 'Paternal Surname',
+          maternalSurname: 'Maternal Surname',
+          email: 'email@email.com'
+        }
       },
       expectedStatus: 201,
       expectedResponse: {
@@ -149,9 +174,10 @@ describe('API Package - POST', () => {
         description: 'Description about the package',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [1, 2, 3],
-        active: true
+        professorId: 1,
+        active: 'active'
       }
     },
     {
@@ -162,24 +188,15 @@ describe('API Package - POST', () => {
         description: 'Description about the package',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [
-          {
-            id: 1,
-            name: 'Subject 1',
-            description: 'Description of the subject 1'
-          },
-          {
-            id: 2,
-            name: 'Subject 2',
-            description: 'Description of the subject 2'
-          },
-          {
-            id: 3,
-            name: 'Subject 3',
-            description: 'Description of the subject 3'
-          }
-        ]
+        professor:{
+          id: 1,
+          name: 'Professor 1',
+          paternalSurname: 'Paternal Surname',
+          maternalSurname: 'Maternal Surname',
+          email: 'email@email.com'
+        }
       },
       mockImplementation:  new Error('Error fetching packages'),
       expectedStatus: 500,
@@ -193,24 +210,15 @@ describe('API Package - POST', () => {
         description: 'Description about the package',
         images: ['image1'],
         videos: ['video1'],
+        schedule: 'schedule',
         limit: 30,
-        subjects: [
-          {
-            id: 1,
-            name: 'Subject 1',
-            description: 'Description of the subject 1'
-          },
-          {
-            id: 2,
-            name: 'Subject 2',
-            description: 'Description of the subject 2'
-          },
-          {
-            id: 3,
-            name: 'Subject 3',
-            description: 'Description of the subject 3'
-          }
-        ]
+        professor:{
+          id: 1,
+          name: 'Professor 1',
+          paternalSurname: 'Paternal Surname',
+          maternalSurname: 'Maternal Surname',
+          email: 'email@email.com'
+        }
       },
       isNotAllowed: true,
       expectedStatus: 403,
@@ -227,15 +235,18 @@ describe('API Package - POST', () => {
   ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.package, 'create').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'create').mockRejectedValueOnce(mockImplementation) 
     }
+
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
+
     const mockRequest = {
       json: async () => request, 
     }
+  
     const response = await POST(mockRequest)
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
