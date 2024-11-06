@@ -58,7 +58,7 @@ vi.mock('jsonwebtoken', () => {
   }
 })
 
-describe('API Package - POST', () => {
+describe('API Counselor - POST', () => {
   it.each([
     {
       descr: 'New counselor complete data',
