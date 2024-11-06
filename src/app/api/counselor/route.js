@@ -46,9 +46,8 @@ export const POST = async request => {
       }, process.env.JWT_SECRET)
       await emailSender({ reciver: email, template: registerCounselor({ token }) })
       return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 })
-    } else {
-      return ERROR.FORBIDDEN()
-    }
+    } 
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
