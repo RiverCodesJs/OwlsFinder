@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
-import { clubShape } from '~/app/api/utils/shapes'
+import { professorShape } from '~/app/api/utils/shapes'
 import { authenticateToken } from '~/app/api/libs/auth'
-import { Club } from '~/app/api/entities'
+import { Professor } from '~/app/api/entities'
 import ERROR from '~/error'
 import query from '~/app/api/libs/query'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
@@ -15,24 +15,17 @@ export const POST = async request => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'create' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Professor, action: 'create' })
     if(hasPermission){
       const data = await request.json()
-      if (!clubShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
-      const { professor, ...partialData } = data
+      if (!professorShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
       const response = await query({
-        entity: 'club',
+        entity: 'professor',
         queryType: 'create',
-        data: {
-          ...partialData,
-        },
-        relations: [{
-          entity: 'professor',
-          data: professor
-        }]
+        data,
       })
       return NextResponse.json(response, { status: 201 })
-    } 
+    }
     return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
@@ -48,14 +41,14 @@ export const GET = async request => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'findMany' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Professor, action: 'findMany' })
     if(hasPermission){
       const response = await query({
-        entity: 'club',
+        entity: 'professor',
         queryType: 'findMany',
       })
       return NextResponse.json(response, { status: 200 })
-    }
+    } 
     return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })

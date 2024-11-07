@@ -19,6 +19,17 @@ export const Club = {
 export const Permission = {
   name: 'permission',
   permissions: {
+    findUnique: true,
+    findMany: true,
+    create: true,
+    update: true,
+    delete: true
+  }
+}
+
+export const Professor = {
+  name: 'professor',
+  permissions: {
     create: true,
     update: true,
     delete: true
