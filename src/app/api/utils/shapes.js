@@ -81,16 +81,7 @@ export const counselorShape = [
   'names',
   'paternalSurname',
   'maternalSurname',
-  'email',
-  'password',
-  'enrollmentId',
-  'groups',
-  'currentGroup',
-  'nextGroup',
-  'clubId',
-  'type',
-  'shift',
-  'permissions',
+  'password'
 ]
 
 export const studentShape = [
