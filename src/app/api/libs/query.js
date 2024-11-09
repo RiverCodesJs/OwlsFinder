@@ -15,35 +15,30 @@ export const getOptions = ({ filter, includes, data: d, relations }) => {
   } : {}
   const connections = relations ? relations.reduce((acc, relation) => {
     const { entity, data } = relation
-
     if(!Array.isArray(data)){
       return {
         ...acc,
         [entity]: {
           connectOrCreate: {
-            where: { id: data.id || 0 },
+            where: entity === 'permissions' ? { name: data.name } : { id: data.id || 0 }, 
             create: { ...data }
           }
         }
       }
     }
-    
     return {
       ...acc,
       [entity]: {
         connectOrCreate: data.map(relationData => ({
-          where: { id: relationData.id || 0 },
+          where: entity === 'permissions' ? { name: relationData.name } : { id: relationData.id || 0 }, 
           create: { ...relationData }
         }))
       }
     }
   }, {}) : {}
-
   const data = d ? { data: { ...d, ...connections } } : {}
-
   return Object.assign(filters, include, data)
 }
-
 const isEmptyObject = ({ payload }) => {
   if(payload == null){
     return true
@@ -52,12 +47,29 @@ const isEmptyObject = ({ payload }) => {
   }
 }
 
-//@queryType one of [findUnique, findMany, delete, update, create]
-const query = async ({ entity, filter, includes, queryType, data, relations, password = false }) => {
+const createStudents = async data => {
+  try {
+    const response = Promise.all(
+      data.map(async obj => {
+        const objFound = await db.user.findUnique({ where: { email: obj.email } })
+        if (objFound) {
+          const payload = await db.user.update({ where: { email: obj.email }, data: obj })
+          return payload
+        } else {
+          return await db.user.create({ data: obj })
+        }
+      }))
+    return response
+  } catch (error) {
+    return ERROR.INVALID_FIELDS()
+  }
+}
 
-  const opts = getOptions({ filter, includes, data, relations })
+//@queryType one of [findUnique, findMany, delete, update, create, createMany]
+const query = async ({ entity, filter, includes, queryType, data, relations, password = false }) => {
+  const opts = queryType !== 'createMany' ? getOptions({ filter, includes, data, relations }) : { data }
   if (opts?.where?.id !== undefined && isNaN(opts.where.id)) {
-    ERROR.NOT_FOUND()
+    return ERROR.NOT_FOUND()
   }
   let payload
   let element
@@ -66,14 +78,14 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
     case 'findUnique':
       payload = await db[entity].findUnique({ ...opts })
       if(isEmptyObject({ payload })){
-        ERROR.NOT_FOUND()
+        return ERROR.NOT_FOUND()
       }
       return cleanerData({ payload, includes, password })
 
     case 'findMany':
       payload = await db[entity].findMany({ ...opts })
       if(isEmptyObject({ payload })){
-        ERROR.NOT_FOUND()
+        return ERROR.NOT_FOUND()
       }
       return payloadFormatter(payload.map(p => cleanerData({ payload: p, includes, password })))
 
@@ -81,13 +93,16 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
       payload = await db[entity].create({ ...opts })
       return cleanerData({ payload, includes, password })
     
+    case 'createMany':
+      payload = await createStudents(data)
+      return payloadFormatter(payload.map(p => cleanerData({ payload: p, includes, password })))
+    
     case 'update':
       options = getOptions({ filter })
       element = await db[entity].findUnique(options)
       if(isEmptyObject({ payload: element })){ 
-        ERROR.NOT_FOUND()
-      }
-      
+        return ERROR.NOT_FOUND()
+      } 
       payload = await db[entity].update({ ...opts })
       return cleanerData({ payload, includes, password })
     
@@ -95,9 +110,8 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
       options = getOptions({ filter })
       element = await db[entity].findUnique(options)
       if(isEmptyObject({ payload: element })){ 
-        ERROR.NOT_FOUND()
+        return ERROR.NOT_FOUND()
       }
-      
       payload = await db[entity].delete({ ...opts })
       return cleanerData({ payload, includes, password })
     

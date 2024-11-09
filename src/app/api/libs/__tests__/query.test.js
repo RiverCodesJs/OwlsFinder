@@ -1,9 +1,38 @@
 import { describe, it, expect, vi } from 'vitest'
 import query from '~/app/api/libs/query'
 
+let id = 1
+
 vi.mock('~/app/api/libs/db', () => {
   return {
     default: {
+      user:{
+        findUnique: ({ where }) => ({ 
+          email: where.email,
+          created_at: 'created_at',
+          updated_at: 'updated_at',
+          active: true
+        }),
+
+        update:  ({ data }) => ({
+          id: id++,
+          names: data.names || 'Jonh',
+          email: data.email || 'jonh.doe@gmail.com',
+          created_at: 'created_at',
+          updated_at: 'updated_at',
+          active: true
+        }),
+
+        create: ({ data }) => ({
+          id: id++, 
+          names: data.names,
+          email: data.email,
+          created_at: 'created_at',
+          updated_at: 'updated_at',
+          active: true
+        }),
+      },
+      
       package: {
         findMany: () => ([
           { 
@@ -65,7 +94,7 @@ vi.mock('~/app/api/libs/db', () => {
   }
 })
 
-describe('query libs', () =>{
+describe('query libs wihtout createMany', () =>{
   it.each([
     {
       descr: 'Empty data',
@@ -237,16 +266,113 @@ describe('query libs', () =>{
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, queryType).mockReturnValueOnce(null) 
       expect(async () => await query({ queryType, ...props })).rejects.toThrowError(result)
-
     } else if(error) {
       if(error === 'findUnique'){
         const db = await import('~/app/api/libs/db')
         vi.spyOn(db.default.package, 'findUnique').mockReturnValueOnce(null)
-      }
-      
+      } 
       expect(async () => await query({ queryType, ...props })).rejects.toThrowError(result)
     } else {
       expect(await query({ queryType, ...props })).toEqual(result)
+    }
+  })
+})
+
+describe('query libs just createMany', () => {
+  it.each([
+    {
+      descr: 'createMany case - new data',
+      entity: 'user',
+      queryType: 'createMany',
+      newData: true,
+      data: [
+        {
+          names: 'Carlos Alberto',
+          email: '23080001@cobachih.edu.mx',
+        },
+        {
+          names: 'Maria Fernanda',
+          email: '23080002@cobachih.edu.mx',
+        }
+      ], 
+      result: {
+        1: {
+          id: 1,
+          names: 'Carlos Alberto',
+          email: '23080001@cobachih.edu.mx',
+          active: true
+        },
+        2:{
+          id: 2,
+          names: 'Maria Fernanda',
+          email: '23080002@cobachih.edu.mx',
+          active: true
+        }
+      },
+    },
+    {
+      descr: 'createMany case - no new data',
+      entity: 'user',
+      queryType: 'createMany',
+      newData: false,
+      data: [
+        {
+          names: 'Carlos Alberto',
+          email: '23080001@cobachih.edu.mx',
+        },
+        {
+          names: 'Maria Fernanda',
+          email: '23080002@cobachih.edu.mx',
+        }
+      ], 
+      result: {
+        3: {
+          id: 3,
+          names: 'Carlos Alberto',
+          email: '23080001@cobachih.edu.mx',
+          active: true
+        },
+        4:{
+          id: 4,
+          names: 'Maria Fernanda',
+          email: '23080002@cobachih.edu.mx',
+          active: true
+        }
+      },
+    },
+    {
+      descr: 'createMany case - no new data',
+      entity: 'user',
+      queryType: 'createMany',
+      newData: false,
+      mockImplementation: new Error('Error fetching user'),
+      data: [
+        {
+          names: 'Carlos Alberto',
+          email: '23080001@cobachih.edu.mx',
+        },
+        {
+          names: 'Maria Fernanda',
+          email: '23080002@cobachih.edu.mx',
+        }
+      ], 
+      result: 'Error fetching user',
+    },
+  ])('$descr', async ({ result, newData, mockImplementation, ...props }) => {
+    if (mockImplementation) {
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.user, 'findUnique').mockRejectedValueOnce(mockImplementation)
+      
+      expect(async () => await query({ ...props })).rejects.toThrowError(result)
+
+    } else {
+      if (newData) {
+        const db = await import('~/app/api/libs/db')
+        props.data.forEach(() => vi.spyOn(db.default.user, 'findUnique').mockReturnValueOnce(null) )
+        expect(await query({ ...props })).toEqual(result)
+      } else {
+        expect(await query({ ...props })).toEqual(result)
+      }
     }
 
   })
