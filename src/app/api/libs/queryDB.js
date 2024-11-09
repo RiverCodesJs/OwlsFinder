@@ -5,7 +5,7 @@ import { EMPTY_ARRAY } from '~/app/Lib/Utils/constants'
 export const getOptions = ({ filter, includes = EMPTY_ARRAY, data: d, relations }) => {
   const filters = filter ? { where: { ...filter } } : {}
   const include = { 
-    include: includes.reduce((acc, include) => { 
+    include: includes?.reduce((acc, include) => { 
       if(include === 'packageSelection' || include === 'trainingSelection'){
         return ({
           ...acc,
