@@ -6,6 +6,7 @@ import ERROR from '~/error'
 import query from '~/app/api/libs/query'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 import bcrypt from 'bcrypt'
+import validatorFields from '~/app/api/libs/validatorFields'
 
 export const GET = async request => {
   try {
@@ -27,7 +28,7 @@ export const GET = async request => {
 }
 
 export const PUT = async request => {
-  try{
+  try {
     const userId = authenticateToken(request)
     const { permissions } = await query({
       entity: 'user',
@@ -37,8 +38,7 @@ export const PUT = async request => {
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'update' })
     const { password, ...data } = await request.json()
-    if(hasPermission){
-      if (!meShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
+    if(hasPermission && validatorFields({ data, shape: meShape })){
       const response = await query({
         entity: 'user',
         queryType: 'update',

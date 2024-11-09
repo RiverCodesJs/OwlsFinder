@@ -5,6 +5,7 @@ import { Package } from '~/app/api/entities'
 import ERROR from '~/error'
 import query from '~/app/api/libs/query'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+import validatorFields from '~/app/api/libs/validatorFields'
 
 export const GET = async (request, { params }) => {
   try {
@@ -43,8 +44,7 @@ export const PUT = async (request, { params }) => {
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'update' })
     const data = await request.json()
-    if(hasPermission){
-      if (!packageShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
+    if(hasPermission && validatorFields({ data, shape: packageShape })){
       const response = await query({
         entity: 'package',
         queryType: 'update',

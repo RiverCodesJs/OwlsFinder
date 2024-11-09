@@ -5,6 +5,7 @@ import { Club } from '~/app/api/entities'
 import ERROR from '~/error'
 import query from '~/app/api/libs/query'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+import validatorFields from '~/app/api/libs/validatorFields'
 
 export const GET = async (request, { params }) => {
   try{
@@ -17,7 +18,6 @@ export const GET = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'findUnique' })
-
     if(hasPermission){
       const response = await query({
         entity: 'club',
@@ -43,11 +43,8 @@ export const PUT = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'update' })
-    if(hasPermission){
-      const data = await request.json()
-      if (!clubShape().every(key => key in data)) {
-        return ERROR.INVALID_FIELDS()
-      }
+    const data = await request.json()
+    if(hasPermission && validatorFields({ data, shape: clubShape })){
       const { professor, ...partialData } = data
       const response = await query({
         entity: 'club',
