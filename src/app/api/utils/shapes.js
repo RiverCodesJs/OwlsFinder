@@ -1,4 +1,4 @@
-export const clubShape = () => [
+export const clubShape = [
   'description',
   'groupNumber',
   'images',
@@ -8,12 +8,12 @@ export const clubShape = () => [
   'videos',
 ]
 
-export const loginShape = () => [
+export const loginShape = [
   'email',
   'password',
 ]
 
-export const packageShape = () => [
+export const packageShape = [
   'description',
   'groupNumber',
   'images',
@@ -23,23 +23,23 @@ export const packageShape = () => [
   'videos',
 ]
 
-export const permissionShape = () => [
+export const permissionShape = [
   'name',
 ]
 
-export const professorShape = () => [
+export const professorShape = [
   'email',
   'maternalSurname',
   'name',
   'paternalSurname',
 ]
 
-export const subjectShape = () => [
+export const subjectShape = [
   'description',
   'name',
 ]
 
-export const trainingShape = () => [
+export const trainingShape = [
   'description',
   'groupNumber',
   'images',
@@ -49,7 +49,7 @@ export const trainingShape = () => [
   'videos',
 ]
 
-export const userShape = () => [
+export const userShape = [
   'clubId',
   'currentGroup',
   'email',
@@ -64,3 +64,47 @@ export const userShape = () => [
   'shift',
   'type',
 ]
+
+export const meShape = [
+  'names',
+  'paternalSurname',
+  'maternalSurname',
+  'email',
+  'enrollmentId',
+  'groups',
+  'currentGroup',
+  'nextGroup',
+  'shift',
+]
+
+export const counselorShape = [
+  'names',
+  'paternalSurname',
+  'maternalSurname',
+  'email',
+  'password',
+  'enrollmentId',
+  'groups',
+  'currentGroup',
+  'nextGroup',
+  'clubId',
+  'type',
+  'shift',
+  'permissions',
+]
+
+export const studentShape = [
+  'names',
+  'paternalSurname',
+  'maternalSurname',
+  'email',
+  'enrollmentId',
+  'groups',
+  'currentGroup',
+  'nextGroup',
+  'clubId',
+  'type',
+  'shift',
+  'permissions',
+]
+

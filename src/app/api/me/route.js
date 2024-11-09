@@ -1,40 +1,34 @@
 import { NextResponse } from 'next/server'
-import { clubShape } from '~/app/api/utils/shapes'
+import { meShape } from '~/app/api/utils/shapes'
 import { authenticateToken } from '~/app/api/libs/auth'
-import { Club } from '~/app/api/entities'
+import { Me } from '~/app/api/entities'
 import ERROR from '~/error'
 import query from '~/app/api/libs/query'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+import bcrypt from 'bcrypt'
 import validatorFields from '~/app/api/libs/validatorFields'
 
-export const GET = async (request, { params }) => {
-  try{
-    const { id } = params
+export const GET = async request => {
+  try {
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const response = await query({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'findUnique' })
+    const hasPermission = getPermissionsByEntity({ permissions: response.permissions, entity: Me, action: 'findUnique' })
     if(hasPermission){
-      const response = await query({
-        entity: 'club',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
       return NextResponse.json(response, { status: 200 })
-    } 
+    }
     return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
-export const PUT = async (request, { params }) => {
-  try{
-    const { id } = params
+export const PUT = async request => {
+  try {
     const userId = authenticateToken(request)
     const { permissions } = await query({
       entity: 'user',
@@ -42,30 +36,29 @@ export const PUT = async (request, { params }) => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'update' })
-    const data = await request.json()
-    if(hasPermission && validatorFields({ data, shape: clubShape })){
-      const { professor, ...partialData } = data
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'update' })
+    const { password, ...data } = await request.json()
+    if(hasPermission && validatorFields({ data, shape: meShape })){
       const response = await query({
-        entity: 'club',
+        entity: 'user',
         queryType: 'update',
-        filter: { id: Number(id) },
+        filter: { id: Number(userId) },
+        includes: ['permissions'],
         data: {
-          ...partialData,
-          professorId: professor ? professor.id : data.professorId
+          ...data,
+          ...(password ? { password: await bcrypt.hash(password, 12) } : {})
         }
       })
       return NextResponse.json(response, { status: 200 })
-    } 
+    }
     return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
-export const PATCH = async (request, { params }) => {
+export const PATCH = async request => {
   try {
-    const { id } = params
     const userId = authenticateToken(request)
     const { permissions } = await query({
       entity: 'user',
@@ -73,30 +66,29 @@ export const PATCH = async (request, { params }) => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'update' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'update' })
     if(hasPermission){
-      const data = await request.json()
-      const { professor, ...partialData } = data
+      const { password, ...data } = await request.json()
       const response = await query({
-        entity: 'club',
+        entity: 'user',
         queryType: 'update',
-        filter: { id: Number(id) },
+        filter: { id: Number(userId) },
+        includes: ['permissions'],
         data: {
-          ...partialData,
-          ...(professor ? { professorId: professor.id } : {})
+          ...data,
+          ...(password ? { password: await bcrypt.hash(password, 12) } : {})
         }
       })
       return NextResponse.json(response, { status: 200 })
-    } 
-    return ERROR.FORBIDDEN() 
+    }
+    return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
 }
 
-export const DELETE = async (request, { params }) => {
+export const DELETE = async request => {
   try {
-    const { id } = params
     const userId = authenticateToken(request)
     const { permissions } = await query({
       entity: 'user',
@@ -104,16 +96,16 @@ export const DELETE = async (request, { params }) => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'delete' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'delete' })
     if(hasPermission){
       const response = await query({
-        entity: 'club',
+        entity: 'user',
         queryType: 'update',
-        filter: { id: Number(id) },
+        filter: { id: Number(userId) },
         data: {
           active: false
         }
-      })
+      })    
       return NextResponse.json(response, { status: 200 })
     }
     return ERROR.FORBIDDEN()

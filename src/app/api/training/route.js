@@ -5,6 +5,7 @@ import { Training } from '~/app/api/entities'
 import ERROR from '~/error'
 import query from '~/app/api/libs/query'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+import validatorFields from '~/app/api/libs/validatorFields'
 
 export const POST = async request => {
   try {
@@ -16,9 +17,8 @@ export const POST = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Training, action: 'create' })
-    if(hasPermission){
-      const data = await request.json()
-      if (!trainingShape().every(key => key in data)) return ERROR.INVALID_FIELDS()
+    const data = await request.json()
+    if(hasPermission && validatorFields({ data, shape: trainingShape })){
       const response = await query({
         entity: 'training',
         queryType: 'create',

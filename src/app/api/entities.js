@@ -53,3 +53,12 @@ export const Training = {
     delete: true
   }
 }
+
+export const Me = {
+  name: 'me',
+  permissions: {
+    create: true,
+    update: true,
+    delete: true
+  }
+}
