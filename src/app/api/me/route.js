@@ -46,7 +46,7 @@ export const PUT = async request => {
         includes: ['permissions'],
         data: {
           ...data,
-          ...(password ? { password: await bcrypt.hash(password, 10) } : {})
+          ...(password ? { password: await bcrypt.hash(password, 12) } : {})
         }
       })
       return NextResponse.json(response, { status: 200 })
@@ -76,7 +76,7 @@ export const PATCH = async request => {
         includes: ['permissions'],
         data: {
           ...data,
-          ...(password ? { password: await bcrypt.hash(password, 10) } : {})
+          ...(password ? { password: await bcrypt.hash(password, 12) } : {})
         }
       })
       return NextResponse.json(response, { status: 200 })
