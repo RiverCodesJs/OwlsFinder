@@ -69,7 +69,7 @@ const createStudents = async data => {
 const query = async ({ entity, filter, includes, queryType, data, relations, password = false }) => {
   const opts = queryType !== 'createMany' ? getOptions({ filter, includes, data, relations }) : { data }
   if (opts?.where?.id !== undefined && isNaN(opts.where.id)) {
-    ERROR.NOT_FOUND()
+    return ERROR.NOT_FOUND()
   }
   let payload
   let element
@@ -78,14 +78,14 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
     case 'findUnique':
       payload = await db[entity].findUnique({ ...opts })
       if(isEmptyObject({ payload })){
-        ERROR.NOT_FOUND()
+        return ERROR.NOT_FOUND()
       }
       return cleanerData({ payload, includes, password })
 
     case 'findMany':
       payload = await db[entity].findMany({ ...opts })
       if(isEmptyObject({ payload })){
-        ERROR.NOT_FOUND()
+        return ERROR.NOT_FOUND()
       }
       return payloadFormatter(payload.map(p => cleanerData({ payload: p, includes, password })))
 
