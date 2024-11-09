@@ -53,6 +53,24 @@ export const COUNSELOR_PERMISSIONS = [
   {
     name: 'delete_professor'
   },
+  {
+    name: 'findUnique_selectionConfig'
+  },
+  {
+    name: 'findMany_selectionConfig'
+  },
+  {
+    name: 'update_selectionConfig'
+  },
+  {
+    name: 'create_selectionConfig'
+  },
+  {
+    name: 'update_selectionConfig'
+  },
+  {
+    name: 'delete_selectionConfig'
+  },
 ]
 
 export const ADMIN_PERMISSIONS = [
@@ -155,6 +173,24 @@ export const ADMIN_PERMISSIONS = [
   {
     name: 'delete_counselor'
   },
+  {
+    name: 'findUnique_selectionConfig'
+  },
+  {
+    name: 'findMany_selectionConfig'
+  },
+  {
+    name: 'update_selectionConfig'
+  },
+  {
+    name: 'create_selectionConfig'
+  },
+  {
+    name: 'update_selectionConfig'
+  },
+  {
+    name: 'delete_selectionConfig'
+  },
   // {
   //   name: 'findUnique_'
   // },
@@ -170,4 +206,5 @@ export const ADMIN_PERMISSIONS = [
   // {
   //   name: 'delete_'
   // },
+  
 ]
