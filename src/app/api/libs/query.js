@@ -49,19 +49,17 @@ const isEmptyObject = ({ payload }) => {
 
 const createStudents = async data => {
   try {
-    return (
-      Promise.all(
-        data.map(async obj => {
-          const objFound = await db.user.findUnique({ where: { email: obj.email } })
-          if (objFound) {
-            const payload = await db.user.update({ where: { email: obj.email }, data: obj })
-            return payload
-          } else {
-            return await db.user.create({ data: obj })
-          }
-        })
-      )
-    )
+    const response = Promise.all(
+      data.map(async obj => {
+        const objFound = await db.user.findUnique({ where: { email: obj.email } })
+        if (objFound) {
+          const payload = await db.user.update({ where: { email: obj.email }, data: obj })
+          return payload
+        } else {
+          return await db.user.create({ data: obj })
+        }
+      }))
+    return response
   } catch (error) {
     return ERROR.INVALID_FIELDS()
   }
@@ -103,7 +101,7 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
       options = getOptions({ filter })
       element = await db[entity].findUnique(options)
       if(isEmptyObject({ payload: element })){ 
-        ERROR.NOT_FOUND()
+        return ERROR.NOT_FOUND()
       } 
       payload = await db[entity].update({ ...opts })
       return cleanerData({ payload, includes, password })
@@ -112,7 +110,7 @@ const query = async ({ entity, filter, includes, queryType, data, relations, pas
       options = getOptions({ filter })
       element = await db[entity].findUnique(options)
       if(isEmptyObject({ payload: element })){ 
-        ERROR.NOT_FOUND()
+        return ERROR.NOT_FOUND()
       }
       payload = await db[entity].delete({ ...opts })
       return cleanerData({ payload, includes, password })
