@@ -1,16 +1,33 @@
 import db from '~/app/api/libs/db'
 import ERROR from '~/error'
+import { EMPTY_ARRAY } from '~/app/Lib/Utils/constants'
 
-export const getOptions = ({ filter, includes, data: d, relations }) => {
+export const getOptions = ({ filter, includes = EMPTY_ARRAY, data: d, relations }) => {
   const filters = filter ? { where: { ...filter } } : {}
-  const include = includes ? { 
-    include: includes.reduce((acc, include) => ({ 
-      ...acc, 
-      [include]: { 
-        select: include === 'permissions' ? { name: true } : { id: true } 
-      } 
-    }), {}) 
-  } : {}
+  const include = { 
+    include: includes.reduce((acc, include) => { 
+      if(include === 'packageSelection' || include === 'trainingSelection'){
+        return ({
+          ...acc,
+          [include]: {
+            select: {
+              id: true,
+              max: true,
+              min: true,
+              date: true
+            }
+          }
+        })
+      }
+
+      return ({
+        ...acc, 
+        [include]: { 
+          select: include === 'permissions' ? { name: true } : { id: true } 
+        } 
+      })
+    }, {}) 
+  }
   const connections = relations ? relations.reduce((acc, relation) => {
     const { entity, data } = relation
     if(!Array.isArray(data)){
@@ -37,7 +54,6 @@ export const getOptions = ({ filter, includes, data: d, relations }) => {
   const data = d ? { data: { ...d, ...connections } } : {}
   return Object.assign(filters, include, data)
 }
-
 const createStudents = async data => {
   try {
     const response = Promise.all(
@@ -55,7 +71,6 @@ const createStudents = async data => {
     return ERROR.INVALID_FIELDS()
   }
 }
-
 //@queryType one of [findUnique, findMany, delete, update, create, createMany]
 const queryDB = async ({ entity, filter, includes, queryType, data, relations }) => {
   const opts = queryType !== 'createMany' ? getOptions({ filter, includes, data, relations }) : { data }
