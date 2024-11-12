@@ -108,7 +108,19 @@ export const adminPermissions = [
     name: 'delete_club'
   },
   {
+    name: 'findUnique_students'
+  },
+  {
+    name: 'findMany_students'
+  },
+  {
     name: 'create_students'
+  },
+  {
+    name: 'update_students'
+  },
+  {
+    name: 'delete_students'
   },
   {
     name: 'create_professor'
@@ -128,4 +140,34 @@ export const adminPermissions = [
   {
     name: 'delete_permissions'
   },
+  {
+    name: 'findUnique_counselor'
+  },
+  {
+    name: 'findMany_counselor'
+  },
+  {
+    name: 'create_counselor'
+  },
+  {
+    name: 'update_counselor'
+  },
+  {
+    name: 'delete_counselor'
+  },
+  // {
+  //   name: 'findUnique_'
+  // },
+  // {
+  //   name: 'findMany_'
+  // },
+  // {
+  //   name: 'create_'
+  // },
+  // {
+  //   name: 'update_'
+  // },
+  // {
+  //   name: 'delete_'
+  // },
 ]
