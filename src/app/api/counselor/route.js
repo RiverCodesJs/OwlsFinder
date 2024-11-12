@@ -4,7 +4,7 @@ import { Counselor } from '~/app/api/entities'
 import { counselorPermissions } from '~/app/api/utils/permissions'
 import ERROR from '~/error'
 import registerCounselor from '~/app/api/libs/mail/templates/registerCounselor'
-import query from '~/app/api/libs/query'
+import queryDB from '~/app/api/libs/queryDB'
 import jwt from 'jsonwebtoken'
 import emailSender from '~/app/api/libs/mail/emailSender'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
@@ -12,7 +12,7 @@ import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 export const POST = async request => {
   try {
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -22,14 +22,14 @@ export const POST = async request => {
     if(hasPermission){
       const { email } = await request.json()
       if (!email) return ERROR.INVALID_FIELDS()
-      const user = await query({
+      const user = await queryDB({
         entity: 'user',
         queryType: 'findUnique',
         filter: { email },
         error: false
-      })   
-      if (Object.keys(user).length > 0) return ERROR.EMAIL_ALREADY_EXISTS()
-      const counselor = await query({
+      })
+      if (user) return ERROR.EMAIL_ALREADY_EXISTS()
+      const counselor = await queryDB({
         entity: 'user',
         queryType: 'create',
         data: {

@@ -4,13 +4,15 @@ import { Students } from '~/app/api/entities'
 import { parse } from 'papaparse'
 import csvFormatter from '~/app/api/students/utils/csvFormatter'
 import ERROR from '~/error'
-import query from '~/app/api/libs/query'
+import queryDB from '~/app/api/libs/queryDB'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+import cleanerData from '~/app/api/libs/cleanerData'
+import payloadFormatter from '~/app/api/utils/payloadFormatter'
 
 export const POST = async request => {
   try {
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -25,11 +27,12 @@ export const POST = async request => {
         skipEmptyLines: true,
       })
       const processedData = csvFormatter(data)
-      const response = await query({
+      const payloads = await queryDB({
         entity: 'user',
         queryType: 'createMany',
         data: processedData,
       })
+      const response = payloadFormatter(payloads.map(payload => cleanerData({ payload })))
       return NextResponse.json(response, { status: 201 })
     } 
     return ERROR.FORBIDDEN()

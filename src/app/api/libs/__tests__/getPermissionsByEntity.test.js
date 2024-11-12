@@ -12,13 +12,13 @@ describe('permissionsByEntity libs', () =>{
     },
     {
       descr: 'Has permissions related to the entity',
-      permissions: [ 
-        'create_package', 
-        'update_package', 
-        'delete_package', 
-        'create_club', 
-        'update_club', 
-        'delete_club' 
+      permissions: [
+        { name: 'create_package' },
+        { name: 'update_package' },
+        { name: 'delete_package' },
+        { name: 'create_club' },
+        { name: 'update_club' },
+        { name: 'delete_club' }
       ],
       entity: {
         name: 'club',
@@ -33,13 +33,13 @@ describe('permissionsByEntity libs', () =>{
     },
     {
       descr: 'Has permissions which are not related to the entity',
-      permissions: [ 
-        'create_package', 
-        'update_package', 
-        'delete_package', 
-        'create_club', 
-        'update_club', 
-        'delete_club' 
+      permissions: [
+        { name: 'create_package' },
+        { name: 'update_package' },
+        { name: 'delete_package' },
+        { name: 'create_club' },
+        { name: 'update_club' },
+        { name: 'delete_club' }
       ],
       entity: {
         name: 'training',
@@ -54,13 +54,13 @@ describe('permissionsByEntity libs', () =>{
     },
     {
       descr: 'Has not permission but the permission is not requiered',
-      permissions: [ 
-        'create_package', 
-        'update_package', 
-        'delete_package', 
-        'create_club', 
-        'update_club', 
-        'delete_club' 
+      permissions: [
+        { name: 'create_package' },
+        { name: 'update_package' },
+        { name: 'delete_package' },
+        { name: 'create_club' },
+        { name: 'update_club' },
+        { name: 'delete_club' }
       ],
       entity: {
         name: 'club',
@@ -73,8 +73,6 @@ describe('permissionsByEntity libs', () =>{
       action: 'findUnique',
       result: true
     }
-  
-
   ])('$descr', ({ permissions, entity, action, result }) => {
     expect(getPermissionsByEntity({ permissions, entity, action })).toEqual(result)
   })

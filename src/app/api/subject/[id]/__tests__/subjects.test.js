@@ -77,6 +77,12 @@ describe('API subjects - GET', () => {
       }, 
     },
     {
+      descr: 'Error has not data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
@@ -88,7 +94,7 @@ describe('API subjects - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching subjects' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.subject, 'findUnique').mockRejectedValueOnce(mockImplementation) 
@@ -96,6 +102,10 @@ describe('API subjects - GET', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.subject, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const response = await GET(null, { params }) 
@@ -120,6 +130,16 @@ describe('API subjects - PUT', () => {
         description: 'description 1',
         active: true
       }
+    },
+    {
+      descr: 'Error has not data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
+      request: {
+        name: 'subject 1',
+        description: 'description 1'
+      },
     },
     {
       descr: 'Error has not permission',
@@ -149,7 +169,7 @@ describe('API subjects - PUT', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching subjects' }
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.subject, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -157,6 +177,10 @@ describe('API subjects - PUT', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.subject, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const mockRequest = {
@@ -185,6 +209,16 @@ describe('API subjects - PATCH', () => {
       }
     },
     {
+      descr: 'Error has not data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
+      request: {
+        name: 'subject 1',
+        description: 'description 1'
+      },
+    },
+    {
       descr: 'Error has not permission',
       request: {
         name: 'subject 1',
@@ -203,7 +237,7 @@ describe('API subjects - PATCH', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching subjects' }
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.subject, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -211,6 +245,10 @@ describe('API subjects - PATCH', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.subject, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const mockRequest = {
@@ -235,6 +273,12 @@ describe('API subjects - DELETE', () => {
       }
     },
     {
+      descr: 'Error has not data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
@@ -246,7 +290,7 @@ describe('API subjects - DELETE', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching subjects' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.subject, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -264,6 +308,10 @@ describe('API subjects - DELETE', () => {
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     } 
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.subject, 'findUnique').mockReturnValueOnce(null)
+    }
     const params = { id: '1' }
     const response = await DELETE(null, { params }) 
     const jsonResponse = await response.json()

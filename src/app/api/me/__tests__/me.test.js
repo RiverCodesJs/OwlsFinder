@@ -271,7 +271,7 @@ describe('API Me - PATCH', () => {
   })
 })
 
-describe('API Club - Delete', () => {
+describe('API Me - Delete', () => {
   it.each([
     {
       descr: 'Successful response',
@@ -279,6 +279,7 @@ describe('API Club - Delete', () => {
       expectedResponse: {
         id: 1, 
         name: 'user 1', 
+        permissions: ['permission 1', 'permission 2'],
         active: 'false'
       }
     },
@@ -305,6 +306,16 @@ describe('API Club - Delete', () => {
         name: 'user 1',
         created_at: 'created_at',
         updated_at: 'updated_at',
+        permissions: [
+          {
+            id: 1,
+            name: 'permission 1',
+          },
+          {
+            id: 2,
+            name: 'permission 2',
+          },
+        ],
         active: 'false'
       }) 
     }

@@ -1,6 +1,6 @@
 import { omit } from 'ramda'
 
-const cleanerData = ({ payload: p, includes = [], password }) => {
+const cleanerData = ({ payload: p, includes = [], password = false }) => {
   const omitProps = [password ? '' : 'password', 'created_at', 'updated_at', ...includes]
   const payload = omit(omitProps, p)
 

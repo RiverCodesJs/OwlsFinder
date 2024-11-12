@@ -2,7 +2,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { GET, PUT, PATCH, DELETE } from '~/app/api/package/[id]/route'
 
-//Mock of db
 vi.mock('~/app/api/libs/db', () => {
   return {
     default: {
@@ -81,6 +80,12 @@ describe('API Package - GET', () => {
       }
     },
     {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
@@ -92,7 +97,7 @@ describe('API Package - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching packages' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, 'findUnique').mockRejectedValueOnce(mockImplementation) 
@@ -100,6 +105,10 @@ describe('API Package - GET', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.package, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const response = await GET(null, { params }) 
@@ -125,6 +134,38 @@ describe('API Package - PUT', () => {
         subjects: [1, 2, 3],
         active: true
       },
+      request: {
+        id: 1, 
+        name: 'package 1',
+        groupNumber: 201,
+        description: 'Description about the package',
+        images: ['image1'],
+        videos: ['video1'],
+        limit: 30,
+        subjects: [
+          {
+            id: 1,
+            name: 'Subject 1',
+            description: 'Description of the subject 1'
+          },
+          {
+            id: 2,
+            name: 'Subject 2',
+            description: 'Description of the subject 2'
+          },
+          {
+            id: 3,
+            name: 'Subject 3',
+            description: 'Description of the subject 3'
+          }
+        ]
+      }
+    },
+    {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
       request: {
         id: 1, 
         name: 'package 1',
@@ -225,7 +266,7 @@ describe('API Package - PUT', () => {
         ]
       }
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -233,6 +274,10 @@ describe('API Package - PUT', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.package, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const mockRequest = {
@@ -261,6 +306,38 @@ describe('API Package - PATCH', () => {
         subjects: [1, 2, 3],
         active: true
       },
+      request: {
+        id: 1, 
+        name: 'package 1',
+        groupNumber: 201,
+        description: 'Description about the package',
+        images: ['image1'],
+        videos: ['video1'],
+        limit: 30,
+        subjects: [
+          {
+            id: 1,
+            name: 'Subject 1',
+            description: 'Description of the subject 1'
+          },
+          {
+            id: 2,
+            name: 'Subject 2',
+            description: 'Description of the subject 2'
+          },
+          {
+            id: 3,
+            name: 'Subject 3',
+            description: 'Description of the subject 3'
+          }
+        ]
+      }
+    },
+    {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
       request: {
         id: 1, 
         name: 'package 1',
@@ -352,7 +429,7 @@ describe('API Package - PATCH', () => {
         ]
       }
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -360,6 +437,10 @@ describe('API Package - PATCH', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.package, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const mockRequest = {
@@ -384,6 +465,12 @@ describe('API Package - DELETE', () => {
       }
     },
     {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error fetching packages',
       mockImplementation:  new Error('Error fetching packages'),
       expectedStatus: 500,
@@ -394,7 +481,7 @@ describe('API Package - DELETE', () => {
       expectedStatus: 403,
       expectedResponse: { error: 'Not Allowed' },
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -411,7 +498,11 @@ describe('API Package - DELETE', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
-    } 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.package, 'findUnique').mockReturnValueOnce(null)
+    }
     const params = { id: '1' }
     const response = await DELETE(null, { params }) 
     const jsonResponse = await response.json()

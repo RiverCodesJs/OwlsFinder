@@ -3,22 +3,24 @@ import { meShape } from '~/app/api/utils/shapes'
 import { authenticateToken } from '~/app/api/libs/auth'
 import { Me } from '~/app/api/entities'
 import ERROR from '~/error'
-import query from '~/app/api/libs/query'
+import queryDB from '~/app/api/libs/queryDB'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 import bcrypt from 'bcrypt'
 import validatorFields from '~/app/api/libs/validatorFields'
+import cleanerData from '~/app/api/libs/cleanerData'
 
 export const GET = async request => {
   try {
     const userId = authenticateToken(request)
-    const response = await query({
+    const payload = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions: response.permissions, entity: Me, action: 'findUnique' })
+    const hasPermission = getPermissionsByEntity({ permissions: payload.permissions, entity: Me, action: 'findUnique' })
     if(hasPermission){
+      const response = cleanerData({ payload, includes: ['permissions'] })
       return NextResponse.json(response, { status: 200 })
     }
     return ERROR.FORBIDDEN()
@@ -30,7 +32,7 @@ export const GET = async request => {
 export const PUT = async request => {
   try {
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -39,7 +41,7 @@ export const PUT = async request => {
     const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'update' })
     const { password, ...data } = await request.json()
     if(hasPermission && validatorFields({ data, shape: meShape })){
-      const response = await query({
+      const payload = await queryDB({
         entity: 'user',
         queryType: 'update',
         filter: { id: Number(userId) },
@@ -49,6 +51,7 @@ export const PUT = async request => {
           ...(password ? { password: await bcrypt.hash(password, 12) } : {})
         }
       })
+      const response = cleanerData({ payload, includes: ['permissions'] })
       return NextResponse.json(response, { status: 200 })
     }
     return ERROR.FORBIDDEN()
@@ -60,7 +63,7 @@ export const PUT = async request => {
 export const PATCH = async request => {
   try {
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -69,7 +72,7 @@ export const PATCH = async request => {
     const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'update' })
     if(hasPermission){
       const { password, ...data } = await request.json()
-      const response = await query({
+      const payload = await queryDB({
         entity: 'user',
         queryType: 'update',
         filter: { id: Number(userId) },
@@ -79,6 +82,7 @@ export const PATCH = async request => {
           ...(password ? { password: await bcrypt.hash(password, 12) } : {})
         }
       })
+      const response = cleanerData({ payload, includes: ['permissions'] })
       return NextResponse.json(response, { status: 200 })
     }
     return ERROR.FORBIDDEN()
@@ -90,7 +94,7 @@ export const PATCH = async request => {
 export const DELETE = async request => {
   try {
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -98,14 +102,15 @@ export const DELETE = async request => {
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'delete' })
     if(hasPermission){
-      const response = await query({
+      const payload = await queryDB({
         entity: 'user',
         queryType: 'update',
         filter: { id: Number(userId) },
         data: {
           active: false
         }
-      })    
+      })
+      const response = cleanerData({ payload, includes: ['permissions'] })
       return NextResponse.json(response, { status: 200 })
     }
     return ERROR.FORBIDDEN()

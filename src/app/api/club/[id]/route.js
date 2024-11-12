@@ -3,15 +3,16 @@ import { clubShape } from '~/app/api/utils/shapes'
 import { authenticateToken } from '~/app/api/libs/auth'
 import { Club } from '~/app/api/entities'
 import ERROR from '~/error'
-import query from '~/app/api/libs/query'
+import queryDB from '~/app/api/libs/queryDB'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 import validatorFields from '~/app/api/libs/validatorFields'
+import cleanerData from '~/app/api/libs/cleanerData'
 
 export const GET = async (request, { params }) => {
   try{
     const { id } = params
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -19,11 +20,13 @@ export const GET = async (request, { params }) => {
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'findUnique' })
     if(hasPermission){
-      const response = await query({
+      const payload = await queryDB({
         entity: 'club',
         queryType: 'findUnique',
         filter: { id: Number(id) }
       })
+      if(!payload) return ERROR.NOT_FOUND()
+      const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 200 })
     } 
     return ERROR.FORBIDDEN()
@@ -36,7 +39,7 @@ export const PUT = async (request, { params }) => {
   try{
     const { id } = params
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -46,7 +49,7 @@ export const PUT = async (request, { params }) => {
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: clubShape })){
       const { professor, ...partialData } = data
-      const response = await query({
+      const payload = await queryDB({
         entity: 'club',
         queryType: 'update',
         filter: { id: Number(id) },
@@ -55,6 +58,8 @@ export const PUT = async (request, { params }) => {
           professorId: professor ? professor.id : data.professorId
         }
       })
+      if(!payload) return ERROR.NOT_FOUND()
+      const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 200 })
     } 
     return ERROR.FORBIDDEN()
@@ -67,7 +72,7 @@ export const PATCH = async (request, { params }) => {
   try {
     const { id } = params
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -77,7 +82,7 @@ export const PATCH = async (request, { params }) => {
     if(hasPermission){
       const data = await request.json()
       const { professor, ...partialData } = data
-      const response = await query({
+      const payload = await queryDB({
         entity: 'club',
         queryType: 'update',
         filter: { id: Number(id) },
@@ -86,6 +91,8 @@ export const PATCH = async (request, { params }) => {
           ...(professor ? { professorId: professor.id } : {})
         }
       })
+      if(!payload) return ERROR.NOT_FOUND()
+      const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 200 })
     } 
     return ERROR.FORBIDDEN() 
@@ -98,7 +105,7 @@ export const DELETE = async (request, { params }) => {
   try {
     const { id } = params
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -106,7 +113,7 @@ export const DELETE = async (request, { params }) => {
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Club, action: 'delete' })
     if(hasPermission){
-      const response = await query({
+      const payload = await queryDB({
         entity: 'club',
         queryType: 'update',
         filter: { id: Number(id) },
@@ -114,6 +121,8 @@ export const DELETE = async (request, { params }) => {
           active: false
         }
       })
+      if(!payload) return ERROR.NOT_FOUND()
+      const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 200 })
     }
     return ERROR.FORBIDDEN()

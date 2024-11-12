@@ -1,6 +1,4 @@
 import db from '~/app/api/libs/db'
-import payloadFormatter from '~/app/api/utils/payloadFormatter'
-import cleanerData from '~/app/api/libs/cleanerData'
 import ERROR from '~/error'
 
 export const getOptions = ({ filter, includes, data: d, relations }) => {
@@ -39,13 +37,6 @@ export const getOptions = ({ filter, includes, data: d, relations }) => {
   const data = d ? { data: { ...d, ...connections } } : {}
   return Object.assign(filters, include, data)
 }
-const isEmptyObject = ({ payload }) => {
-  if(payload == null){
-    return true
-  } else {
-    return false
-  }
-}
 
 const createStudents = async data => {
   try {
@@ -66,58 +57,41 @@ const createStudents = async data => {
 }
 
 //@queryType one of [findUnique, findMany, delete, update, create, createMany]
-const query = async ({ entity, filter, includes, queryType, data, relations, password = false, error = true }) => {
+const queryDB = async ({ entity, filter, includes, queryType, data, relations }) => {
   const opts = queryType !== 'createMany' ? getOptions({ filter, includes, data, relations }) : { data }
-  if (opts?.where?.id !== undefined && isNaN(opts.where.id)) {
-    return ERROR.NOT_FOUND()
-  }
+  if (opts?.where?.id !== undefined && isNaN(opts.where.id)) return ERROR.NOT_FOUND()
   let payload
   let element
   let options
   switch(queryType){
     case 'findUnique':
-      payload = await db[entity].findUnique({ ...opts })
-      if(isEmptyObject({ payload }) && error){
-        return ERROR.NOT_FOUND()
-      }
-      return cleanerData({ payload, includes, password })
-
-    case 'findMany':
+      return await db[entity].findUnique({ ...opts })
+  
+    case 'findMany': 
       payload = await db[entity].findMany({ ...opts })
-      if(isEmptyObject({ payload }) && error){
-        return ERROR.NOT_FOUND()
-      }
-      return payloadFormatter(payload.map(p => cleanerData({ payload: p, includes, password })))
+      return payload.length ? payload : null
 
     case 'create':
-      payload = await db[entity].create({ ...opts })
-      return cleanerData({ payload, includes, password })
+      return await db[entity].create({ ...opts })
     
     case 'createMany':
-      payload = await createStudents(data)
-      return payloadFormatter(payload.map(p => cleanerData({ payload: p, includes, password })))
+      return await createStudents(data)
     
     case 'update':
       options = getOptions({ filter })
       element = await db[entity].findUnique(options)
-      if(isEmptyObject({ payload: element })){ 
-        return ERROR.NOT_FOUND()
-      } 
-      payload = await db[entity].update({ ...opts })
-      return cleanerData({ payload, includes, password })
+      payload = element ? await db[entity].update({ ...opts }) : null
+      return payload
     
     case 'delete':
       options = getOptions({ filter })
       element = await db[entity].findUnique(options)
-      if(isEmptyObject({ payload: element })){ 
-        return ERROR.NOT_FOUND()
-      }
-      payload = await db[entity].delete({ ...opts })
-      return cleanerData({ payload, includes, password })
-    
+      payload = element ? await db[entity].delete({ ...opts }) : null
+      return payload 
+
     default: 
       return null
   }
 }
 
-export default query
+export default queryDB

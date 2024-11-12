@@ -72,6 +72,12 @@ describe('API Permission - GET', () => {
       }
     },
     {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
@@ -83,7 +89,7 @@ describe('API Permission - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching permission' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.permission, 'findUnique').mockRejectedValueOnce(mockImplementation) 
@@ -91,6 +97,10 @@ describe('API Permission - GET', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.permission, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const response = await GET(null, { params }) 
@@ -110,6 +120,17 @@ describe('API Permission - PUT', () => {
         name: 'permission 1',
         active: true
       },
+      request: {
+        id: 1, 
+        name: 'permission 1',
+        active: true
+      }
+    },
+    {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
       request: {
         id: 1, 
         name: 'permission 1',
@@ -145,7 +166,7 @@ describe('API Permission - PUT', () => {
       }
     }
     
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.permission, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -153,6 +174,10 @@ describe('API Permission - PUT', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.permission, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const mockRequest = {
@@ -181,6 +206,17 @@ describe('API Permission - PATCH', () => {
       }
     },
     {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
+      request: {
+        id: 1, 
+        name: 'permission 1',
+        active: true
+      }
+    },
+    {
       descr: 'Error fupdating permission',
       mockImplementation:  new Error('Error updating permission'),
       expectedStatus: 500,
@@ -200,7 +236,7 @@ describe('API Permission - PATCH', () => {
         name: 'permission 1',
       }
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.permission, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -208,6 +244,10 @@ describe('API Permission - PATCH', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.permission, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const mockRequest = {
@@ -232,6 +272,12 @@ describe('API Permission - DELETE', () => {
       }
     },
     {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error deleting permissions',
       mockImplementation:  new Error('Error deleting permissions'),
       expectedStatus: 500,
@@ -242,7 +288,7 @@ describe('API Permission - DELETE', () => {
       expectedStatus: 403,
       expectedResponse: { error: 'Not Allowed' },
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.permission, 'delete').mockRejectedValueOnce(mockImplementation) 
@@ -251,6 +297,10 @@ describe('API Permission - DELETE', () => {
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     } 
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.permission, 'findUnique').mockReturnValueOnce(null)
+    }
     const params = { id: '1' }
     const response = await DELETE(null, { params }) 
     const jsonResponse = await response.json()

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getOptions } from '~/app/api/libs/query'
+import { getOptions } from '~/app/api/libs/queryDB'
 
 describe('getOptions libs', () =>{
   it.each([

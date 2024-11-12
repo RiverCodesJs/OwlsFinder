@@ -3,14 +3,16 @@ import { trainingShape } from '~/app/api/utils/shapes'
 import { authenticateToken } from '~/app/api/libs/auth'
 import { Training } from '~/app/api/entities'
 import ERROR from '~/error'
-import query from '~/app/api/libs/query'
+import queryDB from '~/app/api/libs/queryDB'
 import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 import validatorFields from '~/app/api/libs/validatorFields'
+import cleanerData from '~/app/api/libs/cleanerData'
+import payloadFormatter from '~/app/api/utils/payloadFormatter'
 
 export const POST = async request => {
   try {
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -19,11 +21,12 @@ export const POST = async request => {
     const hasPermission = getPermissionsByEntity({ permissions, entity: Training, action: 'create' })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: trainingShape })){
-      const response = await query({
+      const payload = await queryDB({
         entity: 'training',
         queryType: 'create',
         data
       })
+      const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 201 })
     } 
     return ERROR.FORBIDDEN()
@@ -35,7 +38,7 @@ export const POST = async request => {
 export const GET = async request => {
   try{
     const userId = authenticateToken(request)
-    const { permissions } = await query({
+    const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
@@ -43,10 +46,12 @@ export const GET = async request => {
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Training, action: 'findMany' })
     if(hasPermission){
-      const response = await query({
+      const payloads = await queryDB({
         entity: 'training',
         queryType: 'findMany',
       })
+      if(!payloads) return ERROR.NOT_FOUND()
+      const response = payloadFormatter(payloads.map(payload => cleanerData({ payload })))
       return NextResponse.json(response, { status: 200 })
     } 
     return ERROR.FORBIDDEN()
