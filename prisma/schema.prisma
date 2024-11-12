@@ -110,18 +110,18 @@ model PackageSelection {
   min               Int
   date              DateTime
   selectionConfigId Int
-  SelectionConfig   SelectionConfig @relation(fields: [selectionConfigId], references: [id])
+  selectionConfig   SelectionConfig @relation(fields: [selectionConfigId], references: [id])
 }
 
 model SelectionConfig {
   id                Int                 @id @default(autoincrement())
   groups            String[]
   created_at        DateTime            @default(now())
-  updated_at        DateTime
+  updated_at        DateTime            @updatedAt
   active            Boolean             @default(true)
   clubSelection     DateTime?
-  PackageSelection  PackageSelection[]
-  TrainingSelection TrainingSelection[]
+  packageSelection  PackageSelection[]
+  trainingSelection TrainingSelection[]
 }
 
 model TrainingSelection {
@@ -130,5 +130,5 @@ model TrainingSelection {
   min               Int
   date              DateTime
   selectionConfigId Int
-  SelectionConfig   SelectionConfig @relation(fields: [selectionConfigId], references: [id])
+  selectionConfig   SelectionConfig @relation(fields: [selectionConfigId], references: [id])
 }

@@ -108,6 +108,12 @@ describe('API Professor - GET', () => {
       }
     },
     {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
@@ -119,7 +125,7 @@ describe('API Professor - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching selectionConfig' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.selectionConfig, 'findUnique').mockRejectedValueOnce(mockImplementation) 
@@ -127,6 +133,10 @@ describe('API Professor - GET', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.selectionConfig, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const response = await GET(null, { params }) 
@@ -162,6 +172,31 @@ describe('API Professor - PUT', () => {
         created_at: 'created_at',
         active: true
       },
+      request: {
+        id: 1,
+        clubSelection: '2024-11-10T12:00:00Z',
+        groups: ['201', '202', '203'],
+        trainingSelection: [
+          {
+            max: 10,
+            min: 9,
+            date: '2024-11-10T12:00:00Z'
+          }
+        ],
+        packageSelection: [
+          {
+            max: 10,
+            min: 9,
+            date: '2024-11-10T12:00:00Z'
+          }
+        ]
+      },
+    },
+    {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
       request: {
         id: 1,
         clubSelection: '2024-11-10T12:00:00Z',
@@ -238,7 +273,7 @@ describe('API Professor - PUT', () => {
         ]
       },
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.selectionConfig, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -246,6 +281,10 @@ describe('API Professor - PUT', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.selectionConfig, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const mockRequest = {
@@ -286,6 +325,12 @@ describe('API Professor - Delete', () => {
       }
     },
     {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
@@ -297,7 +342,7 @@ describe('API Professor - Delete', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching selectionConfig' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.selectionConfig, 'delete').mockRejectedValueOnce(mockImplementation) 
@@ -305,6 +350,10 @@ describe('API Professor - Delete', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.selectionConfig, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const response = await DELETE(null, { params }) 
