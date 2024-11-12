@@ -1,7 +1,6 @@
 const getPermissionsByEntity = ({ permissions, entity, action }) => {
   const userPermissions = permissions?.reduce((acc, permission) => {
     const [actionFound, entityKey] = permission.name.split('_')
-    if(actionFound === 'admin') return [...acc, action]
     if (entityKey === entity.name) {
       return [...acc, actionFound]
     }
