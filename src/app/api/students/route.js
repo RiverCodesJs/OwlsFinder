@@ -19,9 +19,9 @@ export const POST = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Students, action: 'create' })
-    if(hasPermission){
-      const csvFile = await request.text()
-      if(!csvFile) return ERROR.INVALID_FIELDS()
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const csvFile = await request.text()
+    if(csvFile) {
       const { data } = parse(csvFile, {
         header: true,
         skipEmptyLines: true,
@@ -33,9 +33,9 @@ export const POST = async request => {
         data: processedData,
       })
       const response = payloadFormatter(payloads.map(payload => cleanerData({ payload })))
-      return NextResponse.json(response, { status: 201 })
-    } 
-    return ERROR.FORBIDDEN()
+      return NextResponse.json(response, { status: 201 })  
+    }
+    return ERROR.INVALID_FIELDS()  
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }

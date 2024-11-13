@@ -19,35 +19,34 @@ export const POST = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Admin, action: 'create' })
-    if(hasPermission){
-      const { email } = await request.json()
-      if (!email) return ERROR.INVALID_FIELDS()
-      const user = await queryDB({
-        entity: 'user',
-        queryType: 'findUnique',
-        filter: { email },
-        error: false
-      })
-      if (user) return ERROR.EMAIL_ALREADY_EXISTS()
-      const counselor = await queryDB({
-        entity: 'user',
-        queryType: 'create',
-        data: {
-          email,
-          type: 'Admin'
-        },
-        relations: [{
-          entity: 'permissions',
-          data: adminPermissions
-        }]
-      })
-      const token = jwt.sign({ 
-        userId: counselor.id
-      }, process.env.JWT_SECRET)
-      await emailSender({ reciver: email, template: registerCounselor({ token }) })
-      return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 })
-    } 
-    return ERROR.FORBIDDEN()
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const { email } = await request.json()
+    if (!email) return ERROR.INVALID_FIELDS()
+    const user = await queryDB({
+      entity: 'user',
+      queryType: 'findUnique',
+      filter: { email },
+      error: false
+    })
+    if (user) return ERROR.EMAIL_ALREADY_EXISTS()
+    const admin = await queryDB({
+      entity: 'user',
+      queryType: 'create',
+      data: {
+        email,
+        type: 'Admin'
+      },
+      relations: [{
+        entity: 'permissions',
+        data: adminPermissions
+      }]
+    })
+    const token = jwt.sign({ 
+      userId: admin.id
+    }, process.env.JWT_SECRET)
+    await emailSender({ reciver: email, template: registerCounselor({ token }) })
+    return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 })
+    
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }

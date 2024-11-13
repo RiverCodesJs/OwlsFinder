@@ -27,7 +27,6 @@ export const POST = async request => {
         data: {
           ...data,
           subjects: data.subjects.map(({ id }) => id)
-
         }
       })
       const response = cleanerData({ payload })
@@ -49,18 +48,17 @@ export const GET = async request => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'findMany' })
-    if(hasPermission){
-      const payloads = await queryDB({
-        entity: 'package',
-        queryType: 'findMany',
-      })
-      if(!payloads) return ERROR.NOT_FOUND()
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const payloads = await queryDB({
+      entity: 'package',
+      queryType: 'findMany',
+    })
+    if(payloads){
       const response = payloadFormatter(payloads.map(payload => cleanerData({ payload })))
-      return NextResponse.json(response, { status: 200 })
+      return NextResponse.json(response, { status: 200 })  
     } 
-    return ERROR.FORBIDDEN()
+    return ERROR.NOT_FOUND()    
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
-    
   }
 }

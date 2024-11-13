@@ -19,17 +19,17 @@ export const GET = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Training, action: 'findUnique' })
-    if(hasPermission){
-      const payload = await queryDB({
-        entity: 'training',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
-      if(!payload) return ERROR.NOT_FOUND()
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const payload = await queryDB({
+      entity: 'training',
+      queryType: 'findUnique',
+      filter: { id: Number(id) }
+    })
+    if(payload){
       const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 200 })
     } 
-    return ERROR.FORBIDDEN()
+    return ERROR.NOT_FOUND()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -75,19 +75,19 @@ export const PATCH = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Training, action: 'update' })
-    if(hasPermission){
-      const data = await request.json()
-      const payload = await queryDB({
-        entity: 'training',
-        queryType: 'update',
-        filter: { id: Number(id) },
-        data
-      })
-      if(!payload) return ERROR.NOT_FOUND()
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const data = await request.json()
+    const payload = await queryDB({
+      entity: 'training',
+      queryType: 'update',
+      filter: { id: Number(id) },
+      data
+    })
+    if(payload){
       const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 200 })
-    } 
-    return ERROR.FORBIDDEN()
+    }
+    return ERROR.NOT_FOUND()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -104,20 +104,20 @@ export const DELETE = async (request, { params }) => {
       includes: ['permissions']
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Training, action: 'delete' })
-    if(hasPermission){
-      const payload = await queryDB({
-        entity: 'training',
-        queryType: 'update',
-        filter: { id: Number(id) },
-        data: {
-          active: false
-        }
-      })
-      if(!payload) return ERROR.NOT_FOUND()
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const payload = await queryDB({
+      entity: 'training',
+      queryType: 'update',
+      filter: { id: Number(id) },
+      data: {
+        active: false
+      }
+    })
+    if(payload){
       const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 200 })
     } 
-    return ERROR.FORBIDDEN()
+    return ERROR.NOT_FOUND()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
