@@ -1,24 +1,16 @@
 import { NextResponse } from 'next/server'
 import { subjectShape } from '~/app/api/utils/shapes'
-import { authenticateToken } from '~/app/api/libs/auth'
 import { Subject } from '~/app/api/entities'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
-import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 import validatorFields from '~/app/api/libs/validatorFields'
 import cleanerData from '~/app/api/libs/cleanerData'
+import validatePermission from '~/app/api/libs/validatePermission'
 
 export const GET = async (request, { params }) => {
   try{
     const { id } = params
-    const userId = authenticateToken(request)
-    const { permissions } = await queryDB({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
-    })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'findUnique' })
+    const hasPermission = await validatePermission({ entity: Subject, action: 'findUnique', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
       entity: 'subject',
@@ -38,14 +30,7 @@ export const GET = async (request, { params }) => {
 export const PUT = async (request, { params }) => {
   try{
     const { id } = params
-    const userId = authenticateToken(request)
-    const { permissions } = await queryDB({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
-    })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'update' })
+    const hasPermission = await validatePermission({ entity: Subject, action: 'update', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: subjectShape })){
       const payload = await queryDB({
@@ -67,14 +52,7 @@ export const PUT = async (request, { params }) => {
 export const PATCH = async (request, { params }) => {
   try {
     const { id } = params
-    const userId = authenticateToken(request)
-    const { permissions } = await queryDB({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
-    })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'update' })
+    const hasPermission = await validatePermission({ entity: Subject, action: 'update', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const data = await request.json()
     const payload = await queryDB({
@@ -97,14 +75,7 @@ export const PATCH = async (request, { params }) => {
 export const DELETE = async (request, { params }) => {
   try {
     const { id } = params
-    const userId = authenticateToken(request)
-    const { permissions } = await queryDB({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
-    })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Subject, action: 'delete' })
+    const hasPermission = await validatePermission({ entity: Subject, action: 'delete', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
       entity: 'subject',

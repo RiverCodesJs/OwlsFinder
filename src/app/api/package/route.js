@@ -1,24 +1,16 @@
 import { NextResponse } from 'next/server'
 import { packageShape } from '~/app/api/utils/shapes'
-import { authenticateToken } from '~/app/api/libs/auth'
 import { Package } from '~/app/api/entities'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
-import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
 import validatorFields from '~/app/api/libs/validatorFields'
 import cleanerData from '~/app/api/libs/cleanerData'
 import payloadFormatter from '~/app/api/utils/payloadFormatter'
+import validatePermission from '~/app/api/libs/validatePermission'
 
 export const POST = async request => {
   try {
-    const userId = authenticateToken(request)
-    const { permissions } = await queryDB({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
-    })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'create' })
+    const hasPermission = await validatePermission({ entity: Package, action: 'create', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: packageShape })){
       const payload = await queryDB({
@@ -40,14 +32,7 @@ export const POST = async request => {
 
 export const GET = async request => {
   try {
-    const userId = authenticateToken(request)
-    const { permissions } = await queryDB({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
-    })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'findMany' })
+    const hasPermission = await validatePermission({ entity: Package, action: 'findMany', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payloads = await queryDB({
       entity: 'package',

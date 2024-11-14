@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { authenticateToken } from '~/app/api/libs/auth'
 import { Counselor } from '~/app/api/entities'
 import { counselorPermissions } from '~/app/api/utils/permissions'
 import ERROR from '~/error'
@@ -7,18 +6,11 @@ import registerCounselor from '~/app/api/libs/mail/templates/registerCounselor'
 import queryDB from '~/app/api/libs/queryDB'
 import jwt from 'jsonwebtoken'
 import emailSender from '~/app/api/libs/mail/emailSender'
-import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+import validatePermission from '~/app/api/libs/validatePermission'
 
 export const POST = async request => {
   try {
-    const userId = authenticateToken(request)
-    const { permissions } = await queryDB({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
-    })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Counselor, action: 'create' })
+    const hasPermission = await validatePermission({ entity: Counselor, action: 'create', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const { email } = await request.json()
     if (!email) return ERROR.INVALID_FIELDS()
