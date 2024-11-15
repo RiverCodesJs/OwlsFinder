@@ -1,8 +1,8 @@
 const getPermissionsByEntity = ({ permissions, entity, action }) => {
   const userPermissions = permissions?.reduce((acc, permission) => {
-    const [actionFound, entityKey] = permission.name.split('_')
+    const [action, entityKey] = permission.name.split('_')
     if (entityKey === entity.name) {
-      return [...acc, actionFound]
+      return [...acc, action]
     }
     return acc
   }, [])
