@@ -1,4 +1,4 @@
-export const counselorPermissions = [
+export const COUNSELOR_PERMISSIONS = [
   {
     name: 'update_me'
   },
@@ -55,7 +55,7 @@ export const counselorPermissions = [
   },
 ]
 
-export const adminPermissions = [
+export const ADMIN_PERMISSIONS = [
   {
     name: 'update_me'
   },
