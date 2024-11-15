@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { professorShape } from '~/app/api/utils/shapes'
 import { Professor } from '~/app/api/entities'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
@@ -12,7 +11,7 @@ export const POST = async request => {
   try {
     const hasPermission = await validatePermission({ entity: Professor, action: 'create', request })
     const data = await request.json()
-    if(hasPermission && validatorFields({ data, shape: professorShape })){
+    if(hasPermission && validatorFields({ data, shape: Professor.shape })){
       const payload = await queryDB({
         entity: 'professor',
         queryType: 'create',

@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { trainingShape } from '~/app/api/utils/shapes'
 import { Training } from '~/app/api/entities'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
@@ -33,7 +32,7 @@ export const PUT = async (request, { params }) => {
     const { id } = params
     const hasPermission = await validatePermission({ entity: Training, action: 'update', request })
     const data = await request.json()
-    if(hasPermission && validatorFields({ data, shape: trainingShape })){
+    if(hasPermission && validatorFields({ data, shape: Training.shape })){
       const payload = await queryDB({
         entity: 'training',
         queryType: 'update',

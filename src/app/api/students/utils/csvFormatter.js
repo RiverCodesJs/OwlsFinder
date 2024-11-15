@@ -1,4 +1,5 @@
-import { studentShape } from '~/app/api/utils/shapes'
+import { Students } from '~/app/api/entities'
+import validatorFields from '~/app/api/libs/validatorFields'
 import ERROR from '~/error'
 
 const translator = key => {
@@ -33,7 +34,7 @@ const csvFormatter = parsedData => {
         processedStudent.type = 'student'
         processedStudent.email = `${processedStudent.enrollmentId}@cobachih.edu.mx`
         processedStudent.shift = processedStudent.currentGroup.slice(1, 2) == '5' ? 'afternoon' : 'morning'
-        if (!studentShape.every(key => key in processedStudent)) return ERROR.INVALID_FIELDS()
+        if(!validatorFields({ data: processedStudent, shape: Students.shape })) return ERROR.INVALID_FIELDS()
         return processedStudent
       }))
   } catch (error) {
