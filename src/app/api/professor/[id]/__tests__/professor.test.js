@@ -81,6 +81,12 @@ describe('API Professor - GET', () => {
       }
     },
     {
+      descr: 'Not Valid ID',
+      id: 'NaN',
+      expectedStatus: 400,
+      expectedResponse: { error: 'Invalid Fields' }
+    },
+    {
       descr: 'Error has not data',
       isEmpty: true,
       expectedStatus: 404,
@@ -98,7 +104,7 @@ describe('API Professor - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching professor' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty, id }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.professor, 'findUnique').mockRejectedValueOnce(mockImplementation) 
@@ -111,7 +117,7 @@ describe('API Professor - GET', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.professor, 'findUnique').mockReturnValueOnce(null)
     }
-    const params = { id: '1' }
+    const params = { id: id ?? '1' }
     const response = await GET(null, { params }) 
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)

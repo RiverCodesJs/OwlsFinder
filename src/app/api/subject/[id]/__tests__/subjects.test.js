@@ -77,6 +77,12 @@ describe('API subjects - GET', () => {
       }, 
     },
     {
+      descr: 'Not Valid ID',
+      id: 'NaN',
+      expectedStatus: 400,
+      expectedResponse: { error: 'Invalid Fields' }
+    },
+    {
       descr: 'Error has not data',
       isEmpty: true,
       expectedStatus: 404,
@@ -94,7 +100,7 @@ describe('API subjects - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching subjects' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty, id }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.subject, 'findUnique').mockRejectedValueOnce(mockImplementation) 
@@ -107,7 +113,7 @@ describe('API subjects - GET', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.subject, 'findUnique').mockReturnValueOnce(null)
     }
-    const params = { id: '1' }
+    const params = { id: id ?? '1' }
     const response = await GET(null, { params }) 
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
@@ -208,6 +214,7 @@ describe('API subjects - PATCH', () => {
         active: true
       }
     },
+    
     {
       descr: 'Error has not data',
       isEmpty: true,
