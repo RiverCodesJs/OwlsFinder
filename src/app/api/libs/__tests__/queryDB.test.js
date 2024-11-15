@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import query from '~/app/api/libs/query'
+import queryDB from '~/app/api/libs/queryDB'
 
 let id = 1
 
@@ -41,8 +41,7 @@ vi.mock('~/app/api/libs/db', () => {
             subjects: [{ id: 1 }, { id: 2 }],
             created_at: 'created_at',
             updated_at: 'updated_at',
-            active: 'active'
-            
+            active: true
           },
           {
             id : 2,
@@ -50,7 +49,7 @@ vi.mock('~/app/api/libs/db', () => {
             subjects: [{ id: 1 }, { id: 2 }] ,
             created_at: 'created_at',
             updated_at: 'updated_at',
-            active: 'active'
+            active: true
           }
         ]),
 
@@ -60,7 +59,7 @@ vi.mock('~/app/api/libs/db', () => {
           subjects: [{ id: 1 }, { id: 2 }], 
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         }),
         
         create: ({ data }) => ({
@@ -69,7 +68,7 @@ vi.mock('~/app/api/libs/db', () => {
           subjects: [{ id: 1 }, { id:2 }],
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         }),
 
         update:  ({ where, data }) => ({
@@ -78,7 +77,7 @@ vi.mock('~/app/api/libs/db', () => {
           subjects: [{ id: 1 }, { id: 2 }],
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         }),
 
         delete: ({ where }) => ({
@@ -87,14 +86,14 @@ vi.mock('~/app/api/libs/db', () => {
           subjects: [{ id: 1 }, { id: 2 }],
           created_at: 'created_at',
           updated_at: 'updated_at',
-          active: 'active'
+          active: true
         })
       }
     } 
   }
 })
 
-describe('query libs wihtout createMany', () =>{
+describe('queryDB libs wihtout createMany', () =>{
   it.each([
     {
       descr: 'Empty data',
@@ -114,20 +113,28 @@ describe('query libs wihtout createMany', () =>{
       includes: ['subjects'], 
       data: null, 
       relations: null,
-      result: {
-        1: { 
+      result: [
+        { 
           id: 1, 
           name: 'package1', 
-          subjects: [1, 2], 
-          active: 'active'
+          subjects: [
+            { id: 1 }, { id: 2 }
+          ], 
+          created_at: 'created_at',
+          updated_at: 'updated_at',
+          active: true
         }, 
-        2: { 
+        { 
           id: 2, 
           name: 'package2', 
-          subjects: [1, 2],
-          active: 'active' 
-        } 
-      },
+          subjects: [
+            { id: 1 }, { id: 2 }
+          ], 
+          created_at: 'created_at',
+          updated_at: 'updated_at',
+          active: true
+        }
+      ],
     },
     {
       descr: 'Find Many case but the response is null',
@@ -137,8 +144,8 @@ describe('query libs wihtout createMany', () =>{
       includes: ['subjects'], 
       data: null, 
       relations: null,
-      result: 'Not Found',
-      mockImplementation: true
+      result: null,
+      isEmpty: true
     },
     {
       descr: 'Find Unique case',
@@ -151,8 +158,12 @@ describe('query libs wihtout createMany', () =>{
       result: {
         id: 1, 
         name: 'package1', 
-        subjects: [1, 2],
-        active: 'active'
+        subjects: [
+          { id: 1 }, { id: 2 }
+        ],
+        created_at: 'created_at',
+        updated_at: 'updated_at',
+        active: true
       },
     },
     {
@@ -163,19 +174,8 @@ describe('query libs wihtout createMany', () =>{
       includes: ['subjects'], 
       data: null, 
       relations: null,
-      result: 'Not Found',
-      mockImplementation: true
-    },
-    {
-      descr: 'Find Unique case but the id is a NaN',
-      entity: 'package',
-      queryType: 'findUnique',
-      filter: { id: NaN }, 
-      includes: ['subjects'], 
-      data: null, 
-      relations: null,
-      error: true,
-      result: 'Not Found',
+      result: null,
+      isEmpty: true
     },
     {
       descr: 'Create case',
@@ -201,8 +201,12 @@ describe('query libs wihtout createMany', () =>{
       result: {
         id: 1, 
         name: 'package1', 
-        subjects: [1, 2],
-        active: 'active'
+        subjects: [
+          { id: 1 }, { id: 2 }
+        ],
+        created_at: 'created_at',
+        updated_at: 'updated_at',
+        active: true
       },
     },
     {
@@ -218,8 +222,12 @@ describe('query libs wihtout createMany', () =>{
       result: {
         id: 1, 
         name: 'packageUpdated', 
-        subjects: [1, 2],
-        active: 'active'
+        subjects: [
+          { id: 1 }, { id: 2 }
+        ],
+        created_at: 'created_at',
+        updated_at: 'updated_at',
+        active: true
       }
     },
     {
@@ -232,8 +240,8 @@ describe('query libs wihtout createMany', () =>{
         name: 'packageUpdated'
       }, 
       relations: null,
-      error: 'findUnique',
-      result: 'Not Found',
+      isEmpty: true,
+      result: null,
     },
     {
       descr: 'Delete case',
@@ -246,8 +254,12 @@ describe('query libs wihtout createMany', () =>{
       result: {
         id: 1, 
         name: 'package1', 
-        subjects: [1, 2],
-        active: 'active'
+        subjects: [
+          { id: 1 }, { id: 2 }
+        ],
+        created_at: 'created_at',
+        updated_at: 'updated_at',
+        active: true
       }
     },
     {
@@ -258,27 +270,27 @@ describe('query libs wihtout createMany', () =>{
       includes: ['subjects'], 
       data: null,
       relations: null,
-      error: 'findUnique',
-      result: 'Not Found',
+      isEmpty: true,
+      result: null,
     }
-  ])('$descr', async ({ result, error, mockImplementation, queryType, ...props }) => {
+  ])('$descr', async ({ result, error, mockImplementation, isEmpty, queryType, ...props }) => {
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.package, queryType).mockReturnValueOnce(null) 
-      expect(async () => await query({ queryType, ...props })).rejects.toThrowError(result)
+      expect(async () => await queryDB({ queryType, ...props })).rejects.toThrowError(result)
     } else if(error) {
-      if(error === 'findUnique'){
-        const db = await import('~/app/api/libs/db')
-        vi.spyOn(db.default.package, 'findUnique').mockReturnValueOnce(null)
-      } 
-      expect(async () => await query({ queryType, ...props })).rejects.toThrowError(result)
+      expect(async () => await queryDB({ queryType, ...props })).rejects.toThrowError(result)
+    } else if(isEmpty) {
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.package, queryType).mockReturnValueOnce(queryType === 'findMany' ? [] : null) 
+      expect(await queryDB({ queryType, ...props })).toEqual(result)
     } else {
-      expect(await query({ queryType, ...props })).toEqual(result)
+      expect(await queryDB({ queryType, ...props })).toEqual(result)
     }
   })
 })
 
-describe('query libs just createMany', () => {
+describe('queryDB libs just createMany', () => {
   it.each([
     {
       descr: 'createMany case - new data',
@@ -295,20 +307,24 @@ describe('query libs just createMany', () => {
           email: '23080002@cobachih.edu.mx',
         }
       ], 
-      result: {
-        1: {
+      result: [
+        {
           id: 1,
           names: 'Carlos Alberto',
           email: '23080001@cobachih.edu.mx',
+          created_at: 'created_at',
+          updated_at: 'updated_at',
           active: true
         },
-        2:{
+        {
           id: 2,
           names: 'Maria Fernanda',
           email: '23080002@cobachih.edu.mx',
+          created_at: 'created_at',
+          updated_at: 'updated_at',
           active: true
         }
-      },
+      ],
     },
     {
       descr: 'createMany case - no new data',
@@ -325,20 +341,24 @@ describe('query libs just createMany', () => {
           email: '23080002@cobachih.edu.mx',
         }
       ], 
-      result: {
-        3: {
+      result: [
+        {
           id: 3,
           names: 'Carlos Alberto',
           email: '23080001@cobachih.edu.mx',
+          created_at: 'created_at',
+          updated_at: 'updated_at',
           active: true
         },
-        4:{
+        {
           id: 4,
           names: 'Maria Fernanda',
           email: '23080002@cobachih.edu.mx',
+          created_at: 'created_at',
+          updated_at: 'updated_at',
           active: true
         }
-      },
+      ],
     },
     {
       descr: 'createMany case - no new data',
@@ -363,15 +383,15 @@ describe('query libs just createMany', () => {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.user, 'findUnique').mockRejectedValueOnce(mockImplementation)
       
-      expect(async () => await query({ ...props })).rejects.toThrowError(result)
+      expect(async () => await queryDB({ ...props })).rejects.toThrowError(result)
 
     } else {
       if (newData) {
         const db = await import('~/app/api/libs/db')
         props.data.forEach(() => vi.spyOn(db.default.user, 'findUnique').mockReturnValueOnce(null) )
-        expect(await query({ ...props })).toEqual(result)
+        expect(await queryDB({ ...props })).toEqual(result)
       } else {
-        expect(await query({ ...props })).toEqual(result)
+        expect(await queryDB({ ...props })).toEqual(result)
       }
     }
 

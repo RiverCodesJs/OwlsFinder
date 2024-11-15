@@ -82,6 +82,12 @@ describe('API Professor - GET', () => {
       }
     },
     {
+      descr: 'Error has not data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
@@ -93,7 +99,7 @@ describe('API Professor - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching professors' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.professor, 'findMany').mockRejectedValueOnce(mockImplementation) 
@@ -101,6 +107,10 @@ describe('API Professor - GET', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.professor, 'findMany').mockReturnValueOnce([]) 
     }
     const response = await GET()
     const jsonResponse = await response.json()

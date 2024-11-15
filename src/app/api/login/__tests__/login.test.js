@@ -47,6 +47,16 @@ describe('API Login - POST', () => {
       expectedResponse: 'successful token'
     },
     {
+      descr: 'Error Empty data',
+      isEmpty: true,
+      request: {
+        email: 'jonh.doe@email.com',
+        password: 'password'
+      },
+      expectedStatus: 400,
+      expectedResponse: { error: 'Invalid Fields' }
+    },
+    {
       descr: 'Incorrect Password Error',
       request: {
         email: 'jonh.doe@email.com',
@@ -74,10 +84,14 @@ describe('API Login - POST', () => {
       expectedResponse: { error: 'Error fetching login' }
     },
     
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.user, 'findUnique').mockRejectedValueOnce(mockImplementation) 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.user, 'findUnique').mockReturnValueOnce(null) 
     }
     const mockRequest = {
       json: async () => request, 

@@ -15,7 +15,6 @@ const emailSender = async ({ reciver, template }) => {
       maxConnections: 5, 
       rateLimit: 10 
     })
-
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: reciver,

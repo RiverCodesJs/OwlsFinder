@@ -1,32 +1,28 @@
 import { NextResponse } from 'next/server'
 import { permissionShape } from '~/app/api/utils/shapes'
-import { authenticateToken } from '~/app/api/libs/auth'
 import { Permission } from '~/app/api/entities'
 import ERROR from '~/error'
-import query from '~/app/api/libs/query'
-import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+import queryDB from '~/app/api/libs/queryDB'
 import validatorFields from '~/app/api/libs/validatorFields'
+import cleanerData from '~/app/api/libs/cleanerData'
+import validatePermission from '~/app/api/libs/validatePermission'
 
 export const GET = async (request, { params }) => {
   try{
     const { id } = params
-    const userId = authenticateToken(request)
-    const { permissions } = await query({
-      entity: 'user',
+    if (!Number(id)) return ERROR.INVALID_FIELDS()
+    const hasPermission = await validatePermission({ entity: Permission, action: 'findUnique', request })
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const payload = await queryDB({
+      entity: 'permission',
       queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
+      filter: { id: Number(id) }
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'findUnique' })
-    if(hasPermission){
-      const response = await query({
-        entity: 'permission',
-        queryType: 'findUnique',
-        filter: { id: Number(id) }
-      })
-      return NextResponse.json(response, { status: 200 })
+    if(payload){
+      const response = cleanerData({ payload })
+      return NextResponse.json(response, { status: 200 })  
     } 
-    return ERROR.FORBIDDEN()
+    return ERROR.NOT_FOUND()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -35,22 +31,17 @@ export const GET = async (request, { params }) => {
 export const PUT = async (request, { params }) => {
   try{
     const { id } = params
-    const userId = authenticateToken(request)
-    const { permissions } = await query({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
-    })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'update' })
+    const hasPermission = await validatePermission({ entity: Permission, action: 'update', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: permissionShape })){
-      const response = await query({
+      const payload = await queryDB({
         entity: 'permission',
         queryType: 'update',
         filter: { id: Number(id) },
         data,
       })
+      if(!payload) return ERROR.NOT_FOUND()
+      const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 200 })
     } 
     return ERROR.FORBIDDEN()
@@ -62,25 +53,20 @@ export const PUT = async (request, { params }) => {
 export const PATCH = async (request, { params }) => {
   try{
     const { id } = params
-    const userId = authenticateToken(request)
-    const { permissions } = await query({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
-    })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'update' })
+    const hasPermission = await validatePermission({ entity: Permission, action: 'update', request })
     const data = await request.json()
-    if(hasPermission){
-      const response = await query({
-        entity: 'permission',
-        queryType: 'update',
-        filter: { id: Number(id) },
-        data,
-      })
-      return NextResponse.json(response, { status: 200 })
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const payload = await queryDB({
+      entity: 'permission',
+      queryType: 'update',
+      filter: { id: Number(id) },
+      data,
+    })
+    if(payload){
+      const response = cleanerData({ payload })
+      return NextResponse.json(response, { status: 200 })    
     } 
-    return ERROR.FORBIDDEN()
+    return ERROR.NOT_FOUND()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
@@ -89,23 +75,17 @@ export const PATCH = async (request, { params }) => {
 export const DELETE = async (request, { params }) => {
   try {
     const { id } = params
-    const userId = authenticateToken(request)
-    const { permissions } = await query({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
+    const hasPermission = await validatePermission({ entity: Permission, action: 'delete', request })
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const payload = await queryDB({
+      entity: 'permission',
+      queryType: 'delete',
+      filter: { id: Number(id) },
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Permission, action: 'delete' })
-    if(hasPermission){
-      const response = await query({
-        entity: 'permission',
-        queryType: 'delete',
-        filter: { id: Number(id) },
-      })
-      return NextResponse.json(response, { status: 200 })
-    } 
-    return ERROR.FORBIDDEN()
+    if(!payload) return ERROR.NOT_FOUND()
+    const response = cleanerData({ payload })
+    return NextResponse.json(response, { status: 200 })
+    
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }

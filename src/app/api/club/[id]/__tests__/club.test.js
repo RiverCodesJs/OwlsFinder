@@ -76,6 +76,12 @@ describe('API Club - GET', () => {
       }
     },
     {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
@@ -87,18 +93,19 @@ describe('API Club - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching club' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'findUnique').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'findUnique').mockRejectedValueOnce(mockImplementation)
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
     }
-
-
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.club, 'findUnique').mockReturnValueOnce(null)
+    }
     const params = { id: '1' }
     const response = await GET(null, { params }) 
     const jsonResponse = await response.json()
@@ -170,6 +177,23 @@ describe('API Club - PUT', () => {
       },
     },
     {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
+      request: {
+        id: 1, 
+        name: 'club 1',
+        groupNumber: 201,
+        description: 'Description about the club',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+        professorId: 1
+      },
+    },
+    {
       descr: 'Error Invalid Input',
       expectedStatus: 400,
       expectedResponse: { error: 'Invalid Fields' },
@@ -224,7 +248,7 @@ describe('API Club - PUT', () => {
         }
       },
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -233,7 +257,10 @@ describe('API Club - PUT', () => {
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
-
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.club, 'findUnique').mockReturnValueOnce(null)
+    }
     const params = { id: '1' }
     const mockRequest = {
       json: async () => request, 
@@ -262,6 +289,23 @@ describe('API Club - PATCH', () => {
         professorId: 1,
         active: 'active'
       },
+      request: {
+        id: 1, 
+        name: 'club 1',
+        groupNumber: 201,
+        description: 'Description about the club',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+        professorId: 1
+      },
+    },
+    {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
       request: {
         id: 1, 
         name: 'club 1',
@@ -320,7 +364,7 @@ describe('API Club - PATCH', () => {
         }
       },
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -329,7 +373,10 @@ describe('API Club - PATCH', () => {
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
-
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.club, 'findUnique').mockReturnValueOnce(null)
+    }
     const params = { id: '1' }
     const mockRequest = {
       json: async () => request, 
@@ -353,6 +400,12 @@ describe('API Club - Delete', () => {
       }
     },
     {
+      descr: 'Error empty data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
+    },
+    {
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
@@ -364,7 +417,7 @@ describe('API Club - Delete', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching club' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -382,8 +435,10 @@ describe('API Club - Delete', () => {
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
     }
-
-    
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.club, 'findUnique').mockReturnValueOnce(null)
+    }
     const params = { id: '1' }
     const response = await DELETE(null, { params }) 
     const jsonResponse = await response.json()

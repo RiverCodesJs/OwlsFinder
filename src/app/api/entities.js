@@ -57,6 +57,14 @@ export const Training = {
 export const Me = {
   name: 'me',
   permissions: {
+    update: true,
+    delete: true
+  }
+}
+
+export const Students = {
+  name: 'students',
+  permissions: {
     findUnique: true,
     findMany :true,
     create: true,
@@ -65,8 +73,19 @@ export const Me = {
   }
 }
 
-export const Students = {
-  name: 'students',
+export const Counselor = {
+  name: 'counselor',
+  permissions: {
+    findUnique: true,
+    findMany :true,
+    create: true,
+    update: true,
+    delete: true
+  }
+}
+
+export const Admin = {
+  name: 'admin',
   permissions: {
     findUnique: true,
     findMany :true,

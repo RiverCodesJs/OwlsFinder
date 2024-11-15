@@ -85,6 +85,12 @@ describe('API Training - GET', () => {
       }
     },
     {
+      descr: 'Error has not data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
+    },
+    {
       descr: 'Error has not permission',
       isNotAllowed: true,
       expectedStatus: 403,
@@ -96,7 +102,7 @@ describe('API Training - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching training' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.training, 'findUnique').mockRejectedValueOnce(mockImplementation) 
@@ -104,6 +110,10 @@ describe('API Training - GET', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.training, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const response = await GET(null, { params }) 
@@ -129,6 +139,21 @@ describe('API training - PUT', () => {
         limit: 30,
         active: true
       },
+      request: {
+        name: 'training 1',
+        groupNumber: 201,
+        description: 'Description about the training',
+        images: ['image1'],
+        videos: ['video1'],
+        shift: 'shift',
+        limit: 30,
+      },
+    },
+    {
+      descr: 'Error has not data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
       request: {
         name: 'training 1',
         groupNumber: 201,
@@ -180,7 +205,7 @@ describe('API training - PUT', () => {
         limit: 30,
       },
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.training, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -188,6 +213,10 @@ describe('API training - PUT', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.training, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const mockRequest = {
@@ -218,6 +247,21 @@ describe('API training - PATCH', () => {
       },
       request: {
         id: 1, 
+        name: 'training 1',
+        groupNumber: 201,
+        description: 'Description about the training',
+        images: ['image1'],
+        videos: ['video1'],
+        shift: 'shift',
+        limit: 30,
+      },
+    },
+    {
+      descr: 'Error has not data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
+      request: {
         name: 'training 1',
         groupNumber: 201,
         description: 'Description about the training',
@@ -259,7 +303,7 @@ describe('API training - PATCH', () => {
         limit: 30,
       },
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.training, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -267,6 +311,10 @@ describe('API training - PATCH', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.training, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const mockRequest = {
@@ -290,6 +338,12 @@ describe('API training - Delete', () => {
         active: false
       }
     },
+    {  
+      descr: 'Error has not data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' },
+    },
     {
       descr: 'Error has not permission',
       isNotAllowed: true,
@@ -302,7 +356,7 @@ describe('API training - Delete', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching training' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.training, 'update').mockRejectedValueOnce(mockImplementation) 
@@ -319,6 +373,10 @@ describe('API training - Delete', () => {
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+    }
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.training, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
     const response = await DELETE(null, { params }) 

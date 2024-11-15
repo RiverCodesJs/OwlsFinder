@@ -92,22 +92,30 @@ describe('API Package - GET', () => {
       expectedResponse: { error: 'Not Allowed' }
     },
     {
+      descr: 'Error has not data',
+      isEmpty: true,
+      expectedStatus: 404,
+      expectedResponse: { error: 'Not Found' }
+    },
+    {
       descr: 'Error fetching clubs',
       mockImplementation:  new Error('Error fetching clubs'),
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching clubs' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
-    if (mockImplementation) {
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
+    if(mockImplementation){
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'findMany').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
     }
-
+    if(isEmpty){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.club, 'findMany').mockReturnValueOnce([]) 
+    }
     const response = await GET()
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
@@ -181,6 +189,32 @@ describe('API Package - POST', () => {
       }
     },
     {
+      descr: 'Successful response but without professor',
+      notProfessor: true,
+      request: {
+        name: 'package1',
+        groupNumber: 201,
+        description: 'Description about the package',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+      },
+      expectedStatus: 201,
+      expectedResponse: {
+        id: 1,
+        name: 'package1',
+        groupNumber: 201,
+        description: 'Description about the package',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+        professorId: null,
+        active: 'active'
+      }
+    },
+    {
       descr: 'Error fetching packages',
       request: {
         name: 'package1',
@@ -232,21 +266,35 @@ describe('API Package - POST', () => {
       expectedStatus: 400,
       expectedResponse: { error: 'Invalid Fields' }
     }
-  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed }) =>{
+  ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, notProfessor }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'create').mockRejectedValueOnce(mockImplementation) 
     }
-
     if(isNotAllowed){
       const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
       vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
     }
-
     const mockRequest = {
       json: async () => request, 
     }
-  
+    if(notProfessor){
+      const db = await import('~/app/api/libs/db')
+      vi.spyOn(db.default.club, 'create').mockReturnValueOnce({
+        id: 1, 
+        name: 'package1',
+        groupNumber: 201,
+        description: 'Description about the package',
+        images: ['image1'],
+        videos: ['video1'],
+        schedule: 'schedule',
+        limit: 30,
+        professorId: null,
+        created_at: 'created_at',
+        updated_at: 'updated_at',
+        active: 'active'
+      }) 
+    }
     const response = await POST(mockRequest)
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)

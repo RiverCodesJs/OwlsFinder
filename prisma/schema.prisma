@@ -1,108 +1,134 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") 
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model User {
-  id               Int                  @id @default(autoincrement())
-  names            String
-  paternalSurname  String
-  maternalSurname  String
-  email            String               @unique
-  password         String?
-  enrollmentId     String?                 @unique
-  grade            String?
-  groups           String[]
-  currentGroup     String?
-  nextGroup        String?
-  clubId           Int?
-  club             Club?                @relation(fields: [clubId], references: [id])
-  type             String
-  shift            String?
-  permissions      Permission[]
-  created_at       DateTime             @default(now())
-  updated_at       DateTime             @updatedAt
-  active           Boolean              @default(true)
+  id              Int          @id @default(autoincrement())
+  names           String?
+  paternalSurname String?
+  maternalSurname String?
+  email           String       @unique
+  password        String?
+  enrollmentId    String?      @unique
+  currentGroup    String?
+  nextGroup       String?
+  clubId          Int?
+  shift           String?
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+  active          Boolean      @default(true)
+  type            String
+  groups          String[]
+  grade           String?
+  club            Club?        @relation(fields: [clubId], references: [id])
+  permissions     Permission[] @relation("PermissionToUser")
 }
 
 model Professor {
-  id                Int         @id @default(autoincrement())
-  name              String
-  paternalSurname   String
-  maternalSurname   String
-  email             String      @unique
-  clubs             Club[]
-  created_at        DateTime    @default(now())
-  updated_at        DateTime    @updatedAt
-  active            Boolean     @default(true)
+  id              Int      @id @default(autoincrement())
+  name            String
+  paternalSurname String
+  maternalSurname String
+  email           String   @unique
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  active          Boolean  @default(true)
+  clubs           Club[]
 }
 
 model Package {
-  id                Int              @id @default(autoincrement())
-  name              String
-  groupNumber       Int?
-  description       String
-  images            String[]
-  videos            String[]
-  limit             Int
-  subjects          Int[]
-  created_at        DateTime         @default(now())
-  updated_at        DateTime         @updatedAt
-  active            Boolean          @default(true)
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  images      String[]
+  videos      String[]
+  limit       Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  active      Boolean  @default(true)
+  groupNumber Int?
+  subjects    Int[]
 }
 
 model Subject {
-  id                Int              @id @default(autoincrement())
-  name              String
-  description       String
-  created_at        DateTime         @default(now())
-  updated_at        DateTime         @updatedAt
-  active            Boolean          @default(true)
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  active      Boolean  @default(true)
 }
 
 model Training {
-  id                Int              @id @default(autoincrement())
-  name              String
-  groupNumber       Int?
-  description       String
-  images            String[]
-  videos            String[]
-  shift             String
-  limit             Int
-  professor         String?
-  created_at        DateTime         @default(now())
-  updated_at        DateTime         @updatedAt
-  active            Boolean          @default(true)
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  images      String[]
+  videos      String[]
+  shift       String
+  limit       Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  active      Boolean  @default(true)
+  professor   String?
+  groupNumber Int?
 }
 
 model Club {
-  id                Int              @id @default(autoincrement())
-  name              String
-  groupNumber       Int?
-  description       String
-  images            String[]
-  videos            String[]
-  limit             Int
-  shift             String?
-  schedule          String
-  users             User[]
-  professorId       Int
-  professor         Professor        @relation(fields: [professorId], references: [id])
-  created_at        DateTime         @default(now())
-  updated_at        DateTime         @updatedAt
-  active            Boolean          @default(true)
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  images      String[]
+  videos      String[]
+  limit       Int
+  shift       String?
+  schedule    String
+  professorId Int?
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  active      Boolean    @default(true)
+  groupNumber Int?
+  professor   Professor? @relation(fields: [professorId], references: [id])
+  users       User[]
 }
 
 model Permission {
-  id                Int              @id @default(autoincrement())
-  name              String
-  users             User[]
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[] @relation("PermissionToUser")
+}
+
+model PackageSelection {
+  id                Int             @id @default(autoincrement())
+  max               Int
+  min               Int
+  date              DateTime
+  selectionConfigId Int
+  SelectionConfig   SelectionConfig @relation(fields: [selectionConfigId], references: [id])
+}
+
+model SelectionConfig {
+  id                Int                 @id @default(autoincrement())
+  groups            String[]
+  created_at        DateTime            @default(now())
+  updated_at        DateTime
+  active            Boolean             @default(true)
+  clubSelection     DateTime?
+  PackageSelection  PackageSelection[]
+  TrainingSelection TrainingSelection[]
+}
+
+model TrainingSelection {
+  id                Int             @id @default(autoincrement())
+  max               Int
+  min               Int
+  date              DateTime
+  selectionConfigId Int
+  SelectionConfig   SelectionConfig @relation(fields: [selectionConfigId], references: [id])
 }

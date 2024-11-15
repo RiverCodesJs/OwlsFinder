@@ -1,25 +1,19 @@
 import { NextResponse } from 'next/server'
 import { packageShape } from '~/app/api/utils/shapes'
-import { authenticateToken } from '~/app/api/libs/auth'
 import { Package } from '~/app/api/entities'
 import ERROR from '~/error'
-import query from '~/app/api/libs/query'
-import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+import queryDB from '~/app/api/libs/queryDB'
 import validatorFields from '~/app/api/libs/validatorFields'
+import cleanerData from '~/app/api/libs/cleanerData'
+import payloadFormatter from '~/app/api/utils/payloadFormatter'
+import validatePermission from '~/app/api/libs/validatePermission'
 
 export const POST = async request => {
   try {
-    const userId = authenticateToken(request)
-    const { permissions } = await query({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
-    })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'create' })
+    const hasPermission = await validatePermission({ entity: Package, action: 'create', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: packageShape })){
-      const response = await query({
+      const payload = await queryDB({
         entity: 'package',
         queryType: 'create',
         data: {
@@ -27,6 +21,7 @@ export const POST = async request => {
           subjects: data.subjects.map(({ id }) => id)
         }
       })
+      const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 201 })
     } 
     return ERROR.FORBIDDEN()
@@ -37,24 +32,18 @@ export const POST = async request => {
 
 export const GET = async request => {
   try {
-    const userId = authenticateToken(request)
-    const { permissions } = await query({
-      entity: 'user',
-      queryType: 'findUnique',
-      filter: { id: Number(userId) },
-      includes: ['permissions']
+    const hasPermission = await validatePermission({ entity: Package, action: 'findMany', request })
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const payloads = await queryDB({
+      entity: 'package',
+      queryType: 'findMany',
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Package, action: 'findMany' })
-    if(hasPermission){
-      const response = await query({
-        entity: 'package',
-        queryType: 'findMany',
-      })
-      return NextResponse.json(response, { status: 200 })
+    if(payloads){
+      const response = payloadFormatter(payloads.map(payload => cleanerData({ payload })))
+      return NextResponse.json(response, { status: 200 })  
     } 
-    return ERROR.FORBIDDEN()
+    return ERROR.NOT_FOUND()    
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
-    
   }
 }
