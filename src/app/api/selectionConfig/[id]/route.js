@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { selectionConfigShape } from '~/app/api/utils/shapes'
 import { SelectionConfig } from '~/app/api/entities'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
@@ -35,7 +34,7 @@ export const PUT = async (request, { params }) => {
     const { id } = params
     const hasPermission = await validatePermission({ entity: SelectionConfig, action: 'update', request })
     const data = await request.json()
-    if(hasPermission && validatorFields({ data, shape: selectionConfigShape })){
+    if(hasPermission && validatorFields({ data, shape: SelectionConfig.shape })){
       const { packageSelection, trainingSelection, ...partialData } = data
       const payload = await queryDB({
         entity: 'selectionConfig',
