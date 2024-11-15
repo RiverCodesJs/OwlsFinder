@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Admin } from '~/app/api/entities'
-import { adminPermissions } from '~/app/api/utils/permissions'
+import { ADMIN_PERMISSIONS } from '~/app/api/utils/permissions'
 import ERROR from '~/error'
 import registerCounselor from '~/app/api/libs/mail/templates/registerCounselor'
 import queryDB from '~/app/api/libs/queryDB'
@@ -30,7 +30,7 @@ export const POST = async request => {
       },
       relations: [{
         entity: 'permissions',
-        data: adminPermissions
+        data: ADMIN_PERMISSIONS
       }]
     })
     const token = jwt.sign({ 

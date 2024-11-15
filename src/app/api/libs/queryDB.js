@@ -59,7 +59,6 @@ const createStudents = async data => {
 //@queryType one of [findUnique, findMany, delete, update, create, createMany]
 const queryDB = async ({ entity, filter, includes, queryType, data, relations }) => {
   const opts = queryType !== 'createMany' ? getOptions({ filter, includes, data, relations }) : { data }
-  if (opts?.where?.id !== undefined && isNaN(opts.where.id)) return ERROR.NOT_FOUND()
   let payload
   let element
   let options
@@ -78,6 +77,7 @@ const queryDB = async ({ entity, filter, includes, queryType, data, relations })
       return await createStudents(data)
     
     case 'update':
+      if (!opts?.where?.id) return ERROR.NOT_FOUND()
       options = getOptions({ filter })
       element = await db[entity].findUnique(options)
       payload = element ? await db[entity].update({ ...opts }) : null

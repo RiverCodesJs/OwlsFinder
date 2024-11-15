@@ -10,6 +10,7 @@ import validatePermission from '~/app/api/libs/validatePermission'
 export const GET = async (request, { params }) => {
   try{
     const { id } = params
+    if (!Number(id)) return ERROR.INVALID_FIELDS()
     const hasPermission = await validatePermission({ entity: Permission, action: 'findUnique', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({

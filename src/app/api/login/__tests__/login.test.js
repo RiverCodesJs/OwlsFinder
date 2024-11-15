@@ -91,7 +91,7 @@ describe('API Login - POST', () => {
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.user, 'findUnique').mockReturnValueOnce(mockImplementation) 
+      vi.spyOn(db.default.user, 'findUnique').mockReturnValueOnce(null) 
     }
     const mockRequest = {
       json: async () => request, 

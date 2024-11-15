@@ -178,17 +178,6 @@ describe('queryDB libs wihtout createMany', () =>{
       isEmpty: true
     },
     {
-      descr: 'Find Unique case but the id is a NaN',
-      entity: 'package',
-      queryType: 'findUnique',
-      filter: { id: NaN }, 
-      includes: ['subjects'], 
-      data: null, 
-      relations: null,
-      error: true,
-      result: 'Not Found',
-    },
-    {
       descr: 'Create case',
       entity: 'package',
       queryType: 'create',

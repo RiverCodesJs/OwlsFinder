@@ -5,8 +5,8 @@ vi.mock('~/app/api/libs/db', () => {
   return {
     default: {
       user:{
-        findUnique: ({ where }) => ({
-          id: where.id,
+        findUnique: () => ({
+          id: 1,
           name: 'Jonh',
           permissions: [
             {
