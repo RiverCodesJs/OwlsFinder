@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { loginShape } from '~/app/api/utils/shapes'
+import { Login } from '~/app/api/entities'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import queryDB from '~/app/api/libs/queryDB'
@@ -9,7 +9,7 @@ import validatorFields from '~/app/api/libs/validatorFields'
 export const POST = async request => {
   try {
     const data = await request.json()
-    if (validatorFields({ data, shape: loginShape })) {
+    if (validatorFields({ data, shape: Login.shape })) {
       const user = await queryDB({
         entity: 'user',
         queryType: 'findUnique',

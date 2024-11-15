@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { permissionShape } from '~/app/api/utils/shapes'
 import { Permission } from '~/app/api/entities'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
@@ -12,7 +11,7 @@ export const POST = async request => {
   try {
     const hasPermission = await validatePermission({ entity: Permission, action: 'create', request })
     const data = await request.json()
-    if(hasPermission && validatorFields({ data, shape: permissionShape })){
+    if(hasPermission && validatorFields({ data, shape: Permission.shape })){
       const payload = await queryDB({
         entity: 'permission',
         queryType: 'create',

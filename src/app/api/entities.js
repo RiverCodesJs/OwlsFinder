@@ -4,7 +4,16 @@ export const Package = {
     create: true,
     update: true,
     delete: true
-  }
+  }, 
+  shape: [
+    'description',
+    'groupNumber',
+    'images',
+    'limit',
+    'name',
+    'subjects',
+    'videos',
+  ]
 }
 
 export const Club = {
@@ -13,7 +22,16 @@ export const Club = {
     create: true,
     update: true,
     delete: true
-  }
+  },
+  shape: [
+    'description',
+    'groupNumber',
+    'images',
+    'limit',
+    'name',
+    'schedule',
+    'videos',
+  ]
 }
 
 export const Permission = {
@@ -24,7 +42,10 @@ export const Permission = {
     create: true,
     update: true,
     delete: true
-  }
+  },
+  shape: [
+    'name',
+  ]
 }
 
 export const Professor = {
@@ -33,7 +54,13 @@ export const Professor = {
     create: true,
     update: true,
     delete: true
-  }
+  },
+  shape: [
+    'email',
+    'maternalSurname',
+    'name',
+    'paternalSurname',
+  ]
 }
 
 export const Subject = {
@@ -42,7 +69,11 @@ export const Subject = {
     create: true,
     update: true,
     delete: true
-  }
+  },
+  shape: [
+    'description',
+    'name',
+  ]
 }
 
 export const Training = {
@@ -51,7 +82,16 @@ export const Training = {
     create: true,
     update: true,
     delete: true
-  }
+  },
+  shape: [
+    'description',
+    'groupNumber',
+    'images',
+    'limit',
+    'name',
+    'shift',
+    'videos',
+  ]
 }
 
 export const Me = {
@@ -59,7 +99,18 @@ export const Me = {
   permissions: {
     update: true,
     delete: true
-  }
+  },
+  shape: [
+    'names',
+    'paternalSurname',
+    'maternalSurname',
+    'email',
+    'enrollmentId',
+    'groups',
+    'currentGroup',
+    'nextGroup',
+    'shift',
+  ]
 }
 
 export const Students = {
@@ -70,7 +121,18 @@ export const Students = {
     create: true,
     update: true,
     delete: true
-  }
+  },
+  shape: [
+    'names',
+    'paternalSurname',
+    'maternalSurname',
+    'currentGroup',
+    'grade',
+    'enrollmentId',
+    'email',
+    'type',
+    'shift',
+  ]
 }
 
 export const Counselor = {
@@ -81,7 +143,7 @@ export const Counselor = {
     create: true,
     update: true,
     delete: true
-  }
+  },
 }
 
 export const Admin = {
@@ -93,4 +155,29 @@ export const Admin = {
     update: true,
     delete: true
   }
+}
+
+export const SelectionConfig = {
+  name: 'selectionConfig',
+  permissions: {
+    findUnique: true,
+    findMany :true,
+    create: true,
+    update: true,
+    delete: true
+  },
+  shape:  [
+    'groups',
+    'packageSelection',
+    'trainingSelection',
+    'clubSelection'
+  ]
+}
+
+export const Login = {
+  name: 'login',
+  shape: [
+    'email',
+    'password',
+  ]
 }

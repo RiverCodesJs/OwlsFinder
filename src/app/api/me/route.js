@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { meShape } from '~/app/api/utils/shapes'
 import { authenticateToken } from '~/app/api/libs/auth'
 import { Me } from '~/app/api/entities'
 import ERROR from '~/error'
@@ -40,7 +39,7 @@ export const PUT = async request => {
     })
     const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'update' })
     const { password, ...data } = await request.json()
-    if(hasPermission && validatorFields({ data, shape: meShape })){
+    if(hasPermission && validatorFields({ data, shape: Me.shape })){
       const payload = await queryDB({
         entity: 'user',
         queryType: 'update',
