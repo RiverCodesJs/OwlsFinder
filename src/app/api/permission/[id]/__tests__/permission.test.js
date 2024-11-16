@@ -9,23 +9,23 @@ vi.mock('~/app/api/libs/db', () => {
         findUnique: ({ where }) => ({ 
           id: where.id,
           name: 'permission 1',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
         
         update: ({ data }) => ({
           id: 1, 
           name: data.name,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
         delete: () => ({
           id: 1,
           name: 'permission 1',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       },
@@ -43,8 +43,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'delete_permission'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       }
@@ -56,8 +56,8 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
 describe('API Permission - GET', () => {
@@ -67,8 +67,7 @@ describe('API Permission - GET', () => {
       expectedStatus: 200,
       expectedResponse: {
         id: 1, 
-        name: 'permission 1', 
-        active: true
+        name: 'permission 1',
       }
     },
     {
@@ -101,8 +100,8 @@ describe('API Permission - GET', () => {
       vi.spyOn(db.default.permission, 'findUnique').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -124,12 +123,12 @@ describe('API Permission - PUT', () => {
       expectedResponse: { 
         id: 1, 
         name: 'permission 1',
-        active: true
+        
       },
       request: {
         id: 1, 
         name: 'permission 1',
-        active: true
+        
       }
     },
     {
@@ -140,7 +139,7 @@ describe('API Permission - PUT', () => {
       request: {
         id: 1, 
         name: 'permission 1',
-        active: true
+        
       }
     },
     {
@@ -178,8 +177,8 @@ describe('API Permission - PUT', () => {
       vi.spyOn(db.default.permission, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -204,7 +203,7 @@ describe('API Permission - PATCH', () => {
       expectedResponse: { 
         id: 1, 
         name: 'permission 1',
-        active: true
+        
       },
       request: {
         id: 1, 
@@ -219,7 +218,7 @@ describe('API Permission - PATCH', () => {
       request: {
         id: 1, 
         name: 'permission 1',
-        active: true
+        
       }
     },
     {
@@ -248,8 +247,8 @@ describe('API Permission - PATCH', () => {
       vi.spyOn(db.default.permission, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -274,7 +273,7 @@ describe('API Permission - DELETE', () => {
       expectedResponse: {
         id: 1, 
         name: 'permission 1', 
-        active: true
+        
       }
     },
     {
@@ -300,8 +299,8 @@ describe('API Permission - DELETE', () => {
       vi.spyOn(db.default.permission, 'delete').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     } 
     if(isEmpty){
       const db = await import('~/app/api/libs/db')

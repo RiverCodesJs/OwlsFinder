@@ -11,8 +11,8 @@ vi.mock('~/app/api/libs/db', () => {
           name: 'selectionConfig 1',
           packageSelection: ['packageSelection 1', 'packageSelection 2'],
           trainingSelection: ['trainingSelection 1', 'trainingSelection 2'],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true  
         }),
         update: ({ data }) => ({
@@ -33,8 +33,8 @@ vi.mock('~/app/api/libs/db', () => {
               date: '2024-11-10T12:00:00Z'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
         delete: ({ where }) => ({
@@ -55,8 +55,8 @@ vi.mock('~/app/api/libs/db', () => {
               date: '2024-11-10T12:00:00Z'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       },
@@ -74,8 +74,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'findUnique_selectionConfig'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       }
@@ -88,8 +88,8 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
 
@@ -103,8 +103,7 @@ describe('API Professor - GET', () => {
         name: 'selectionConfig 1', 
         packageSelection: ['packageSelection 1', 'packageSelection 2'],
         trainingSelection: ['trainingSelection 1', 'trainingSelection 2'],
-        created_at: 'created_at',
-        active: true
+        createdAt: 'createdAt',
       }
     },
     {
@@ -137,8 +136,8 @@ describe('API Professor - GET', () => {
       vi.spyOn(db.default.selectionConfig, 'findUnique').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -175,8 +174,7 @@ describe('API Professor - PUT', () => {
             date: '2024-11-10T12:00:00Z'
           }
         ],
-        created_at: 'created_at',
-        active: true
+        createdAt: 'createdAt',
       },
       request: {
         id: 1,
@@ -285,8 +283,8 @@ describe('API Professor - PUT', () => {
       vi.spyOn(db.default.selectionConfig, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -326,8 +324,7 @@ describe('API Professor - Delete', () => {
             date: '2024-11-10T12:00:00Z'
           }
         ],
-        created_at: 'created_at',
-        active: true
+        createdAt: 'createdAt',
       }
     },
     {
@@ -354,8 +351,8 @@ describe('API Professor - Delete', () => {
       vi.spyOn(db.default.selectionConfig, 'delete').mockRejectedValueOnce(mockImplementation) 
     } 
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')

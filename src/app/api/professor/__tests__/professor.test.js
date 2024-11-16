@@ -10,16 +10,16 @@ vi.mock('~/app/api/libs/db', () => {
           { 
             id: 1,
             name: 'professor 1',
-            created_at: 'created_at',
-            updated_at: 'updated_at',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
             active: true
             
           },
           {
             id : 2,
             name: 'professor 2',
-            created_at: 'created_at',
-            updated_at: 'updated_at',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
             active: true
           }
         ]),
@@ -30,8 +30,8 @@ vi.mock('~/app/api/libs/db', () => {
           paternalSurname: data.paternalSurname,
           maternalSurname: data.maternalSurname,
           email: data.email,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
       },
@@ -45,8 +45,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'create_professor'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       }
@@ -59,8 +59,8 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
 describe('API Professor - GET', () => {
@@ -72,12 +72,10 @@ describe('API Professor - GET', () => {
         1: { 
           id: 1, 
           name: 'professor 1', 
-          active: true
         }, 
         2: { 
           id: 2, 
           name: 'professor 2', 
-          active: true
         } 
       }
     },
@@ -105,8 +103,8 @@ describe('API Professor - GET', () => {
       vi.spyOn(db.default.professor, 'findMany').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -136,7 +134,6 @@ describe('API Professor - POST', () => {
         paternalSurname: 'paternal surname',
         maternalSurname: 'maternal surname',
         email: 'professor@mail.com',
-        active: true
       }
     },
     {
@@ -177,8 +174,8 @@ describe('API Professor - POST', () => {
       vi.spyOn(db.default.professor, 'create').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     const mockRequest = {
       json: async () => request, 

@@ -10,8 +10,8 @@ vi.mock('~/app/api/libs/db', () => {
           id: 1,
           email: where.email,
           password: 'password',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: 'active'
         })
       }

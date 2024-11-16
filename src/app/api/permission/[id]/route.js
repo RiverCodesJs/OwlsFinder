@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import { Permission } from '~/app/api/entities'
+import { validatePermission } from '~/app/api/libs/permissions'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
 import validatorFields from '~/app/api/libs/validatorFields'
 import cleanerData from '~/app/api/libs/cleanerData'
-import validatePermission from '~/app/api/libs/validatePermission'
 
 export const GET = async (request, { params }) => {
   try{

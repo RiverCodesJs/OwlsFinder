@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import { Students } from '~/app/api/entities'
 import { parse } from 'papaparse'
+import { validatePermission } from '~/app/api/libs/permissions'
 import csvFormatter from '~/app/api/students/utils/csvFormatter'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
 import cleanerData from '~/app/api/libs/cleanerData'
 import payloadFormatter from '~/app/api/utils/payloadFormatter'
-import validatePermission from '~/app/api/libs/validatePermission'
 
 export const POST = async request => {
   try {

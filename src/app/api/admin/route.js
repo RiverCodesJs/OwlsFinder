@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server'
 import { Admin } from '~/app/api/entities'
 import { ADMIN_PERMISSIONS } from '~/app/api/utils/permissions'
+import { validatePermission } from '~/app/api/libs/permissions'
 import ERROR from '~/error'
 import registerCounselor from '~/app/api/libs/mail/templates/registerCounselor'
 import queryDB from '~/app/api/libs/queryDB'
 import jwt from 'jsonwebtoken'
 import emailSender from '~/app/api/libs/mail/emailSender'
-import validatePermission from '~/app/api/libs/validatePermission'
 
 export const POST = async request => {
   try {
@@ -30,7 +30,7 @@ export const POST = async request => {
       },
       relations: [{
         entity: 'permissions',
-        data: ADMIN_PERMISSIONS
+        data: Object.keys(ADMIN_PERMISSIONS).map(key => ({ name: key }))
       }]
     })
     const token = jwt.sign({ 

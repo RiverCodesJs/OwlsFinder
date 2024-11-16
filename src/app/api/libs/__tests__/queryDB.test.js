@@ -9,8 +9,8 @@ vi.mock('~/app/api/libs/db', () => {
       user:{
         findUnique: ({ where }) => ({ 
           email: where.email,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
 
@@ -18,8 +18,8 @@ vi.mock('~/app/api/libs/db', () => {
           id: id++,
           names: data.names || 'Jonh',
           email: data.email || 'jonh.doe@gmail.com',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
 
@@ -27,8 +27,8 @@ vi.mock('~/app/api/libs/db', () => {
           id: id++, 
           names: data.names,
           email: data.email,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
       },
@@ -39,16 +39,16 @@ vi.mock('~/app/api/libs/db', () => {
             id: 1,
             name: 'package1',
             subjects: [{ id: 1 }, { id: 2 }],
-            created_at: 'created_at',
-            updated_at: 'updated_at',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
             active: true
           },
           {
             id : 2,
             name: 'package2',
             subjects: [{ id: 1 }, { id: 2 }] ,
-            created_at: 'created_at',
-            updated_at: 'updated_at',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
             active: true
           }
         ]),
@@ -57,8 +57,8 @@ vi.mock('~/app/api/libs/db', () => {
           id: where.id, 
           name: 'package1', 
           subjects: [{ id: 1 }, { id: 2 }], 
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
         
@@ -66,8 +66,8 @@ vi.mock('~/app/api/libs/db', () => {
           id: 1, 
           name: data.name,
           subjects: [{ id: 1 }, { id:2 }],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
 
@@ -75,8 +75,8 @@ vi.mock('~/app/api/libs/db', () => {
           id: where.id,
           name: data.name,
           subjects: [{ id: 1 }, { id: 2 }],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
 
@@ -84,8 +84,8 @@ vi.mock('~/app/api/libs/db', () => {
           id: where.id,
           name: 'package1',
           subjects: [{ id: 1 }, { id: 2 }],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       }
@@ -120,8 +120,8 @@ describe('queryDB libs wihtout createMany', () =>{
           subjects: [
             { id: 1 }, { id: 2 }
           ], 
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }, 
         { 
@@ -130,8 +130,8 @@ describe('queryDB libs wihtout createMany', () =>{
           subjects: [
             { id: 1 }, { id: 2 }
           ], 
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }
       ],
@@ -161,8 +161,8 @@ describe('queryDB libs wihtout createMany', () =>{
         subjects: [
           { id: 1 }, { id: 2 }
         ],
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
         active: true
       },
     },
@@ -204,8 +204,8 @@ describe('queryDB libs wihtout createMany', () =>{
         subjects: [
           { id: 1 }, { id: 2 }
         ],
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
         active: true
       },
     },
@@ -225,8 +225,8 @@ describe('queryDB libs wihtout createMany', () =>{
         subjects: [
           { id: 1 }, { id: 2 }
         ],
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
         active: true
       }
     },
@@ -257,8 +257,8 @@ describe('queryDB libs wihtout createMany', () =>{
         subjects: [
           { id: 1 }, { id: 2 }
         ],
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
         active: true
       }
     },
@@ -312,16 +312,16 @@ describe('queryDB libs just createMany', () => {
           id: 1,
           names: 'Carlos Alberto',
           email: '23080001@cobachih.edu.mx',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         },
         {
           id: 2,
           names: 'Maria Fernanda',
           email: '23080002@cobachih.edu.mx',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }
       ],
@@ -346,16 +346,16 @@ describe('queryDB libs just createMany', () => {
           id: 3,
           names: 'Carlos Alberto',
           email: '23080001@cobachih.edu.mx',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         },
         {
           id: 4,
           names: 'Maria Fernanda',
           email: '23080002@cobachih.edu.mx',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }
       ],

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import validatePermission from '~/app/api/libs/validatePermission'
+import { validatePermission } from '~/app/api/libs/permissions'
 
 vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => 1 }

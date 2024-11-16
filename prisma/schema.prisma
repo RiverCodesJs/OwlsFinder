@@ -20,8 +20,8 @@ model User {
   nextGroup       String?
   clubId          Int?
   shift           String?
-  created_at      DateTime     @default(now())
-  updated_at      DateTime     @updatedAt
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
   active          Boolean      @default(true)
   type            String
   groups          String[]
@@ -36,8 +36,8 @@ model Professor {
   paternalSurname String
   maternalSurname String
   email           String   @unique
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
   active          Boolean  @default(true)
   clubs           Club[]
 }
@@ -49,8 +49,8 @@ model Package {
   images      String[]
   videos      String[]
   limit       Int
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   active      Boolean  @default(true)
   groupNumber Int?
   subjects    Int[]
@@ -60,8 +60,8 @@ model Subject {
   id          Int      @id @default(autoincrement())
   name        String
   description String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   active      Boolean  @default(true)
 }
 
@@ -73,8 +73,8 @@ model Training {
   videos      String[]
   shift       String
   limit       Int
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   active      Boolean  @default(true)
   professor   String?
   groupNumber Int?
@@ -90,8 +90,8 @@ model Club {
   shift       String?
   schedule    String
   professorId Int?
-  created_at  DateTime   @default(now())
-  updated_at  DateTime   @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   active      Boolean    @default(true)
   groupNumber Int?
   professor   Professor? @relation(fields: [professorId], references: [id])
@@ -116,8 +116,8 @@ model PackageSelection {
 model SelectionConfig {
   id                Int                 @id @default(autoincrement())
   groups            String[]
-  created_at        DateTime            @default(now())
-  updated_at        DateTime            @updatedAt
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
   active            Boolean             @default(true)
   clubSelection     DateTime?
   packageSelection  PackageSelection[]

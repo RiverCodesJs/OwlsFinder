@@ -9,8 +9,8 @@ vi.mock('~/app/api/libs/db', () => {
         findUnique: ({ where }) => ( { 
           id: where.id,
           name: 'club 1',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: 'active'
         }),
         update: ({ data, where }) => ({
@@ -23,8 +23,8 @@ vi.mock('~/app/api/libs/db', () => {
           limit: data.limit,
           schedule: data.schedule,
           professorId: data.professorId,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: 'active'
         })
       },
@@ -46,8 +46,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'delete_club'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: 'active'
         })
       }
@@ -60,8 +60,8 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
 describe('API Club - GET', () => {
@@ -72,7 +72,6 @@ describe('API Club - GET', () => {
       expectedResponse: {
         id: 1, 
         name: 'club 1', 
-        active: 'active'
       }
     },
     {
@@ -105,8 +104,8 @@ describe('API Club - GET', () => {
       vi.spyOn(db.default.club, 'findUnique').mockRejectedValueOnce(mockImplementation)
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -135,7 +134,6 @@ describe('API Club - PUT', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: 1,
-        active: 'active'
       },
       request: {
         id: 1, 
@@ -168,7 +166,6 @@ describe('API Club - PUT', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: 1,
-        active: 'active'
       },
       request: {
         id: 1, 
@@ -260,8 +257,8 @@ describe('API Club - PUT', () => {
       vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -293,7 +290,6 @@ describe('API Club - PATCH', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: 1,
-        active: 'active'
       },
       request: {
         id: 1, 
@@ -376,8 +372,8 @@ describe('API Club - PATCH', () => {
       vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -402,7 +398,6 @@ describe('API Club - Delete', () => {
       expectedResponse: {
         id: 1, 
         name: 'club 1', 
-        active: 'false'
       }
     },
     {
@@ -432,14 +427,13 @@ describe('API Club - Delete', () => {
       vi.spyOn(db.default.club, 'update').mockReturnValueOnce({
         id: 1,
         name: 'club 1',
-        created_at: 'created_at',
-        updated_at: 'updated_at',
-        active: 'false'
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
       }) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')

@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { SelectionConfig } from '~/app/api/entities'
+import { validatePermission } from '~/app/api/libs/permissions'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
 import cleanerData from '~/app/api/libs/cleanerData'
-import validatePermission from '~/app/api/libs/validatePermission'
 import validatorFields from '~/app/api/libs/validatorFields'
 
 export const GET = async (request, { params }) => {

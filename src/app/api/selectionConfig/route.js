@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
 import { SelectionConfig } from '~/app/api/entities'
+import { validatePermission } from '~/app/api/libs/permissions'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
 import cleanerData from '~/app/api/libs/cleanerData'
 import payloadFormatter from '~/app/api/utils/payloadFormatter'
 import validatorFields from '~/app/api/libs/validatorFields'
-import validatePermission from '~/app/api/libs/validatePermission'
 
 export const POST = async request => {
   try {
@@ -17,7 +17,6 @@ export const POST = async request => {
         entity: 'selectionConfig',
         queryType: 'create',
         data: partialData,
-        createdAt: true,
         includes: ['packageSelection', 'trainingSelection'],
         relations: [
           {

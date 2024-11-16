@@ -12,8 +12,8 @@ vi.mock('~/app/api/libs/db', () => {
             name: 'selectionConfig 1',
             packageSelection: ['packageSelection 1', 'packageSelection 2'],
             trainingSelection: ['trainingSelection 1', 'trainingSelection 2'],
-            created_at: 'created_at',
-            updated_at: 'updated_at',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
             active: true
             
           },
@@ -22,8 +22,8 @@ vi.mock('~/app/api/libs/db', () => {
             name: 'selectionConfig 2',
             packageSelection: ['packageSelection 1', 'packageSelection 2'],
             trainingSelection: ['trainingSelection 1', 'trainingSelection 2'],
-            created_at: 'created_at',
-            updated_at: 'updated_at',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
             active: true
           }
         ]),
@@ -45,8 +45,8 @@ vi.mock('~/app/api/libs/db', () => {
               date: '2024-11-10T12:00:00Z'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
       },
@@ -64,8 +64,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'findMany_selectionConfig'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       }
@@ -78,8 +78,8 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
 describe('API selectionConfig - GET', () => {
@@ -93,16 +93,14 @@ describe('API selectionConfig - GET', () => {
           name: 'selectionConfig 1', 
           packageSelection: ['packageSelection 1', 'packageSelection 2'],
           trainingSelection: ['trainingSelection 1', 'trainingSelection 2'],
-          created_at: 'created_at',
-          active: true
+          createdAt: 'createdAt',
         }, 
         2: { 
           id: 2, 
           name: 'selectionConfig 2', 
           packageSelection: ['packageSelection 1', 'packageSelection 2'],
           trainingSelection: ['trainingSelection 1', 'trainingSelection 2'],
-          created_at: 'created_at',
-          active: true
+          createdAt: 'createdAt',
         } 
       }
     },
@@ -130,8 +128,8 @@ describe('API selectionConfig - GET', () => {
       vi.spyOn(db.default.selectionConfig, 'findMany').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -185,8 +183,7 @@ describe('API selectionConfig - POST', () => {
             date: '2024-11-10T12:00:00Z'
           }
         ],
-        created_at: 'created_at',
-        active: true
+        createdAt: 'createdAt',
       }
     },
     {
@@ -249,8 +246,8 @@ describe('API selectionConfig - POST', () => {
       vi.spyOn(db.default.selectionConfig, 'create').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     const mockRequest = {
       json: async () => request, 

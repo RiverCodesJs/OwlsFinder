@@ -7,107 +7,24 @@ describe('cleanerData libs', () => {
     {
       descr: 'Empty data',
       payload: {},
-      includes: undefined,
       result: {}
     },
     {
-      descr: 'Has complete payload and not includes any other filter',
+      descr: 'Has complete payload and does not filt password',
       payload: {
         entity: 'Entity',
         password: 'password',
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
         active: 'active'
       },
-      includes: undefined,
-      result: {
-        entity: 'Entity',
-        active: 'active'
-      }
-    },
-    {
-      descr: 'Has complete payload and includes other filter',
-      payload: {
-        entity: 'Entity',
-        subject: [{
-          id: 1
-        },
-        {
-          id: 2
-        }],
-        password: 'password',
-        created_at: 'created_at',
-        updated_at: 'updated_at',
-        active: 'active'
-      },
-      includes: ['subject'],
-      result: {
-        entity: 'Entity',
-        subject: [1, 2],
-        active: 'active'
-      }
-    },
-    {
-      descr: 'Has complete payload and includes permissions ans other filter',
-      payload: {
-        entity: 'Entity',
-        subject: [{
-          id: 1
-        },
-        {
-          id: 2
-        }],
-        permissions: [{
-          name: 'DELETE_CLUBS'
-        },
-        {
-          name: 'EDIT_CLUBS'
-        }],
-        password: 'password',
-        created_at: 'created_at',
-        updated_at: 'updated_at',
-        active: 'active'
-      },
-      includes: ['subject', 'permissions'],
-      result: {
-        entity: 'Entity',
-        subject: [1, 2],
-        permissions: ['DELETE_CLUBS', 'EDIT_CLUBS'],
-        active: 'active'
-      }
-    },
-    {
-      descr: 'Has complete payload, includes permissions, password, and other filter',
-      payload: {
-        entity: 'Entity',
-        subject: [{
-          id: 1
-        },
-        {
-          id: 2
-        }],
-        permissions: [{
-          name: 'DELETE_CLUBS'
-        },
-        {
-          name: 'EDIT_CLUBS'
-        }],
-        password: 'password',
-        created_at: 'created_at',
-        updated_at: 'updated_at',
-        active: 'active'
-      },
-      includes: ['subject', 'permissions'],
       password: true,
       result: {
-        entity: 'Entity',
         password: 'password',
-        subject: [1, 2],
-        permissions: ['DELETE_CLUBS', 'EDIT_CLUBS'],
-        active: 'active'
+        entity: 'Entity',
       }
-    }
-  ])('$descr', ({ payload, includes, result, password }) =>{
-    expect(cleanerData({ payload, includes, password })).toEqual(result)
+    },
+  ])('$descr', ({ payload, result, password }) =>{
+    expect(cleanerData({ payload, password })).toEqual(result)
   })
 })
