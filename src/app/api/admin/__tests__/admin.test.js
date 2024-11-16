@@ -43,7 +43,7 @@ vi.mock('~/app/api/libs/auth', () => {
 })
 
 vi.mock('~/app/api/libs/permissions', () => {
-  return { getPermissionsByEntity: () => (true) }
+  return { validatePermission: () => (true) }
 })
 
 vi.mock('~/app/api/libs/mail/emailSender', () => {
@@ -104,25 +104,11 @@ describe('API admin - POST', () => {
     }
     if(isNotAllowed){
       const permissions = await import ('~/app/api/libs/permissions')
-      vi.spyOn( permissions, 'getPermissionsByEntity').mockReturnValueOnce(false) 
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(newAdmin){
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.user, 'findUnique')
-        .mockReturnValueOnce({
-          id: 2,
-          name: 'Jonh',
-          permissions: [
-            {
-              id: 1,
-              name: 'create_admin'
-            }
-          ],
-          createdAt: 'createdAt',
-          updatedAt: 'updatedAt',
-          active: true
-        })
-        .mockReturnValueOnce(null)
+      vi.spyOn(db.default.user, 'findUnique').mockReturnValueOnce(null)
     }
     const mockRequest = { json: async () => request }
     const response = await POST(mockRequest)
