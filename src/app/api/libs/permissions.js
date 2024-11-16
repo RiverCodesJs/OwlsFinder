@@ -4,10 +4,9 @@ import { EMPTY_OBJECT } from '~/app/Lib/Utils/constants'
 
 export const getPermissionsByEntity = ({ permissions, entity, action }) => {
   const userPermissions = permissions?.reduce((acc, permission) => {
-    const [actionFound, entityKey] = permission.name.split('_')
-    if(actionFound === 'admin') return [...acc, action]
+    const [action, entityKey] = permission.name.split('_')
     if (entityKey === entity.name) {
-      return [...acc, actionFound]
+      return [...acc, action]
     }
     return acc
   }, [])
