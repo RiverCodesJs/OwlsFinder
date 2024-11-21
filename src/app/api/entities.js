@@ -181,3 +181,16 @@ export const Login = {
     'password',
   ]
 }
+
+export const LoginStudents = {
+  name: 'loginStudents',
+  shape: [
+    'names',
+    'paternalSurname',
+    'maternalSurname',
+    'email',
+    'enrollmentId',
+    'currentGroup',
+    'shift'
+  ]
+}
