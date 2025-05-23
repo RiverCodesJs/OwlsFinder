@@ -17,6 +17,7 @@ const Container = styled('div')(({ theme }) => ({
   justifyContent: "center",
   alignItems: "center",
   height: "100vh",
+  width: "100vw",
   backgroundColor: theme.palette.primary.main,
   
   [`& .${classes.content_box}`]: {
@@ -39,12 +40,7 @@ const Container = styled('div')(({ theme }) => ({
   },
   [`& .${classes.password_input}`]: {
     width: "100%",
-    backgroundColor: theme.palette.grey.main,
-  },
-  [`& .${classes.submit_button}`]: {
-    color: theme.palette.contrast.main,
-    backgroundColor: theme.palette.primary.main,
-  },
+  }
 }))
 
 const Success = ({isSubmitted, setSubmitted, handleSubmit}) => {
@@ -59,7 +55,7 @@ const Success = ({isSubmitted, setSubmitted, handleSubmit}) => {
                 <Field component={TextField} className={classes.password_input} name="password" type="password" placeholder="Nueva contraseña"/>
                 <Field component={TextField} className={classes.password_input} name="repeatPass" type="password" placeholder="Repetir contraseña"/>
               </Stack>
-                <Button type="submit" className={classes.submit_button}>Ingresar</Button>
+                <Button type="submit" variant="contained">Ingresar</Button>
           </>
         :
           <>
