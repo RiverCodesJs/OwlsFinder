@@ -7,7 +7,7 @@ import { useState } from "react"
 import getClassPrefixer from "~/app/UI/classPrefixer"
 import { images } from "../images"
 import { Formik, Form, Field } from "formik"
-import TextField from "../UI/shared/FormikTextField"
+import CustomField from "../UI/shared/FormikTextField"
 import { getAlumniSchema, getAlumniValues, getEmailSchema, getEmailValues } from "./utils"
 
 const displayName = 'login'
@@ -50,7 +50,8 @@ const Container = styled('div')(({ theme }) => ({
     },
     [`& .${classes.aquiEstoy}`]: {
       width: "60%"
-    }
+    },
+    
   }))
 
   const LoginForm = styled(Stack)(({theme}) => ({
@@ -58,13 +59,6 @@ const Container = styled('div')(({ theme }) => ({
     alignItems: "center",
     justifyContent: "center",
     transition: 'all 0.3s ease',
-  }))
-
-  const CustomField = styled(TextField)(({theme}) => ({
-    width: "60%",
-    backgroundColor: theme.palette.grey.main,
-    borderRadius: "4px",
-    borderBottom: "2px solid black",
   }))
 
 const Login = ({snackbarMessage, setSnackbarMessage, studentsFormik, teachersFormik}) => {
