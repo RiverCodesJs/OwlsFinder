@@ -6,7 +6,7 @@ import getClassPrefixer from "~/app/UI/classPrefixer"
 import { images } from "~/app/images"
 import { useState } from "react"
 import { Field, Form, Formik } from "formik"
-import registerSchema from "~/app/counselor/register/validationSchema"
+import registerSchema from "~/app/counselor/register/utils"
 import TextField from "~/app/UI/shared/FormikTextField"
 
 const displayName = 'CounselorRegister'
