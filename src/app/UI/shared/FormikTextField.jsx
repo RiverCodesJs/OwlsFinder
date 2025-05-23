@@ -6,7 +6,6 @@ import { useState } from "react"
 const CustomField = styled(TextField)(({theme}) => ({
   backgroundColor: theme.palette.contrast.main,
   borderRadius: "4px",
-  borderBottom: "2px solid black",
   width: "60%",
   [`& .MuiFilledInput-input`]: {
       padding: "16px 12px"
