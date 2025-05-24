@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import queryString from 'query-string'
-import { useToken } from '~/app/store/useToken'
+import useToken from '~/app/store/useToken'
 
 import { MUTATION_PATH_TO_INVALIDATIONS } from './invalidations'
 
