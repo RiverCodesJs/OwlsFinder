@@ -1,5 +1,5 @@
 const forgotYourPassword = ({ token }) => ({
-  subject: 'COBACHIH Plantel 8 - ¿Olvidaste tu contraseña?',
+  subject: 'COBACHIH Plantel 8 - ¡Llegó tu momento de escoger!',
   // TODO: Change the href to a valid link
   emailContent: (
     `<html>
@@ -47,9 +47,9 @@ const forgotYourPassword = ({ token }) => ({
       <body>
         <div class="container">
           <div class="content">
-            <p class="title">Restablece tu Contraseña</p>
-            <p class="message">Si no solicitaste restablecer tu contraseña, ignora este correo.</p>
-            <a href="${process.env.HOST ?? 'http://localhost:3000'}/forgot/${token}" class="btn">Restablece tu Contraseña</a>
+            <p class="title">Ingresa a la plataforma</p>
+            <p class="message">Para poder hacer tu selección da clic en el botón de abajo.</p>
+            <a href="${process.env.HOST ?? 'http://localhost:3000'}/forgot/${token}" class="btn">¡Aquí!</a>
           </div>
         </div>
       </body>

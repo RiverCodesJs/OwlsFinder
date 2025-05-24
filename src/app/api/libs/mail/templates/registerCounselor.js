@@ -49,7 +49,7 @@ const registerCounselor = ({ token }) => ({
           <div class="content">
             <p class="title">¡Únete a BuhosHub!</p>
             <p class="message">Estimado/a Orientador/a,<br><br> A través del siguiente enlace, podrás completar tu registro y acceder a todas las herramientas y recursos que hemos preparado para apoyarte.</p>
-            <a href="http://localhost:3000/counselor/register/${token}" class="btn">¡Regístrate!</a>
+            <a href="${process.env.HOST ?? 'http://localhost:3000'}/counselor/register/${token}" class="btn">¡Regístrate!</a>
           </div>
         </div>
       </body>
