@@ -31,6 +31,9 @@ const Container = styled('div')(({ theme }) => ({
     padding: "0 30px",
     textAlign: "center"
   },
+  ['& .MuiFormControl-root']: {
+    width: "80%",
+  }
 }))
 
 const ForgotPassword = ({isSubmitted, setSubmitted}) => {
