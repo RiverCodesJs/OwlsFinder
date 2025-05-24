@@ -12,9 +12,10 @@ export const POST = async request => {
   try {
     const hasPermission = await validatePermission({ entity: Student, action: 'create', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
-    const csvFile = await request.text()
-    if(csvFile) {
-      const { data } = parse(csvFile, {
+    const rawCsv = await request.text()
+    const csv = rawCsv?.replace(/^"|"$/g, '').replace(/\\r\\n/g, '\r\n')
+    if(csv) {
+      const { data } = parse(csv, {
         header: true,
         skipEmptyLines: true,
       })
@@ -25,9 +26,9 @@ export const POST = async request => {
         data: processedData,
       })
       const response = payloadFormatter(payloads.map(payload => cleanerData({ payload })))
-      return NextResponse.json(response, { status: 201 })  
+      return NextResponse.json(response, { status: 201 })
     }
-    return ERROR.INVALID_FIELDS()  
+    return ERROR.INVALID_FIELDS()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
