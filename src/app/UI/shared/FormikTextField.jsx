@@ -8,7 +8,10 @@ const CustomField = styled(TextField)(({theme}) => ({
   borderRadius: "4px",
   [`& .MuiFilledInput-input`]: {
       padding: "16px 12px"
-  }
+  },
+  [`& .MuiFilledInput-root`]: {
+      padding: "0"
+  },
 }))
 
 const FormikTextField = ({ variant = "filled" , field, password, ...props}) => {
