@@ -1,33 +1,48 @@
 import { NextResponse } from 'next/server'
-import { Students } from '~/app/api/entities'
-import { parse } from 'papaparse'
+import { Student } from '~/app/api/entities'
 import { validatePermission } from '~/app/api/libs/permissions'
-import csvFormatter from '~/app/api/students/utils/csvFormatter'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
 import cleanerData from '~/app/api/libs/cleanerData'
+import validatorFields from '~/app/api/libs/validatorFields'
 import payloadFormatter from '~/app/api/utils/payloadFormatter'
 
 export const POST = async request => {
-  try {
-    const hasPermission = await validatePermission({ entity: Students, action: 'create', request })
-    if(!hasPermission) return ERROR.FORBIDDEN()
-    const csvFile = await request.text()
-    if(csvFile) {
-      const { data } = parse(csvFile, {
-        header: true,
-        skipEmptyLines: true,
-      })
-      const processedData = csvFormatter(data)
-      const payloads = await queryDB({
+  try{
+    const hasPermission = await validatePermission({ entity: Student, action: 'create', request })
+    const data = await request.json()
+    if(hasPermission && validatorFields({ data, shape: Student.shape })){
+      const payload = await queryDB({
         entity: 'user',
-        queryType: 'createMany',
-        data: processedData,
+        queryType: 'create',
+        data: {
+          ...data,
+          type: 'student'
+        }
       })
+      const response = cleanerData({ payload })
+      return NextResponse.json(response, { status: 201 })
+    } 
+    return ERROR.FORBIDDEN()
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: error.status || 500 })
+  }
+}
+
+export const GET = async request => {
+  try{
+    const hasPermission = await validatePermission({ entity: Student, action: 'findMany', request })
+    if(!hasPermission) return ERROR.FORBIDDEN()
+    const payloads = await queryDB({
+      entity: 'user',
+      queryType: 'findMany',
+      filter: { type: 'student' }
+    })
+    if(payloads){
       const response = payloadFormatter(payloads.map(payload => cleanerData({ payload })))
-      return NextResponse.json(response, { status: 201 })  
+      return NextResponse.json(response, { status: 200 })
     }
-    return ERROR.INVALID_FIELDS()  
+    return ERROR.NOT_FOUND()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
