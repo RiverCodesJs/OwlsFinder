@@ -15,7 +15,7 @@ const cleanerData = ({ payload, ...rest }) => {
       return [...acc, key]
     }
     return acc
-  }, []) 
+  }, [])
   return omit(omitParams, payload)
 }
 

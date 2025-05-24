@@ -7,13 +7,12 @@ vi.mock('~/app/api/libs/db', () => {
     default: {
       club: {
         findMany: () => ([
-          { 
+          {
             id: 1,
             name: 'club 1',
             createdAt: 'createdAt',
             updatedAt: 'updatedAt',
             active: 'active'
-            
           },
           {
             id : 2,
@@ -23,9 +22,8 @@ vi.mock('~/app/api/libs/db', () => {
             active: 'active'
           }
         ]),
-        
         create: ({ data }) => ({
-          id: 1, 
+          id: 1,
           name: data.name,
           groupNumber: data.groupNumber,
           description: data.description,
@@ -54,8 +52,7 @@ vi.mock('~/app/api/libs/db', () => {
           active: 'active'
         })
       }
-    }, 
-  
+    },
   }
 })
 
@@ -73,14 +70,14 @@ describe('API Club - GET', () => {
       descr: 'Successful response',
       expectedStatus: 200,
       expectedResponse: {
-        1: { 
-          id: 1, 
-          name: 'club 1', 
-        }, 
-        2: { 
-          id: 2, 
-          name: 'club 2', 
-        } 
+        1: {
+          id: 1,
+          name: 'club 1',
+        },
+        2: {
+          id: 2,
+          name: 'club 2',
+        }
       }
     },
     {
@@ -104,7 +101,7 @@ describe('API Club - GET', () => {
   ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if(mockImplementation){
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'findMany').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'findMany').mockRejectedValueOnce(mockImplementation)
     }
     if(isNotAllowed){
       const permissions = await import ('~/app/api/libs/permissions')
@@ -112,7 +109,7 @@ describe('API Club - GET', () => {
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'findMany').mockReturnValueOnce([]) 
+      vi.spyOn(db.default.club, 'findMany').mockReturnValueOnce([])
     }
     const response = await GET()
     const jsonResponse = await response.json()
@@ -264,19 +261,19 @@ describe('API Club - POST', () => {
   ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, notProfessor }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'create').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'create').mockRejectedValueOnce(mockImplementation)
     }
     if(isNotAllowed){
       const permissions = await import ('~/app/api/libs/permissions')
-      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     const mockRequest = {
-      json: async () => request, 
+      json: async () => request,
     }
     if(notProfessor){
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'create').mockReturnValueOnce({
-        id: 1, 
+        id: 1,
         name: 'package1',
         groupNumber: 201,
         description: 'Description about the package',
@@ -288,7 +285,7 @@ describe('API Club - POST', () => {
         createdAt: 'createdAt',
         updatedAt: 'updatedAt',
         active: 'active'
-      }) 
+      })
     }
     const response = await POST(mockRequest)
     const jsonResponse = await response.json()
