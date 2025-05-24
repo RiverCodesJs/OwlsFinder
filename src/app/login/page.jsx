@@ -9,6 +9,8 @@ import { images } from "../images"
 import { Formik, Form, Field } from "formik"
 import CustomField from "../UI/shared/FormikTextField"
 import { getAlumniSchema, getAlumniValues, getEmailSchema, getEmailValues } from "./utils"
+import { useApiMutation } from "../Lib/apiFetch"
+import { useRouter } from "next/compat/router"
 
 const displayName = 'login'
 const classes = getClassPrefixer(displayName)
@@ -48,9 +50,9 @@ const Container = styled('div')(({ theme }) => ({
       width: "60%",
       textAlign: "left",
     },
-    [`& .${classes.aquiEstoy}`]: {
-      width: "60%"
-    },
+    ['& .MuiFormControl-root']: {
+      width: "60%",
+    }
     
   }))
 
@@ -118,10 +120,20 @@ const Login = ({snackbarMessage, setSnackbarMessage, studentsFormik, teachersFor
 
 const Wrapper = () => {
   const [snackbarMessage, setSnackbarMessage] = useState(null)
+  const userLogin = useApiMutation({path: "/login", opts: {method: "POST"}})
+  const router = useRouter()
 
-  const teachersSubmit = values => {
-    console.log({"maestro": values})
+  const teachersSubmit = async payload => {
+    console.log({"maestro": payload})
     setSnackbarMessage("Ola, este es un snackbar")
+    /* await userLogin.mutate(payload, {
+      onSucess: () => {
+        router.push("/counselor")
+      },
+      onError: () => {
+        setSnackbarMessage("Datos incorrectos. Intenta ingresarlos de nuevo")
+      }
+    }) */
   }
 
   const studentsSubmit = values => {
