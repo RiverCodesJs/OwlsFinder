@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { Students } from '~/app/api/entities'
+import { Student } from '~/app/api/entities'
 import { parse } from 'papaparse'
 import { validatePermission } from '~/app/api/libs/permissions'
 import csvFormatter from '~/app/api/students/utils/csvFormatter'
@@ -10,7 +10,7 @@ import payloadFormatter from '~/app/api/utils/payloadFormatter'
 
 export const POST = async request => {
   try {
-    const hasPermission = await validatePermission({ entity: Students, action: 'create', request })
+    const hasPermission = await validatePermission({ entity: Student, action: 'create', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const csvFile = await request.text()
     if(csvFile) {

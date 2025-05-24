@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { LoginStudents } from '~/app/api/entities'
+import { Student } from '~/app/api/entities'
 import jwt from 'jsonwebtoken'
 import queryDB from '~/app/api/libs/queryDB'
 import ERROR from '~/error'
@@ -10,7 +10,7 @@ import loginStudents from '~/app/api/libs/mail/templates/loginStudents'
 export const POST = async request => {
   try {
     const data = await request.json()
-    if (validatorFields({ data, shape: LoginStudents.shape })) {
+    if (validatorFields({ data, shape: Student.shape })) {
       const user = await queryDB({
         entity: 'user',
         queryType: 'findUnique',

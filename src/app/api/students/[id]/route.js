@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { Students } from '~/app/api/entities'
+import { Student } from '~/app/api/entities'
 import { validatePermission } from '~/app/api/libs/permissions'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
@@ -10,7 +10,7 @@ export const GET = async (request, { params }) => {
   try {
     const { id } = params
     if (!Number(id)) return ERROR.INVALID_FIELDS()
-    const hasPermission = await validatePermission({ entity: Students, action: 'findUnique', request })
+    const hasPermission = await validatePermission({ entity: Student, action: 'findUnique', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
       entity: 'user',
@@ -33,9 +33,9 @@ export const GET = async (request, { params }) => {
 export const PUT = async (request, { params }) => {
   try{
     const { id } = params
-    const hasPermission = await validatePermission({ entity: Students, action: 'update', request })
+    const hasPermission = await validatePermission({ entity: Student, action: 'update', request })
     const data = await request.json()
-    if(hasPermission && validatorFields({ data, shape: Students.shape })){
+    if(hasPermission && validatorFields({ data, shape: Student.shape })){
       const payload = await queryDB({
         entity: 'user',
         queryType: 'update',
@@ -58,7 +58,7 @@ export const PUT = async (request, { params }) => {
 export const PATCH = async (request, { params }) => {
   try{
     const { id } = params
-    const hasPermission = await validatePermission({ entity: Students, action: 'update', request })
+    const hasPermission = await validatePermission({ entity: Student, action: 'update', request })
     const data = await request.json()
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
@@ -83,7 +83,7 @@ export const PATCH = async (request, { params }) => {
 export const DELETE = async (request, { params }) => {
   try {
     const { id } = params
-    const hasPermission = await validatePermission({ entity: Students, action: 'delete', request })
+    const hasPermission = await validatePermission({ entity: Student, action: 'delete', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
       entity: 'user',

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { Students } from '~/app/api/entities'
+import { Student } from '~/app/api/entities'
 import { validatePermission } from '~/app/api/libs/permissions'
 import ERROR from '~/error'
 import queryDB from '~/app/api/libs/queryDB'
@@ -9,9 +9,9 @@ import payloadFormatter from '~/app/api/utils/payloadFormatter'
 
 export const POST = async request => {
   try{
-    const hasPermission = await validatePermission({ entity: Students, action: 'create', request })
+    const hasPermission = await validatePermission({ entity: Student, action: 'create', request })
     const data = await request.json()
-    if(hasPermission && validatorFields({ data, shape: Students.shape })){
+    if(hasPermission && validatorFields({ data, shape: Student.shape })){
       const payload = await queryDB({
         entity: 'user',
         queryType: 'create',
@@ -31,7 +31,7 @@ export const POST = async request => {
 
 export const GET = async request => {
   try{
-    const hasPermission = await validatePermission({ entity: Students, action: 'findMany', request })
+    const hasPermission = await validatePermission({ entity: Student, action: 'findMany', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payloads = await queryDB({
       entity: 'user',

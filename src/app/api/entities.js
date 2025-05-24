@@ -113,8 +113,8 @@ export const Me = {
   ]
 }
 
-export const Students = {
-  name: 'students',
+export const Student = {
+  name: 'student',
   permissions: {
     findUnique: true,
     findMany :true,
@@ -130,7 +130,6 @@ export const Students = {
     'grade',
     'enrollmentId',
     'email',
-    'type',
     'shift',
   ]
 }
@@ -179,18 +178,5 @@ export const Login = {
   shape: [
     'email',
     'password',
-  ]
-}
-
-export const LoginStudents = {
-  name: 'loginStudents',
-  shape: [
-    'names',
-    'paternalSurname',
-    'maternalSurname',
-    'email',
-    'enrollmentId',
-    'currentGroup',
-    'shift'
   ]
 }

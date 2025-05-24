@@ -1,4 +1,4 @@
-import { Students } from '~/app/api/entities'
+import { Student } from '~/app/api/entities'
 import validatorFields from '~/app/api/libs/validatorFields'
 import ERROR from '~/error'
 
@@ -34,7 +34,7 @@ const csvFormatter = parsedData => {
         processedStudent.type = 'student'
         processedStudent.email = `${processedStudent.enrollmentId}@cobachih.edu.mx`
         processedStudent.shift = processedStudent.currentGroup.slice(1, 2) == '5' ? 'afternoon' : 'morning'
-        if(!validatorFields({ data: processedStudent, shape: Students.shape })) return ERROR.INVALID_FIELDS()
+        if(!validatorFields({ data: processedStudent, shape: Student.shape })) return ERROR.INVALID_FIELDS()
         return processedStudent
       }))
   } catch (error) {
