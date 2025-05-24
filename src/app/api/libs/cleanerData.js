@@ -1,12 +1,22 @@
 import { omit } from 'ramda'
 
-const cleanerData = ({ payload: p, includes = [], password = false }) => {
-  const omitProps = [password ? '' : 'password', 'created_at', 'updated_at', ...includes]
-  const payload = omit(omitProps, p)
+const OMIT_DATA = {
+  active: true,
+  createdAt: true,
+  password: true,
+  updatedAt: true
+}
 
-  includes?.forEach(include => payload[include] = p[include].map(item => include == 'permissions' ? item.name : item.id))
-  
-  return payload
+
+const cleanerData = ({ payload, ...rest }) => {
+  const omitParams = Object.entries(OMIT_DATA).reduce((acc, [key, value]) => {
+    const { [key]: permitParam = false } = rest
+    if (value && !permitParam) {
+      return [...acc, key]
+    }
+    return acc
+  }, [])
+  return omit(omitParams, payload)
 }
 
 export default cleanerData

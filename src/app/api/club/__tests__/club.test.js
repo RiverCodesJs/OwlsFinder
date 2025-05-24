@@ -7,25 +7,23 @@ vi.mock('~/app/api/libs/db', () => {
     default: {
       club: {
         findMany: () => ([
-          { 
+          {
             id: 1,
             name: 'club 1',
-            created_at: 'created_at',
-            updated_at: 'updated_at',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
             active: 'active'
-            
           },
           {
             id : 2,
             name: 'club 2',
-            created_at: 'created_at',
-            updated_at: 'updated_at',
+            createdAt: 'createdAt',
+            updatedAt: 'updatedAt',
             active: 'active'
           }
         ]),
-        
         create: ({ data }) => ({
-          id: 1, 
+          id: 1,
           name: data.name,
           groupNumber: data.groupNumber,
           description: data.description,
@@ -34,8 +32,8 @@ vi.mock('~/app/api/libs/db', () => {
           limit: data.limit,
           schedule: data.schedule,
           professorId: data.professor.id || 1,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: 'active'
         }),
       },
@@ -49,13 +47,12 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'create_club'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: 'active'
         })
       }
-    }, 
-  
+    },
   }
 })
 
@@ -63,26 +60,24 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
-describe('API Package - GET', () => {
+describe('API Club - GET', () => {
   it.each([
     {
       descr: 'Successful response',
       expectedStatus: 200,
       expectedResponse: {
-        1: { 
-          id: 1, 
-          name: 'club 1', 
-          active: 'active'
-        }, 
-        2: { 
-          id: 2, 
-          name: 'club 2', 
-          active: 'active'
-        } 
+        1: {
+          id: 1,
+          name: 'club 1',
+        },
+        2: {
+          id: 2,
+          name: 'club 2',
+        }
       }
     },
     {
@@ -106,15 +101,15 @@ describe('API Package - GET', () => {
   ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if(mockImplementation){
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'findMany').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'findMany').mockRejectedValueOnce(mockImplementation)
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'findMany').mockReturnValueOnce([]) 
+      vi.spyOn(db.default.club, 'findMany').mockReturnValueOnce([])
     }
     const response = await GET()
     const jsonResponse = await response.json()
@@ -123,7 +118,7 @@ describe('API Package - GET', () => {
   })
 })
 
-describe('API Package - POST', () => {
+describe('API Club - POST', () => {
   it.each([
     {
       descr: 'Successful response',
@@ -154,7 +149,6 @@ describe('API Package - POST', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: 1,
-        active: 'active'
       }
     },
     {
@@ -185,7 +179,6 @@ describe('API Package - POST', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: 1,
-        active: 'active'
       }
     },
     {
@@ -211,7 +204,6 @@ describe('API Package - POST', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: null,
-        active: 'active'
       }
     },
     {
@@ -269,19 +261,19 @@ describe('API Package - POST', () => {
   ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, notProfessor }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'create').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'create').mockRejectedValueOnce(mockImplementation)
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     const mockRequest = {
-      json: async () => request, 
+      json: async () => request,
     }
     if(notProfessor){
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'create').mockReturnValueOnce({
-        id: 1, 
+        id: 1,
         name: 'package1',
         groupNumber: 201,
         description: 'Description about the package',
@@ -290,10 +282,10 @@ describe('API Package - POST', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: null,
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
         active: 'active'
-      }) 
+      })
     }
     const response = await POST(mockRequest)
     const jsonResponse = await response.json()

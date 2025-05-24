@@ -9,8 +9,8 @@ vi.mock('~/app/api/libs/db', () => {
         findUnique: ({ where }) => ( { 
           id: where.id,
           name: 'training 1',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
           
         }),
@@ -24,15 +24,15 @@ vi.mock('~/app/api/libs/db', () => {
           videos: data.videos,
           limit: data.limit,
           shift: data.shift,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
         delete: ({ where }) => ( { 
           id: where.id,
           name: 'training 1',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
           
         }),
@@ -55,8 +55,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'delete_training'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       }
@@ -69,8 +69,8 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
 describe('API Training - GET', () => {
@@ -81,8 +81,13 @@ describe('API Training - GET', () => {
       expectedResponse: {
         id: 1, 
         name: 'training 1', 
-        active: true
       }
+    },
+    {
+      descr: 'Not Valid ID',
+      id: 'NaN',
+      expectedStatus: 400,
+      expectedResponse: { error: 'Invalid Fields' }
     },
     {
       descr: 'Error has not data',
@@ -102,20 +107,20 @@ describe('API Training - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching training' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty, id }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.training, 'findUnique').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.training, 'findUnique').mockReturnValueOnce(null)
     }
-    const params = { id: '1' }
+    const params = { id: id ?? '1' }
     const response = await GET(null, { params }) 
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
@@ -137,7 +142,6 @@ describe('API training - PUT', () => {
         videos: ['video1'],
         shift: 'shift',
         limit: 30,
-        active: true
       },
       request: {
         name: 'training 1',
@@ -211,8 +215,8 @@ describe('API training - PUT', () => {
       vi.spyOn(db.default.training, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -243,7 +247,6 @@ describe('API training - PATCH', () => {
         videos: ['video1'],
         shift: 'shift',
         limit: 30,
-        active: true
       },
       request: {
         id: 1, 
@@ -309,8 +312,8 @@ describe('API training - PATCH', () => {
       vi.spyOn(db.default.training, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -335,7 +338,6 @@ describe('API training - Delete', () => {
       expectedResponse: {
         id: 1, 
         name: 'training 1', 
-        active: false
       }
     },
     {  
@@ -365,14 +367,14 @@ describe('API training - Delete', () => {
       vi.spyOn(db.default.training, 'update').mockReturnValueOnce({
         id: 1,
         name: 'training 1',
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
         active: false
       }) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')

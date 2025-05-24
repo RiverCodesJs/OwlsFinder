@@ -14,8 +14,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'create_admin'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
         create: ({ data }) => ({
@@ -28,8 +28,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'create_admin'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       }
@@ -42,8 +42,8 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
 vi.mock('~/app/api/libs/mail/emailSender', () => {
@@ -103,26 +103,12 @@ describe('API admin - POST', () => {
       vi.spyOn(db.default.user, 'create').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(newAdmin){
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.user, 'findUnique')
-        .mockReturnValueOnce({
-          id: 2,
-          name: 'Jonh',
-          permissions: [
-            {
-              id: 1,
-              name: 'create_admin'
-            }
-          ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
-          active: true
-        })
-        .mockReturnValueOnce(null)
+      vi.spyOn(db.default.user, 'findUnique').mockReturnValueOnce(null)
     }
     const mockRequest = { json: async () => request }
     const response = await POST(mockRequest)

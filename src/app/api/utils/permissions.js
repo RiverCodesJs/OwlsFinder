@@ -1,173 +1,66 @@
-export const COUNSELOR_PERMISSIONS = [
-  {
-    name: 'update_me'
-  },
-  {
-    name: 'delete_me'
-  },
-  {
-    name: 'create_package'
-  },
-  {
-    name: 'update_package'
-  },
-  {
-    name: 'delete_package'
-  },
-  {
-    name: 'create_subject'
-  },
-  {
-    name: 'update_subject'
-  },
-  {
-    name: 'delete_subject'
-  },
-  {
-    name: 'create_training'
-  },
-  {
-    name: 'update_training'
-  },
-  {
-    name: 'delete_training'
-  },
-  {
-    name: 'create_club'
-  },
-  {
-    name: 'update_club'
-  },
-  {
-    name: 'delete_club'
-  },
-  {
-    name: 'create_students'
-  },
-  {
-    name: 'create_professor'
-  },
-  {
-    name: 'update_professor'
-  },
-  {
-    name: 'delete_professor'
-  },
-]
+export const COUNSELOR_PERMISSIONS = {
+  UPDATE_ME: {},
+  DELETE_ME: {},
+  CREATE_PACKAGE: {},
+  UPDATE_PACKAGE: {},
+  DELETE_PACKAGE: {},
+  CREATE_SUBJECT: {},
+  UPDATE_SUBJECT: {},
+  DELETE_SUBJECT: {},
+  CREATE_TRAINING: {},
+  UPDATE_TRAINING: {},
+  DELETE_TRAINING: {},
+  CREATE_CLUB: {},
+  UPDATE_CLUB: {},
+  DELETE_CLUB: {},
+  CREATE_STUDENTS: {},
+  CREATE_PROFESSOR: {},
+  UPDATE_PROFESSOR: {},
+  DELETE_PROFESSOR: {},
+  FINDUNIQUE_SELECTIONCONFIG: {},
+  FINDMANY_SELECTIONCONFIG: {},
+  UPDATE_SELECTIONCONFIG: {},
+  CREATE_SELECTIONCONFIG: {},
+  DELETE_SELECTIONCONFIG: {}
+}
 
-export const ADMIN_PERMISSIONS = [
-  {
-    name: 'update_me'
-  },
-  {
-    name: 'delete_me'
-  },
-  {
-    name: 'create_user'
-  },
-  {
-    name: 'update_user'
-  },
-  {
-    name: 'delete_user'
-  },
-  {
-    name: 'create_package'
-  },
-  {
-    name: 'update_package'
-  },
-  {
-    name: 'delete_package'
-  },
-  {
-    name: 'create_subject'
-  },
-  {
-    name: 'update_subject'
-  },
-  {
-    name: 'delete_subject'
-  },
-  {
-    name: 'create_training'
-  },
-  {
-    name: 'update_training'
-  },
-  {
-    name: 'delete_training'
-  },
-  {
-    name: 'create_club'
-  },
-  {
-    name: 'update_club'
-  },
-  {
-    name: 'delete_club'
-  },
-  {
-    name: 'findUnique_students'
-  },
-  {
-    name: 'findMany_students'
-  },
-  {
-    name: 'create_students'
-  },
-  {
-    name: 'update_students'
-  },
-  {
-    name: 'delete_students'
-  },
-  {
-    name: 'create_professor'
-  },
-  {
-    name: 'update_professor'
-  },
-  {
-    name: 'delete_professor'
-  },
-  {
-    name: 'create_permissions'
-  },
-  {
-    name: 'update_permissions'
-  },
-  {
-    name: 'delete_permissions'
-  },
-  {
-    name: 'findUnique_counselor'
-  },
-  {
-    name: 'findMany_counselor'
-  },
-  {
-    name: 'create_counselor'
-  },
-  {
-    name: 'update_counselor'
-  },
-  {
-    name: 'delete_counselor'
-  },
-  // {
-  //   name: 'findUnique_'
-  // },
-  // {
-  //   name: 'findMany_'
-  // },
-  // {
-  //   name: 'create_'
-  // },
-  // {
-  //   name: 'update_'
-  // },
-  // {
-  //   name: 'delete_'
-  // },
-]
+export const ADMIN_PERMISSIONS = {
+  UPDATE_ME: {},
+  DELETE_ME: {},
+  CREATE_USER: {},
+  UPDATE_USER: {},
+  DELETE_USER: {},
+  CREATE_PACKAGE: {},
+  UPDATE_PACKAGE: {},
+  DELETE_PACKAGE: {},
+  CREATE_SUBJECT: {},
+  UPDATE_SUBJECT: {},
+  DELETE_SUBJECT: {},
+  CREATE_TRAINING: {},
+  UPDATE_TRAINING: {},
+  DELETE_TRAINING: {},
+  CREATE_CLUB: {},
+  UPDATE_CLUB: {},
+  DELETE_CLUB: {},
+  FINDUNIQUE_STUDENTS: {},
+  FINDMANY_STUDENTS: {},
+  CREATE_STUDENTS: {},
+  UPDATE_STUDENTS: {},
+  DELETE_STUDENTS: {},
+  CREATE_PROFESSOR: {},
+  UPDATE_PROFESSOR: {},
+  DELETE_PROFESSOR: {},
+  CREATE_PERMISSIONS: {},
+  UPDATE_PERMISSIONS: {},
+  DELETE_PERMISSIONS: {},
+  FINDUNIQUE_COUNSELOR: {},
+  FINDMANY_COUNSELOR: {},
+  CREATE_COUNSELOR: {},
+  UPDATE_COUNSELOR: {},
+  DELETE_COUNSELOR: {},
+  FINDUNIQUE_SELECTIONCONFIG: {},
+  FINDMANY_SELECTIONCONFIG: {},
+  UPDATE_SELECTIONCONFIG: {},
+  CREATE_SELECTIONCONFIG: {},
+  DELETE_SELECTIONCONFIG: {}
+}

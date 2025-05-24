@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import getPermissionsByEntity from '~/app/api/libs/getPermissionsByEntity'
+import { getPermissionsByEntity } from '~/app/api/libs/permissions'
 
 describe('permissionsByEntity libs', () =>{
   it.each([

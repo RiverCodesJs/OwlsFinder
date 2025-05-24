@@ -6,15 +6,15 @@ vi.mock('~/app/api/libs/db', () => {
   return {
     default: {
       club: {
-        findUnique: ({ where }) => ( { 
+        findUnique: ({ where }) => ( {
           id: where.id,
           name: 'club 1',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: 'active'
         }),
         update: ({ data, where }) => ({
-          id: where.id, 
+          id: where.id,
           name: data.name,
           groupNumber: data.groupNumber,
           description: data.description,
@@ -23,8 +23,8 @@ vi.mock('~/app/api/libs/db', () => {
           limit: data.limit,
           schedule: data.schedule,
           professorId: data.professorId,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: 'active'
         })
       },
@@ -46,13 +46,12 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'delete_club'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: 'active'
         })
       }
-    }, 
-  
+    },
   }
 })
 
@@ -60,8 +59,8 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
 describe('API Club - GET', () => {
@@ -70,10 +69,15 @@ describe('API Club - GET', () => {
       descr: 'Successful response',
       expectedStatus: 200,
       expectedResponse: {
-        id: 1, 
-        name: 'club 1', 
-        active: 'active'
+        id: 1,
+        name: 'club 1',
       }
+    },
+    {
+      descr: 'Not Valid ID',
+      id: NaN,
+      expectedStatus: 400,
+      expectedResponse: { error: 'Invalid Fields' }
     },
     {
       descr: 'Error empty data',
@@ -93,21 +97,21 @@ describe('API Club - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching club' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty, id }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'findUnique').mockRejectedValueOnce(mockImplementation)
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'findUnique').mockReturnValueOnce(null)
     }
-    const params = { id: '1' }
-    const response = await GET(null, { params }) 
+    const params = { id: id ?? 1 }
+    const response = await GET(null, { params })
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
     expect(jsonResponse).toEqual(expectedResponse)
@@ -119,7 +123,7 @@ describe('API Club - PUT', () => {
     {
       descr: 'Successful Request',
       expectedStatus: 200,
-      expectedResponse: { 
+      expectedResponse: {
         id: 1,
         name: 'club 1',
         groupNumber: 201,
@@ -129,7 +133,6 @@ describe('API Club - PUT', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: 1,
-        active: 'active'
       },
       request: {
         id: 1, 
@@ -162,7 +165,6 @@ describe('API Club - PUT', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: 1,
-        active: 'active'
       },
       request: {
         id: 1, 
@@ -182,7 +184,7 @@ describe('API Club - PUT', () => {
       expectedStatus: 404,
       expectedResponse: { error: 'Not Found' },
       request: {
-        id: 1, 
+        id: 1,
         name: 'club 1',
         groupNumber: 201,
         description: 'Description about the club',
@@ -198,7 +200,7 @@ describe('API Club - PUT', () => {
       expectedStatus: 400,
       expectedResponse: { error: 'Invalid Fields' },
       request: {
-        id: 1, 
+        id: 1,
         description: 'package 1',
       }
     },
@@ -251,11 +253,11 @@ describe('API Club - PUT', () => {
   ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation)
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -263,9 +265,9 @@ describe('API Club - PUT', () => {
     }
     const params = { id: '1' }
     const mockRequest = {
-      json: async () => request, 
+      json: async () => request,
     }
-    const response = await PUT(mockRequest, { params }) 
+    const response = await PUT(mockRequest, { params })
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
     expect(jsonResponse).toEqual(expectedResponse)
@@ -277,7 +279,7 @@ describe('API Club - PATCH', () => {
     {
       descr: 'Successful Request with no data professor',
       expectedStatus: 200,
-      expectedResponse: { 
+      expectedResponse: {
         id: 1,
         name: 'club 1',
         groupNumber: 201,
@@ -287,10 +289,9 @@ describe('API Club - PATCH', () => {
         schedule: 'schedule',
         limit: 30,
         professorId: 1,
-        active: 'active'
       },
       request: {
-        id: 1, 
+        id: 1,
         name: 'club 1',
         groupNumber: 201,
         description: 'Description about the club',
@@ -324,7 +325,7 @@ describe('API Club - PATCH', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching packages' },
       request: {
-        id: 1, 
+        id: 1,
         name: 'club 1',
         groupNumber: 201,
         description: 'Description about the club',
@@ -367,11 +368,11 @@ describe('API Club - PATCH', () => {
   ])('$descr', async ({ request, expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation)
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -379,9 +380,9 @@ describe('API Club - PATCH', () => {
     }
     const params = { id: '1' }
     const mockRequest = {
-      json: async () => request, 
+      json: async () => request,
     }
-    const response = await PATCH(mockRequest, { params }) 
+    const response = await PATCH(mockRequest, { params })
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
     expect(jsonResponse).toEqual(expectedResponse)
@@ -394,9 +395,8 @@ describe('API Club - Delete', () => {
       descr: 'Successful response',
       expectedStatus: 200,
       expectedResponse: {
-        id: 1, 
-        name: 'club 1', 
-        active: 'false'
+        id: 1,
+        name: 'club 1',
       }
     },
     {
@@ -420,27 +420,26 @@ describe('API Club - Delete', () => {
   ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
-      vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation) 
+      vi.spyOn(db.default.club, 'update').mockRejectedValueOnce(mockImplementation)
     } else {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'update').mockReturnValueOnce({
         id: 1,
         name: 'club 1',
-        created_at: 'created_at',
-        updated_at: 'updated_at',
-        active: 'false'
-      }) 
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
+      })
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.club, 'findUnique').mockReturnValueOnce(null)
     }
     const params = { id: '1' }
-    const response = await DELETE(null, { params }) 
+    const response = await DELETE(null, { params })
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
     expect(jsonResponse).toEqual(expectedResponse)

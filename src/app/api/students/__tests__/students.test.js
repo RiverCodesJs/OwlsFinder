@@ -17,8 +17,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'create_students'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
 
@@ -33,8 +33,8 @@ vi.mock('~/app/api/libs/db', () => {
           grade: data.grade,
           type: data.type,
           shift: data.shift,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
 
@@ -49,8 +49,8 @@ vi.mock('~/app/api/libs/db', () => {
           grade: data.grade,
           type: data.type,
           shift: data.shift,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
       },
@@ -62,8 +62,8 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
 describe('API Students - POST', () => {
@@ -84,7 +84,6 @@ describe('API Students - POST', () => {
           grade: '9',
           type: 'student',
           shift: 'morning',
-          active: true
         },
         2: {
           id: 2,
@@ -97,7 +96,6 @@ describe('API Students - POST', () => {
           grade: '8,9',
           type: 'student',
           shift: 'afternoon',
-          active: true
         }
       },
       expectedStatus: 201 
@@ -117,7 +115,6 @@ describe('API Students - POST', () => {
           grade: '9',
           type: 'student',
           shift: 'morning',
-          active: true
         },
         4: {
           id: 4,
@@ -130,7 +127,6 @@ describe('API Students - POST', () => {
           grade: '8,9',
           type: 'student',
           shift: 'afternoon',
-          active: true
         }
       },
       expectedStatus: 201 
@@ -172,8 +168,8 @@ describe('API Students - POST', () => {
     }
 
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
 
     if (newData) {
@@ -185,8 +181,8 @@ describe('API Students - POST', () => {
           permissions: [
             { id: 1, name: 'create_students' }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
         .mockReturnValueOnce(null)

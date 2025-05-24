@@ -9,8 +9,8 @@ vi.mock('~/app/api/libs/db', () => {
         findUnique: ({ where }) => ( { 
           id: where.id,
           name: 'professor 1',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
         
@@ -20,15 +20,15 @@ vi.mock('~/app/api/libs/db', () => {
           paternalSurname: data.paternalSurname,
           maternalSurname: data.maternalSurname,
           email: data.email,
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
         delete: ({ where }) => ( { 
           id: where.id,
           name: 'professor 1',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
           
         }),
@@ -51,8 +51,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'delete_professor'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       }
@@ -65,8 +65,8 @@ vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
 })
 
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
+vi.mock('~/app/api/libs/permissions', () => {
+  return { validatePermission: () => (true) }
 })
 
 describe('API Professor - GET', () => {
@@ -77,8 +77,13 @@ describe('API Professor - GET', () => {
       expectedResponse: {
         id: 1, 
         name: 'professor 1', 
-        active: true
       }
+    },
+    {
+      descr: 'Not Valid ID',
+      id: 'NaN',
+      expectedStatus: 400,
+      expectedResponse: { error: 'Invalid Fields' }
     },
     {
       descr: 'Error has not data',
@@ -98,20 +103,20 @@ describe('API Professor - GET', () => {
       expectedStatus: 500,
       expectedResponse: { error: 'Error fetching professor' }
     }
-  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty }) =>{
+  ])('$descr', async ({ expectedStatus, expectedResponse, mockImplementation, isNotAllowed, isEmpty, id }) =>{
     if (mockImplementation) {
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.professor, 'findUnique').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
       vi.spyOn(db.default.professor, 'findUnique').mockReturnValueOnce(null)
     }
-    const params = { id: '1' }
+    const params = { id: id ?? '1' }
     const response = await GET(null, { params }) 
     const jsonResponse = await response.json()
     expect(response.status).toBe(expectedStatus)
@@ -130,7 +135,6 @@ describe('API Professor - PUT', () => {
         paternalSurname: 'paternal surname',
         maternalSurname: 'maternal surname',
         email: 'professor@mail.com',
-        active: true
       },
       request: {
         id: 1,
@@ -162,7 +166,6 @@ describe('API Professor - PUT', () => {
         paternalSurname: 'paternal surname',
         maternalSurname: 'maternal surname',
         email: 'professor@mail.com',
-        active: true
       },
       request: {
         id: 1, 
@@ -213,8 +216,8 @@ describe('API Professor - PUT', () => {
       vi.spyOn(db.default.professor, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -242,7 +245,6 @@ describe('API Professor - PATCH', () => {
         paternalSurname: 'paternal surname',
         maternalSurname: 'maternal surname',
         email: 'professor@mail.com',
-        active: true
       },
       request: {
         id: 1, 
@@ -297,8 +299,8 @@ describe('API Professor - PATCH', () => {
       vi.spyOn(db.default.professor, 'update').mockRejectedValueOnce(mockImplementation) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false) 
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false) 
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')
@@ -323,7 +325,6 @@ describe('API Professor - Delete', () => {
       expectedResponse: {
         id: 1, 
         name: 'professor 1', 
-        active: false
       }
     },
     {
@@ -353,14 +354,14 @@ describe('API Professor - Delete', () => {
       vi.spyOn(db.default.professor, 'update').mockReturnValueOnce({
         id: 1,
         name: 'professor 1',
-        created_at: 'created_at',
-        updated_at: 'updated_at',
+        createdAt: 'createdAt',
+        updatedAt: 'updatedAt',
         active: false
       }) 
     }
     if(isNotAllowed){
-      const getPermissionsByEntity = await import ('~/app/api/libs/getPermissionsByEntity')
-      vi.spyOn( getPermissionsByEntity, 'default').mockReturnValueOnce(false)
+      const permissions = await import ('~/app/api/libs/permissions')
+      vi.spyOn( permissions, 'validatePermission').mockReturnValueOnce(false)
     }
     if(isEmpty){
       const db = await import('~/app/api/libs/db')

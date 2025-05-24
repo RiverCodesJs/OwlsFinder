@@ -8,8 +8,8 @@ vi.mock('~/app/api/libs/db', () => {
         findUnique: () => ({
           id: 1,
           email: 'example@mail.com',
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         }),
         create: ({ data }) => ({
@@ -22,8 +22,8 @@ vi.mock('~/app/api/libs/db', () => {
               name: 'create_counselor'
             }
           ],
-          created_at: 'created_at',
-          updated_at: 'updated_at',
+          createdAt: 'createdAt',
+          updatedAt: 'updatedAt',
           active: true
         })
       }
@@ -34,10 +34,6 @@ vi.mock('~/app/api/libs/db', () => {
 
 vi.mock('~/app/api/libs/auth', () => {
   return { authenticateToken: () => (1) }
-})
-
-vi.mock('~/app/api/libs/getPermissionsByEntity', () => {
-  return { default: () => (true) }
 })
 
 vi.mock('~/app/api/libs/mail/emailSender', () => {
