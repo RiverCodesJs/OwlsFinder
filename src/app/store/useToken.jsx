@@ -5,7 +5,7 @@ const useToken = create(
   persist(
     set => ({
       token: null,
-      setToken: (token) => set({"token": token})
+      setToken: (token) => set({token})
     }),
     {
       name: 'owlsFinderData',
