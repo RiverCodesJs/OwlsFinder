@@ -1,5 +1,5 @@
 'use client'
-import { Alert, Button, Snackbar, Stack, Typography } from "@mui/material"
+import { Button, Snackbar, Stack, Typography } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import Image from "next/image"
 import Link from "next/link"
@@ -125,15 +125,16 @@ const Wrapper = () => {
 
   const teachersSubmit = async payload => {
     console.log({"maestro": payload})
-    setSnackbarMessage("Ola, este es un snackbar")
-    /* await userLogin.mutate(payload, {
+    //setSnackbarMessage("Ola, este es un snackbar")
+    await userLogin.mutate(payload, {
       onSucess: () => {
         router.push("/counselor")
       },
-      onError: () => {
+      onError: (e) => {
+        console.log(e)
         setSnackbarMessage("Datos incorrectos. Intenta ingresarlos de nuevo")
       }
-    }) */
+    })
   }
 
   const studentsSubmit = values => {
