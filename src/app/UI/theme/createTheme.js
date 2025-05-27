@@ -6,19 +6,19 @@ const theme = createTheme({
   typography: {
     fontFamily: 'inter',
     h1: {
-      fontSize: '4rem / 120%',
+      fontSize: '4rem',
       fontWeight: 'bold',
     },
     h2: {
-      fontSize: '3rem / 120%',
+      fontSize: '3rem',
       fontWeight: 'bold',
     },
     h3: {
-      fontSize: '2rem / 120%',
+      fontSize: '2rem',
       fontWeight: 'bold',
     },
     body1: {
-      fontSize: '1rem / 160%',
+      fontSize: '1rem',
     },
     body2: {
       fontSize: '0.825rem',
