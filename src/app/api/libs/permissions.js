@@ -11,7 +11,7 @@ export const getPermissionsByEntity = ({ permissions, entity, action }) => {
     return acc
   }, [])
   const hasPermission = userPermissions ? userPermissions.includes(action) : false
-  const isRequired = entity?.permissions[action] 
+  const isRequired = entity?.permissions[action]
 
   if (!isRequired && permissions != null) return true
   return hasPermission
@@ -32,7 +32,7 @@ export const validatePermission = async ({ entity, action, request }) => {
   return false
 }
 
-export const hydratedPermissions = permissions => permissions.reduce((acc, permission) => ({ 
+export const hydratedPermissions = permissions => permissions.reduce((acc, permission) => ({
   ...acc,
   [permission.name]: EMPTY_OBJECT
 }), {})
