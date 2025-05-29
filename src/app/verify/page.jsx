@@ -33,17 +33,16 @@ const Container = styled('div')(({ theme }) => ({
   }
 }))
 
-const VerifyEmail = () => {
+const Verify = () => {
   return(
     <Container>
       <Stack className={classes.content_box} spacing={3}>
         <Image src={images.buhos_logo} width={330} height={250}/>
-        <Typography variant="h2">Verifica tu cuenta</Typography>
-        <Typography variant="body1">Para comenzar a utilizar todas las herramientas y recursos disponibles, por favor, confirma tu cuenta haciendo clic en el botón de abajo.</Typography>
-        <Button className={classes.access_button}>Ingresar</Button>
+        <Typography variant="h2">Verifica tu correo</Typography>
+        <Typography variant="body1">Un correo ha sido enviado a tu cuenta. Revísalo para acceder al proceso de selección</Typography>
       </Stack>
     </Container>
   )
 }
 
-export default VerifyEmail
+export default Verify
