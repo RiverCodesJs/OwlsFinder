@@ -10,7 +10,7 @@ import { Formik, Form, Field } from "formik"
 import CustomField from "../UI/shared/FormikTextField"
 import { getAlumniSchema, getAlumniValues, getEmailSchema, getEmailValues } from "./utils"
 import { useApiMutation } from "../Lib/apiFetch"
-import { useRouter } from "next/compat/router"
+import { useRouter } from "next/navigation"
 
 const displayName = 'login'
 const classes = getClassPrefixer(displayName)
@@ -121,6 +121,7 @@ const Login = ({snackbarMessage, setSnackbarMessage, studentsFormik, teachersFor
 const Wrapper = () => {
   const [snackbarMessage, setSnackbarMessage] = useState(null)
   const userLogin = useApiMutation({path: "/login", opts: {method: "POST"}})
+  const studentsLogin = useApiMutation({path: "/students/login", opts: {method: "POST"}})
   const router = useRouter()
 
   const teachersSubmit = async payload => {
@@ -128,7 +129,7 @@ const Wrapper = () => {
     //setSnackbarMessage("Ola, este es un snackbar")
     await userLogin.mutate(payload, {
       onSucess: () => {
-        router.push("/counselor")
+        router.replace("/counselor")
       },
       onError: (e) => {
         console.log(e)
@@ -137,9 +138,16 @@ const Wrapper = () => {
     })
   }
 
-  const studentsSubmit = values => {
+  const studentsSubmit = async payload => {
     console.log({"alumnos": values})
-    setSnackbarMessage("Ola, este es otro snackbar")
+    studentsLogin.mutate(payload, {
+      onSuccess: () => {
+        router.replace("/verify")
+      },
+      onError: () => {
+        setSnackbarMessage("Datos incorrectos. Intenta ingresarlos de nuevo.")
+      }
+    })
   }
 
 
