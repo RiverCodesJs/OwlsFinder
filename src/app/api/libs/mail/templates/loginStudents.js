@@ -49,7 +49,7 @@ const forgotYourPassword = ({ token }) => ({
           <div class="content">
             <p class="title">Ingresa a la plataforma</p>
             <p class="message">Para poder hacer tu selección da clic en el botón de abajo.</p>
-            <a href="${process.env.HOST ?? 'http://localhost:3000'}/forgot/${token}" class="btn">¡Aquí!</a>
+            <a href="${process.env.HOST ?? 'http://localhost:3000'}/verify/${token}" class="btn">¡Aquí!</a>
           </div>
         </div>
       </body>
