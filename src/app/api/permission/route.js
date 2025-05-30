@@ -19,7 +19,7 @@ export const POST = async request => {
       })
       const response = cleanerData({ payload })
       return NextResponse.json(response, { status: 201 })
-    } 
+    }
     return ERROR.FORBIDDEN()
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
@@ -36,7 +36,7 @@ export const GET = async request => {
     })
     if(payloads) {
       const response = payloadFormatter(payloads.map(payload => cleanerData({ payload })))
-      return NextResponse.json(response, { status: 200 })  
+      return NextResponse.json(response, { status: 200 })
     }
     return ERROR.NOT_FOUND()
   } catch (error) {

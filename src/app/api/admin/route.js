@@ -33,12 +33,12 @@ export const POST = async request => {
         data: Object.keys(ADMIN_PERMISSIONS).map(key => ({ name: key }))
       }]
     })
-    const token = jwt.sign({ 
+    const token = jwt.sign({
       userId: admin.id
     }, process.env.JWT_SECRET)
     await emailSender({ reciver: email, template: registerCounselor({ token }) })
     return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 })
-    
+
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 500 })
   }
