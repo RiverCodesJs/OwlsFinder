@@ -20,7 +20,7 @@ const getEmailValues = () => ({
 })
 
 const getAlumniValues = () => ({
-  firstName: '',
+  names: '',
   parentalSurname: '',
   maternalSurname: '',
   enrollmentId: '',
