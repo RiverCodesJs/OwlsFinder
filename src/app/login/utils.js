@@ -21,11 +21,11 @@ const getEmailValues = () => ({
 
 const getAlumniValues = () => ({
   firstName: '',
-  fatherName: '',
-  motherName: '',
-  matricula: '',
-  grupo: '',
-  turno: ''
+  parentalSurname: '',
+  maternalSurname: '',
+  enrollmentId: '',
+  shift: '',
+  grade: ''
 })
 
 export {
