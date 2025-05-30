@@ -4,7 +4,7 @@ export const Package = {
     create: true,
     update: true,
     delete: true
-  }, 
+  },
   shape: [
     'description',
     'groupNumber',

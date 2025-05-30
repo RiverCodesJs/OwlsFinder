@@ -25,7 +25,7 @@ export const validatePermission = async ({ entity, action, request }) => {
     filter: { id: Number(userId) },
     includes: ['permissions']
   })
-  if(permissions){
+  if (permissions) {
     const hasPermission = getPermissionsByEntity({ permissions, entity, action })
     if (hasPermission) return true
   }
