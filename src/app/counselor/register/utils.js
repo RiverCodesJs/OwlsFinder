@@ -8,4 +8,12 @@ const registerSchema = Yup.object({
   repeatPass: Yup.string().required('Ingresa de nuevo la nueva contraseña'),
 })
 
-export default registerSchema
+const registerValues = () => ({
+  names: '',
+  paternalSurname: '',
+  maternalSurname: '',
+  password: '',
+  repeatPass: ''
+})
+
+export {registerSchema, registerValues}
