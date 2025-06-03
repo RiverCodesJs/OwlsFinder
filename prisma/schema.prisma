@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -27,7 +28,7 @@ model User {
   groups          String[]
   grade           String?
   club            Club?        @relation(fields: [clubId], references: [id])
-  permissions     Json
+  permissions     Permission[] @relation("PermissionToUser")
 }
 
 model Professor {
@@ -96,6 +97,12 @@ model Club {
   groupNumber Int?
   professor   Professor? @relation(fields: [professorId], references: [id])
   users       User[]
+}
+
+model Permission {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  users User[] @relation("PermissionToUser")
 }
 
 model PackageSelection {
