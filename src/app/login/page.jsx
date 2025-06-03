@@ -96,12 +96,12 @@ const Login = ({snackbarMessage, setSnackbarMessage, studentsFormik, teachersFor
               {!focused ? <Image src={images.buho} width={200} height={100} alt="Owls Logo"/> : null}
               <Typography variant="h1">Alumnos</Typography>
               <Typography variant="body1">Verifica tu informacion</Typography>
-              <Field component={CustomField} name='firstName' placeholder="Nombre"/>
-              <Field component={CustomField} name='fatherName' placeholder="Apellido Materno"/>
-              <Field component={CustomField} name='motherName' placeholder="Apellido Paterno"/>
-              <Field component={CustomField} name='matricula' placeholder="Matricula"/>
-              <Field component={CustomField} name='grupo' placeholder="Turno"/>
-              <Field component={CustomField} name='turno' placeholder="Grupo"/>
+              <Field component={CustomField} name='names' placeholder="Nombre"/>
+              <Field component={CustomField} name='paternalSurname' placeholder="Apellido Materno"/>
+              <Field component={CustomField} name='maternalSurname' placeholder="Apellido Paterno"/>
+              <Field component={CustomField} name='enrollmentId' placeholder="Matricula"/>
+              <Field component={CustomField} name='shift' placeholder="Turno"/>
+              <Field component={CustomField} name='currentGroup' placeholder="Grupo"/>
           <Form>
               <Button type='submit' className={focused ? classes.focused_button : classes.unfocused_button}>Ingresar</Button>
           </Form>
@@ -125,23 +125,26 @@ const Wrapper = () => {
   const router = useRouter()
 
   const teachersSubmit = async payload => {
-    console.log({"maestro": payload})
-    //setSnackbarMessage("Ola, este es un snackbar")
     await userLogin.mutate(payload, {
-      onSucess: () => {
+      onSuccess: () => {
         router.replace("/counselor")
       },
       onError: (e) => {
-        console.log(e)
-        setSnackbarMessage("Datos incorrectos. Intenta ingresarlos de nuevo")
+        if(e.error === "Invalid Fields") {
+          setSnackbarMessage("Datos incorrectos. Intenta ingresarlos de nuevo")
+        } else {
+          setSnackbarMessage("Ocurrió un error")
+        }
       }
     })
   }
 
   const studentsSubmit = async payload => {
-    console.log({"alumnos": values})
+    payload.email = `${payload.enrollmentId}@cobachih.edu.mx`
+    payload.grade = payload.currentGroup[0]
     studentsLogin.mutate(payload, {
       onSuccess: () => {
+        setSnackbarMessage("Inicio de sesión exitoso")
         router.replace("/verify")
       },
       onError: () => {
