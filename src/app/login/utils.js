@@ -1,12 +1,12 @@
 import * as Yup from 'yup'
 
 const getAlumniSchema = () => Yup.object({
-  firstName: Yup.string().required('Ingresa tu nombre'),
-  fatherName: Yup.string().required('Ingresa tu apellido paterno'),
-  motherName: Yup.string().required('Ingresa tu apellido materno'),
-  matricula: Yup.number().required('Ingresa tu matricula').positive().integer(),
-  grupo: Yup.number().required('Ingresa tu turno').positive().integer(),
-  turno: Yup.string().required('Ingresa tu turno').oneOf(['Matutino','Vespertino'])
+  names: Yup.string().required('Ingresa tu nombre'),
+  paternalSurname: Yup.string().required('Ingresa tu apellido paterno'),
+  maternalSurname: Yup.string().required('Ingresa tu apellido materno'),
+  enrollmentId: Yup.number().required('Ingresa tu matricula').positive().integer(),
+  currentGroup: Yup.number().required('Ingresa tu turno').positive().integer(),
+  shift: Yup.string().required('Ingresa tu turno').oneOf(['Matutino','Vespertino'])
 })
 
 const getEmailSchema = () => Yup.object({
@@ -21,11 +21,11 @@ const getEmailValues = () => ({
 
 const getAlumniValues = () => ({
   names: '',
-  parentalSurname: '',
+  paternalSurname: '',
   maternalSurname: '',
   enrollmentId: '',
   shift: '',
-  grade: ''
+  currentGroup: ''
 })
 
 export {
