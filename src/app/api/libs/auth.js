@@ -4,7 +4,7 @@ import ERROR from '~/error'
 
 export const authenticateToken = ({ headers }) => {
   const authHeader = headers.get('authorization')
-  const token = authHeader && authHeader.replace(/authorization /,'')
+  const token = authHeader && authHeader.replace(/Bearer /,'')
   if (token) {
     const { userId } = jwt.verify(token, process.env.JWT_SECRET)
     return userId
