@@ -1,33 +1,36 @@
 'use client'
 import { useQueryClient } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { Suspense, useEffect } from "react"
+import { useStore } from "zustand"
 import useToken from "~/app/store/useToken"
 import Loading from "~/app/UI/shared/Loading"
 
-const ForgotRedirect = ({params}) => {
+const CounselorRegisterRedir = ({params}) => {
 
-
-  const { token } = params
+  const token = useParams()
   const router = useRouter()
   const client = useQueryClient()
-  const { setToken } = useToken()
+  const setToken = useStore(useToken, (state) => state.setToken)
 
   useEffect(() => {
     if (token) {
       setToken(token)
-      router.replace("/forgot/success")
+      router.replace("/counselor/register")
     } else {
       client.clear()
-      router.replace('/forgot')
+      router.replace('/login')
     }
   }, [])
+
+  return null
 }
 
 const Wrapper = () => {
+
   return (
     <Suspense fallback={<Loading/>}>
-      <ForgotRedirect/>
+      <CounselorRegisterRedir/>
     </Suspense>
   )
 }
