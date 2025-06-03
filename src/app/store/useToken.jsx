@@ -3,9 +3,9 @@ import { persist } from 'zustand/middleware'
 
 const useToken = create(
   persist(
-    set => ({
+    (set) => ({
       token: null,
-      setToken: (token) => set({token})
+      setToken: (token) => set(token)
     }),
     {
       name: 'owlsFinderData',
