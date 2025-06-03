@@ -41,7 +41,7 @@ const ForgotPassword = ({isSubmitted, setSubmitted, snackbarMessage, setSnackbar
   return(
     <Container>
       <Stack className={classes.content_box} spacing={3}>
-        <Image src={images.buhos_logo} width={270} height={200}/>
+        <Image src={images.buhos_logo} width={270} height={200} alt="Buhos Logo"/>
         <Typography variant="h2">Reestablece tu contraseña</Typography>
         { isSubmitted ?
           <Typography variant="body1">Un correo ha sido enviado a tu cuenta!</Typography>
@@ -52,13 +52,14 @@ const ForgotPassword = ({isSubmitted, setSubmitted, snackbarMessage, setSnackbar
             <Button variant="contained" type="submit">Ingresar</Button>
           </>
         }
-      </Stack>
       <Snackbar
       open={Boolean(snackbarMessage)}
       autoHideDuration={3000}
-      onClose={() => setSnackbarMessage(null)}>
-        {snackbarMessage}
-      </Snackbar>
+      onClose={() => setSnackbarMessage(null)}
+      message={snackbarMessage}
+      />
+      
+      </Stack>
     </Container>
   )
 }
