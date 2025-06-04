@@ -8,7 +8,7 @@ import Loading from "~/app/UI/shared/Loading"
 
 const CounselorRegisterRedir = ({params}) => {
 
-  const token = useParams()
+  const { token } = useParams()
   const router = useRouter()
   const client = useQueryClient()
   const setToken = useStore(useToken, (state) => state.setToken)

@@ -5,8 +5,8 @@ import { Suspense, useEffect } from "react"
 import useToken from "~/app/store/useToken"
 import Loading from "~/app/UI/shared/Loading"
 
-const ForgotRedirect = ({params}) => {
-  const token = useParams()
+const ForgotRedirect = () => {
+  const { token } = useParams()
   const router = useRouter()
   const client = useQueryClient()
   const { setToken } = useToken()
