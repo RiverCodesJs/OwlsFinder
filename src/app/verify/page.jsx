@@ -19,21 +19,19 @@ const Container = styled('div')(({ theme }) => ({
   width: "100vw",
   backgroundColor: theme.palette.primary.main,
   
-  [`& .${classes.content_box}`]: {
+  [`& .${classes.contentBox}`]: {
     display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
     justifyContent: "center",
     alignItems: "center",
-    height: "80%",
-    width: "40%",
+    width: "450px",
+    height: "500px",
     backgroundColor: theme.palette.contrast.main,  
     borderRadius: 4,
-    padding: "0 30px",
+    padding: "1rem",
     textAlign: "center"
   },
-  [`& .${classes.access_button}`]: {
-    color: theme.palette.contrast.main,
-    backgroundColor: theme.palette.primary.main,
-  }
 }))
 
 const Verify = () => {
@@ -42,23 +40,23 @@ const Verify = () => {
   if(token) {
     return (
       <Container>
-        <Stack className={classes.content_box} spacing={3}>
-          <Image src={images.buhos_logo} width={330} height={250} alt="Buho's Logo"/>
-          <Typography variant="h2">Verifica tu cuenta</Typography>
+        <div className={classes.contentBox}>
+          <Image src={images.buhosLogo} width={330} height={250} alt="Buho's Logo"/>
+          <Typography variant="h4">Verifica tu cuenta</Typography>
           <Typography variant="body1">Para comenzar a utilizar todas las herramientas y recursos disponibles, por favor, confirma tu cuenta haciendo clic en el botón de abajo.</Typography>
-          <Link href="/students"><Button className={classes.access_button}>Ingresar</Button></Link>
-        </Stack>
+          <Link href="/students"><Button variant="contained">Ingresar</Button></Link>
+        </div>
       </Container>
     )
   }
 
   return(
     <Container>
-      <Stack className={classes.content_box} spacing={3}>
-        <Image src={images.buhos_logo} width={330} height={250} alt="Buho's Logo"/>
-        <Typography variant="h2">Verifica tu correo</Typography>
+      <div className={classes.contentBox}>
+        <Image src={images.buhosLogo} width={330} height={250} alt="Buho's Logo"/>
+        <Typography variant="h4">Verifica tu correo</Typography>
         <Typography variant="body1">Un correo ha sido enviado a tu cuenta. Revísalo para acceder al proceso de selección</Typography>
-      </Stack>
+      </div>
     </Container>
   )
 }
