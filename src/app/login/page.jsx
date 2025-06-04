@@ -11,6 +11,7 @@ import CustomField from "../UI/shared/FormikTextField"
 import { getAlumniSchema, getAlumniValues, getEmailSchema, getEmailValues } from "./utils"
 import { useApiMutation } from "../Lib/apiFetch"
 import { useRouter } from "next/navigation"
+import useToken from "../store/useToken"
 
 const displayName = 'login'
 const classes = getClassPrefixer(displayName)
@@ -18,32 +19,41 @@ const classes = getClassPrefixer(displayName)
 const Container = styled('div')(({ theme }) => ({
     height: "100vh",
   
-    [`& .${classes.focused_container}`]: {
+    [`& .${classes.focusedContainer}`]: {
       width: "50vw",
       height: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      transition: "all 0.3s ease",
+      gap: "1ch",
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.contrast.main
     },
-    [`& .${classes.unfocused_container}`]: {
+    [`& .${classes.unfocusedContainer}`]: {
       width: "50vw",
       height: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      transition: "all 0.3s ease",
+      gap: "1ch",
       backgroundColor: theme.palette.contrast.main,
       color: theme.palette.primary.main
     },
-    [`& .${classes.login_teacher_form}`]: {
-      backgroundColor: theme.palette.contrast.main,
-    },
-    [`& .${classes.focused_button}`]: {
+    [`& .${classes.focusedCutton}`]: {
       marginTop: "2rem",
       backgroundColor: theme.palette.contrast.main,
       color: theme.palette.primary.main
     },
-    [`& .${classes.unfocused_button}`]: {
+    [`& .${classes.unfocusedCutton}`]: {
       marginTop: "2rem",
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.contrast.main
     },
-    [`& .${classes.forgot_link}`]: {
+    [`& .${classes.forgotLink}`]: {
       textDecoration: "none",
       color: theme.palette.grey.main,
       fontWeight: 'bold',
@@ -54,13 +64,6 @@ const Container = styled('div')(({ theme }) => ({
       width: "60%",
     }
     
-  }))
-
-  const LoginForm = styled(Stack)(({theme}) => ({
-    direction: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    transition: 'all 0.3s ease',
   }))
 
 const Login = ({snackbarMessage, setSnackbarMessage, studentsFormik, teachersFormik}) => {
@@ -74,27 +77,27 @@ const Login = ({snackbarMessage, setSnackbarMessage, studentsFormik, teachersFor
           initialValues={teachersFormik?.initialValues}
           validationSchema={teachersFormik?.validationSchema}
           onSubmit={teachersFormik?.handleSubmit}>
-            <LoginForm className={focused ? classes.unfocused_container : classes.focused_container} spacing={1} onFocus={() => setFocused(true)}>
-              {focused ? <Image src={images.buhos_logo} width={250} height={180} alt="Owls Logo"/> : null}
-              <Typography variant="h1">Inicio de sesión</Typography>
+            <div className={focused ? classes.unfocusedContainer : classes.focusedContainer} onFocus={() => setFocused(true)}>
+              {focused ? <Image src={images.buhosLogo} width={250} height={180} alt="Owls Logo"/> : null}
+              <Typography variant="h3">Inicio de sesión</Typography>
               <Typography variant="body1">Si ya tienes una cuenta</Typography>
               <Field component={CustomField} type="email" name='email' placeholder="Correo"/>
               <Field component={CustomField} type="password" name='password' placeholder="Contraseña"/>
             {focused ? <Link href="/forgot" className={classes.forgot_link}>¿Olvidó su contraseña?</Link> : null}
           <Form>
-              <Button type='submit' className={focused ? classes.unfocused_button : classes.focused_button}>Ingresar</Button>
+              <Button type='submit' className={focused ? classes.unfocusedButton : classes.focusedButton}>Ingresar</Button>
           </Form>
-            </LoginForm>
+            </div>
         </Formik>
         <Formik
           initialValues={studentsFormik?.initialValues}
           validationSchema={studentsFormik?.validationSchema}
           onSubmit={studentsFormik?.handleSubmit}>
-            <LoginForm className={focused ? classes.focused_container : classes.unfocused_container} spacing={1} onFocus={() => {
+            <div className={focused ? classes.focusedContainer : classes.unfocusedContainer} onFocus={() => {
               setFocused(false)
               }}>
               {!focused ? <Image src={images.buho} width={200} height={100} alt="Owls Logo"/> : null}
-              <Typography variant="h1">Alumnos</Typography>
+              <Typography variant="h3">Alumnos</Typography>
               <Typography variant="body1">Verifica tu informacion</Typography>
               <Field component={CustomField} name='names' placeholder="Nombre"/>
               <Field component={CustomField} name='paternalSurname' placeholder="Apellido Materno"/>
@@ -103,9 +106,9 @@ const Login = ({snackbarMessage, setSnackbarMessage, studentsFormik, teachersFor
               <Field component={CustomField} name='shift' placeholder="Turno"/>
               <Field component={CustomField} name='currentGroup' placeholder="Grupo"/>
           <Form>
-              <Button type='submit' className={focused ? classes.focused_button : classes.unfocused_button}>Ingresar</Button>
+              <Button type='submit' className={focused ? classes.focusedButton : classes.unfocusedButton}>Ingresar</Button>
           </Form>
-            </LoginForm>
+            </div>
         </Formik>
       <Snackbar 
         open={Boolean(snackbarMessage)}
@@ -120,16 +123,19 @@ const Login = ({snackbarMessage, setSnackbarMessage, studentsFormik, teachersFor
 
 const Wrapper = () => {
   const [snackbarMessage, setSnackbarMessage] = useState(null)
+  const { setToken } = useToken() 
   const userLogin = useApiMutation({path: "/login", opts: {method: "POST"}})
   const studentsLogin = useApiMutation({path: "/students/login", opts: {method: "POST"}})
   const router = useRouter()
 
   const teachersSubmit = async payload => {
     await userLogin.mutate(payload, {
-      onSuccess: () => {
+      onSuccess: response => {
+        setToken(response)
         router.replace("/counselor")
       },
       onError: (e) => {
+        console.log(e)
         if(e.error === "Invalid Fields") {
           setSnackbarMessage("Datos incorrectos. Intenta ingresarlos de nuevo")
         } else {
@@ -167,7 +173,11 @@ const Wrapper = () => {
   }
 
   return (
-    <Login teachersFormik={teachersFormik} studentsFormik={studentsFormik} snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage}/>
+    <Login 
+      teachersFormik={teachersFormik} 
+      studentsFormik={studentsFormik} 
+      snackbarMessage={snackbarMessage} 
+      setSnackbarMessage={setSnackbarMessage}/>
   )
 }
 
