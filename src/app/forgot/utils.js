@@ -1,12 +1,9 @@
 import * as Yup from 'yup'
 
-const getInitialValues = () => ({
+export const getInitialValues = () => ({
   email: ''
 })
 
-const getValidationSchema = () => Yup.object({
+export const getValidationSchema = () => Yup.object({
   email: Yup.string().email('Se requiere un correo valido').required('Ingrese el correo electronico')
 })
-
-
-export { getInitialValues, getValidationSchema }
