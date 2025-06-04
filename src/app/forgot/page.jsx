@@ -21,63 +21,54 @@ const Container = styled('div')(({ theme }) => ({
   width: "100vw",
   backgroundColor: theme.palette.primary.main,
   
-  [`& .${classes.content_box}`]: {
+  [`& .${classes.contentBox}`]: {
     display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
     justifyContent: "center",
     alignItems: "center",
-    height: "80%",
-    width: "40%",
+    height: 450,
+    width: 450,
     backgroundColor: theme.palette.contrast.main,  
     borderRadius: 4,
-    padding: "0 30px",
+    padding: "1rem",
     textAlign: "center"
   },
-  ['& .MuiFormControl-root']: {
-    width: "80%",
-  }
 }))
 
-const ForgotPassword = ({isSubmitted, setSubmitted, snackbarMessage, setSnackbarMessage}) => {
+const ForgotPassword = ({snackbarMessage, setSnackbarMessage}) => {
   return(
     <Container>
-      <Stack className={classes.content_box} spacing={3}>
-        <Image src={images.buhos_logo} width={270} height={200} alt="Buhos Logo"/>
-        <Typography variant="h2">Reestablece tu contraseña</Typography>
-        { isSubmitted ?
-          <Typography variant="body1">Un correo ha sido enviado a tu cuenta!</Typography>
-          :
-          <>
-            <Typography variant="body1">Ingresa tu correo para reestablecer tu contraseña</Typography>
-            <Field component={TextField} name="email" type="email" placeholder="Correo electrónico"/>
-            <Button variant="contained" type="submit">Ingresar</Button>
-          </>
-        }
+      <div className={classes.contentBox}>
+        <Image src={images.buhosLogo} width={270} height={200} alt="Buhos Logo"/>
+        <Stack spacing={2} alignItems="center">
+          <Stack>
+            <Typography variant="h5">Reestablece tu contraseña</Typography>
+            <Typography>Ingresa tu correo para reestablecer tu contraseña</Typography>
+          </Stack>
+          <Field fullWidth component={TextField} name="email" type="email" placeholder="Correo electrónico"/>
+          <Button variant="contained" type="submit">Enviar</Button>
+        </Stack>
       <Snackbar
-      open={Boolean(snackbarMessage)}
-      autoHideDuration={3000}
-      onClose={() => setSnackbarMessage(null)}
-      message={snackbarMessage}
-      />
-      
-      </Stack>
+        open={Boolean(snackbarMessage)}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarMessage(null)}
+        message={snackbarMessage}/>
+      </div>
     </Container>
   )
 }
 
 const Wrapper = () => {
-  const [isSubmitted, setSubmitted] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(null)
-
-  const initialValues = getInitialValues()
-  const validationSchema = getValidationSchema()
   const forgotControl = useApiMutation({path: "/forgot", opts: {method: "POST"}})
   const handleSubmit = async payload => {
     await forgotControl.mutate(payload, {
       onSuccess: () => {
-        setSubmitted(true)
+        setSnackbarMessage("Un correo ha sido enviado a su cuenta")
       },
       onError: () => {
-        setSnackbarMessage("Hubo un error. Intenta de nuevo.")
+        setSnackbarMessage("El correo no ha sido encontrado")
       }
     })
   }
@@ -85,11 +76,11 @@ const Wrapper = () => {
   return (
     <>
       <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
+        initialValues={getInitialValues}
+        validationSchema={getValidationSchema}
         onSubmit={handleSubmit}>
         <Form>
-          <ForgotPassword isSubmitted={isSubmitted} setSubmitted={setSubmitted} snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage}/>
+          <ForgotPassword snackbarMessage={snackbarMessage} setSnackbarMessage={setSnackbarMessage}/>
         </Form>
       </Formik>
     </>
