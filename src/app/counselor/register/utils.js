@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-const registerSchema = Yup.object({
+const getRegisterSchema = () => Yup.object({
   names: Yup.string().required("Ingrese su nombre"),
   paternalSurname: Yup.string().required('Ingresa sus apellidos'),
   maternalSurname: Yup.string().required('Ingresa sus apellidos'),
@@ -8,7 +8,7 @@ const registerSchema = Yup.object({
   repeatPass: Yup.string().required('Ingresa de nuevo la nueva contraseña'),
 })
 
-const registerValues = () => ({
+const getRegisterValues = () => ({
   names: '',
   paternalSurname: '',
   maternalSurname: '',
@@ -16,4 +16,4 @@ const registerValues = () => ({
   repeatPass: ''
 })
 
-export {registerSchema, registerValues}
+export {getRegisterSchema, getRegisterValues}
