@@ -27,7 +27,7 @@ const FormikTextField = ({ variant = "filled" , field, password, ...props}) => {
       error={Boolean(errors[field?.name])}
       name={field?.name}
       variant={variant}
-      value={field?.value}
+      value={field?.value ?? ''}
       onChange={({target}) => setFieldValue(field?.name, target.value)}
       slotProps={password ? {
         input: { 
