@@ -1,5 +1,5 @@
 'use client'
-import { Button, Stack, Typography } from "@mui/material"
+import { Button, Snackbar, Stack, Typography } from "@mui/material"
 import Image from "next/image"
 import { styled } from '@mui/material/styles'
 import getClassPrefixer from "~/app/UI/classPrefixer"
@@ -8,6 +8,10 @@ import { useState } from "react"
 import { Form, Formik, Field } from "formik"
 import { getForgotSchema, getForgotValues } from "./utils"
 import TextField from "~/app/UI/shared/FormikTextField"
+import { useApiMutation, useApiQuery } from "~/app/Lib/apiFetch"
+import Link from "next/link"
+import Loading from "~/app/UI/shared/Loading"
+import formatMePayload from "~/app/Lib/formatMePayload"
 
 const displayName = 'ForgotPassword'
 const classes = getClassPrefixer(displayName)
@@ -20,74 +24,78 @@ const Container = styled('div')(({ theme }) => ({
   width: "100vw",
   backgroundColor: theme.palette.primary.main,
   
-  [`& .${classes.content_box}`]: {
+  [`& .${classes.contentBox}`]: {
     display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
     justifyContent: "center",
     alignItems: "center",
-    height: "80%",
-    width: "40%",
+    width: "350px",
+    height: "500px",
     backgroundColor: theme.palette.contrast.main,  
     borderRadius: 4,
-    padding: "0 30px",
+    padding: "1rem",
     textAlign: "center"
   },
-  [`& .${classes.access_button}`]: {
-    color: theme.palette.contrast.main,
-    backgroundColor: theme.palette.primary.main,
-  },
-  [`& .${classes.success_form}`]: {
-    width: "80%",
-  },
-  [`& .${classes.password_input}`]: {
-    width: "100%",
-  }
 }))
 
-const Success = ({isSubmitted, setSubmitted, handleSubmit}) => {
+const Success = ({snackbarMessage, setSnackbarMessage}) => {
   return(
-    <Container>
-      <Stack className={classes.content_box} spacing={3}>
-        <Image src={images.buhos_logo} width={270} height={200} alt='Owls Logo'/>
-        <Typography variant="h2">Reestablece tu contraseña</Typography>
-        {!isSubmitted ? 
-          <>
-              <Stack spacing={2} className={classes.success_form}>
-                <Field component={TextField} className={classes.password_input} name="password" type="password" placeholder="Nueva contraseña"/>
-                <Field component={TextField} className={classes.password_input} name="repeatPass" type="password" placeholder="Repetir contraseña"/>
-              </Stack>
-                <Button type="submit" variant="contained">Ingresar</Button>
-          </>
-        :
-          <>
-            <Typography variant="h2">Contraseña reestablecida</Typography>
-            <Typography variant="body1">Puedes iniciar sesión con tus nuevos datos</Typography>
-            <Button className={classes.access_button}>Ingresar</Button>
-          </>
-        }
-      </Stack>
-    </Container>
+      <Container>
+        <div className={classes.contentBox} spacing={3}>
+          <Image src={images.buhosLogo} width={270} height={200} alt='Owls Logo'/>
+          <Typography variant="h5">Reestablece tu contraseña</Typography>
+          <Stack spacing={2} width="90%">
+            <Field component={TextField} fullWidth name="password" type="password" placeholder="Nueva contraseña"/>
+            <Field component={TextField} fullWidth name="repeatPass" type="password" placeholder="Repetir contraseña"/>
+          </Stack>
+          <Form>
+            <Button type="submit" variant="contained">Ingresar</Button>
+          </Form>
+        </div>
+        <Snackbar 
+          open={Boolean(snackbarMessage)}
+          autoHideDuration={4000}
+          onClose={() => setSnackbarMessage(null)}
+          anchorOrigin={{vertical: "bottom", horizontal: "left"}}
+          message={snackbarMessage}/>
+      </Container>
   )
 }
 
 const Wrapper = () => {
   const [isSubmitted, setSubmitted] = useState(false)
+  const resetPass = useApiMutation({path: "/me", opts: {method: "PATCH"}})
+  const [snackbarMessage, setSnackbarMessage] = useState(null)
 
   const handleSubmit = async values => {
-    console.log(values)
-    setSubmitted(!isSubmitted)
+
+    if (values.password != values.repeatPass) {
+      setSnackbarMessage("Las contraseñas no coinciden.")
+    } else {
+      const payload = {password: values.password}
+      await resetPass.mutate(payload, {
+        onSuccess: () => {
+          setSnackbarMessage("Información cambiada correctamente")
+        },
+        onError: (e) => {
+          console.log(e)
+          setSnackbarMessage("Hubo un problema en el servidor.")
+        }
+      })
+    }
   }
   return (
-    <>
-      <Formik
+    <Formik
         initialValues={getForgotValues}
         validationSchema={getForgotSchema}
-        onSubmit={handleSubmit}
-      >
-        <Form >
-          <Success isSubmitted={isSubmitted}/>
-        </Form>
-      </Formik>
-    </>
+        onSubmit={handleSubmit}>
+          <Success 
+            isSubmitted={isSubmitted} 
+            snackbarMessage={snackbarMessage} 
+            setSnackbarMessage={setSnackbarMessage}
+            handleSubmit={handleSubmit}/>
+    </Formik>
   )
 }
 
