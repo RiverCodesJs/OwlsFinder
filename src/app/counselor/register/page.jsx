@@ -1,13 +1,15 @@
 'use client'
-import { Button, Stack, Typography } from "@mui/material"
+import { Button, Snackbar, Stack, Typography } from "@mui/material"
 import Image from "next/image"
 import { styled } from '@mui/material/styles'
 import getClassPrefixer from "~/app/UI/classPrefixer"
 import { images } from "~/app/images"
 import { useState } from "react"
 import { Field, Form, Formik } from "formik"
-import registerSchema from "~/app/counselor/register/utils"
+import { getRegisterSchema, getRegisterValues } from "~/app/counselor/register/utils"
 import TextField from "~/app/UI/shared/FormikTextField"
+import { useApiMutation } from "~/app/Lib/apiFetch"
+import { useRouter } from "next/navigation"
 
 const displayName = 'CounselorRegister'
 const classes = getClassPrefixer(displayName)
@@ -20,74 +22,80 @@ const Container = styled('div')(({ theme }) => ({
   width: "100vw",
   backgroundColor: theme.palette.primary.main,
   
-  [`& .${classes.content_box}`]: {
+  [`& .${classes.contentBox}`]: {
     display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
     justifyContent: "center",
     alignItems: "center",
-    height: "90%",
-    width: "35%",
+    width: "420px",
+    height: "550px",
     backgroundColor: theme.palette.contrast.main,  
     borderRadius: 4,
-    padding: "0 30px",
+    padding: "1rem",
     textAlign: "center"
-  },
-  [`& .${classes.access_button}`]: {
-    color: theme.palette.contrast.main,
-    backgroundColor: theme.palette.primary.main,
-  },
-  [`& .${classes.success_form}`]: {
-    width: "80%",
-  },
-  [`& .${classes.form_input}`]: {
-    width: "100%",
   },
 }))
 
-const CounselorRegister = ({isSubmitted}) => {
+const CounselorRegister = ({snackbarMessage, setSnackbarMessage}) => {
   return(
     <Container>
-      <Stack className={classes.content_box} spacing={1}>
-        <Image src={images.buhos_logo} width={270} height={200} alt='Owls Logo'/>
-        <Typography variant="h3">Bienvenido a OwlsHub</Typography>
-        {!isSubmitted ? 
-          <>
-              <Stack spacing={1} className={classes.success_form}>
-                <Field component={TextField} className={classes.form_input} name="firstName" placeholder="Nombre"/>
-                <Stack direction="row" spacing={1}>
-                  <Field component={TextField} className={classes.form_input} name="fatherName" placeholder="Apellido Paterno"/>
-                  <Field component={TextField} className={classes.form_input} name="motherName" placeholder="Apellido Materno"/>
-                </Stack>
-                <Field component={TextField} className={classes.form_input} name="password" type="password" placeholder="Contraseña"/>
-                <Field component={TextField} className={classes.form_input} name="repeatPass" type="password" placeholder="Repetir contraseña"/>
-              </Stack>
-                <Button variant="contained" type="submit" className={classes.submit_button}>Ingresar</Button>
-          </>
-          : null
-        }
-      </Stack>
+      <div className={classes.contentBox}>
+        <Image src={images.buhosLogo} width={270} height={200} alt='Owls Logo'/>
+        <Typography variant="h5">Bienvenido a OwlsHub</Typography>
+        <Stack spacing={1} width="90%">
+          <Field component={TextField} fullWidth name="names" placeholder="Nombre"/>
+          <Field component={TextField} fullWidth name="password" type="password" placeholder="Contraseña"/>
+          <Field component={TextField} fullWidth name="repeatPass" type="password" placeholder="Repetir contraseña"/>
+        </Stack>
+        <Button variant="contained" type="submit">Enviar</Button>
+        <Snackbar 
+          open={Boolean(snackbarMessage)}
+          autoHideDuration={4000}
+          onClose={() => setSnackbarMessage(null)}
+          anchorOrigin={{vertical: "bottom", horizontal: "left"}}
+          message={snackbarMessage}/>
+      </div>
     </Container>
   )
 }
 
 const Wrapper = () => {
-  const [isSubmitted, setSubmitted] = useState(false)
+  const [snackBarMessage, setSnackbarMessage] = useState(null)
+  const register = useApiMutation({path: "me", opts: {method: "PATCH"}})
+  const router = useRouter()
 
   const handleSubmit = async values => {
     console.log(values)
-    setSubmitted(!isSubmitted)
+    if(values.password === values.repeatPass) {
+      const payload = { ...values }
+      delete payload.repeatPass
+      await register.mutate(payload, {
+        onSuccess: () => {
+          setSnackbarMessage("Registro exitoso")
+          setTimeout(() => {
+            router.replace("/counselor")
+          },2000)
+        },
+        onError: () => {
+          setSnackbarMessage("Hubo un error")
+        }
+      })
+    } else {
+      setSnackbarMessage("Las contraseñas no coinciden")
+    }
   }
   return (
-    <>
       <Formik
-        initialValues={{firstName: '', fatherName: '', motherName: '', password: '', repeatPass: ''}}
-        validationSchema={registerSchema}
-        onSubmit={handleSubmit}
-      >
-        <Form >
-          <CounselorRegister isSubmitted={isSubmitted}/>
+        initialValues={getRegisterValues}
+        validationSchema={getRegisterSchema}
+        onSubmit={handleSubmit}> 
+        <Form>
+            <CounselorRegister 
+              snackbarMessage={snackBarMessage}
+              setSnackbarMessage={setSnackbarMessage}/>
         </Form>
       </Formik>
-    </>
   )
 }
 
