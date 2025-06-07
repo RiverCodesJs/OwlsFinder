@@ -1,15 +1,17 @@
 'use client'
 import { Button, Snackbar, Stack, Typography } from '@mui/material'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { styled } from '@mui/material/styles'
-import getClassPrefixer from '~/app/UI/classPrefixer'
-import { images } from '~/app/images'
 import { useState } from 'react'
 import { Field, Form, Formik } from 'formik'
-import { getRegisterSchema, getRegisterValues } from '~/app/counselor/register/utils'
+import { omit } from 'ramda'
+
+import { getRegisterValidationSchema, getRegisterInitialValues } from '~/app/counselor/register/utils'
 import TextField from '~/app/UI/shared/FormikTextField'
+import getClassPrefixer from '~/app/UI/classPrefixer'
 import { useApiMutation } from '~/app/Lib/apiFetch'
-import { useRouter } from 'next/navigation'
+import { images } from '~/app/images'
 
 const displayName = 'CounselorRegister'
 const classes = getClassPrefixer(displayName)
@@ -67,8 +69,7 @@ const Wrapper = () => {
 
   const handleSubmit = async values => {
     if(values.password === values.repeatPass) {
-      const payload = { ...values }
-      delete payload.repeatPass
+      const payload = omit(['repeatPass'], values)
       await register.mutate(payload, {
         onSuccess: () => {
           setSnackbarMessage('Registro exitoso')
@@ -86,8 +87,8 @@ const Wrapper = () => {
   }
   return (
     <Formik
-      initialValues={getRegisterValues}
-      validationSchema={getRegisterSchema}
+      initialValues={getRegisterInitialValues}
+      validationSchema={getRegisterValidationSchema}
       onSubmit={handleSubmit}> 
       <Form>
         <CounselorRegister 
