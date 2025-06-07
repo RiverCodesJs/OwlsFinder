@@ -1,4 +1,4 @@
-import { Stack, TextField } from '@mui/material'
+import { Stack, Typography, TextField } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useFormikContext } from 'formik'
 
@@ -34,7 +34,7 @@ const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => 
         }: null
         } 
       />
-      {/*errors[field?.name] ? <Typography width="60%" color="error" fontSize={12} textAlign="left">{errors[field?.name]}</Typography> : null*/}
+      {errors[field?.name] ? <Typography width="60%" color="error" fontSize={10} textAlign="left">{errors[field?.name]}</Typography> : null}
     </Stack>
   )
 }
