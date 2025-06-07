@@ -1,10 +1,12 @@
 'use client'
+import { Home, School, Work, Groups } from '@mui/icons-material'
 import { IconButton, Stack } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import Image from 'next/image'
+
 import { images } from '~/app/images'
+
 import getClassPrefixer from '../classPrefixer'
-import { Home, School, Work, Groups } from '@mui/icons-material'
 
 const displayName = 'NavBar'
 const classes = getClassPrefixer(displayName)
