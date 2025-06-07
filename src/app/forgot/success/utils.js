@@ -1,11 +1,11 @@
 import * as Yup from 'yup'
 
-export const getForgotValues = () => ({
+export const getForgotInitialValues = () => ({
   password: '',
   repeatPass: '',
 })
 
-export const getForgotSchema = () => Yup.object({
+export const getForgotValidationSchema = () => Yup.object({
   password: Yup.string().required('Ingresa una nueva contraseña'),
   repeatPass: Yup.string().required('Ingresa de nuevo la nueva contraseña'),
 })
