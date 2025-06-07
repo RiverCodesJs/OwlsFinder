@@ -1,6 +1,7 @@
 'use client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import ThemeRegistry from '~/app/UI/theme'
+import { Stack } from '@mui/material'
 
 const metadata = {
   title: 'OwlsHub',
@@ -19,7 +20,10 @@ const RootLayout = ({ children }) => {
       <ThemeRegistry>
         <QueryClientProvider client={queryClient}>
           <body>
-            {children}
+            <Stack direction="row">
+              {/*token ? <NavBar/> : null*/}
+              {children}
+            </Stack>
           </body>
         </QueryClientProvider>
       </ThemeRegistry>
