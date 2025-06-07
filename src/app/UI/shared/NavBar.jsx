@@ -9,13 +9,13 @@ import { Home, School, Work, Groups } from '@mui/icons-material'
 const displayName = 'NavBar'
 const classes = getClassPrefixer(displayName)
 
-const Container = styled('div')(({theme}) => ({
+const Container = styled('div')(({ theme }) => ({
   height: '100vh',
   width: '5vw',
   backgroundColor: theme.palette.grey.main,
 
   [`& .${classes.iconStack}`]: {
-    marginTop: "1rem",
+    marginTop: '1rem',
   },
   [`& .${classes.navIcon}`]: {
     fill: theme.palette.primary.main

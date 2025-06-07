@@ -1,8 +1,8 @@
-import { FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material"
-import { useFormikContext } from "formik"
+import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
+import { useFormikContext } from 'formik'
 
-const FormikSelect = ({label, options, field, ...props}) => {
-  const {errors, setFieldValue} = useFormikContext()
+const FormikSelect = ({ label, options, field, ...props }) => {
+  const { errors, setFieldValue } = useFormikContext()
 
   return (
     <FormControl fullWidth>
