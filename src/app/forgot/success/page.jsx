@@ -2,7 +2,7 @@
 import { Button, Snackbar, Stack, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import Image from 'next/image'
-import { useState } from 'react '
+import { useState } from 'react'
 import { Form, Formik, Field } from 'formik'
 
 import getClassPrefixer from '~/app/UI/classPrefixer'
