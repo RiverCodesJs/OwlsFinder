@@ -1,43 +1,43 @@
 'use client'
-import { Button, Snackbar, Stack, Typography } from "@mui/material"
-import Image from "next/image"
+import { Button, Snackbar, Stack, Typography } from '@mui/material'
+import Image from 'next/image'
 import { styled } from '@mui/material/styles'
-import getClassPrefixer from "~/app/UI/classPrefixer"
-import { images } from "~/app/images"
-import { useState } from "react"
-import { Field, Form, Formik } from "formik"
-import { getRegisterSchema, getRegisterValues } from "~/app/counselor/register/utils"
-import TextField from "~/app/UI/shared/FormikTextField"
-import { useApiMutation } from "~/app/Lib/apiFetch"
-import { useRouter } from "next/navigation"
+import getClassPrefixer from '~/app/UI/classPrefixer'
+import { images } from '~/app/images'
+import { useState } from 'react'
+import { Field, Form, Formik } from 'formik'
+import { getRegisterSchema, getRegisterValues } from '~/app/counselor/register/utils'
+import TextField from '~/app/UI/shared/FormikTextField'
+import { useApiMutation } from '~/app/Lib/apiFetch'
+import { useRouter } from 'next/navigation'
 
 const displayName = 'CounselorRegister'
 const classes = getClassPrefixer(displayName)
 
 const Container = styled('div')(({ theme }) => ({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100vh",
-  width: "100vw",
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+  width: '100vw',
   backgroundColor: theme.palette.primary.main,
   
   [`& .${classes.contentBox}`]: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "1rem",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "420px",
-    height: "550px",
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '420px',
+    height: '550px',
     backgroundColor: theme.palette.contrast.main,  
     borderRadius: 4,
-    padding: "1rem",
-    textAlign: "center"
+    padding: '1rem',
+    textAlign: 'center'
   },
 }))
 
-const CounselorRegister = ({snackbarMessage, setSnackbarMessage}) => {
+const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
   return(
     <Container>
       <div className={classes.contentBox}>
@@ -53,7 +53,7 @@ const CounselorRegister = ({snackbarMessage, setSnackbarMessage}) => {
           open={Boolean(snackbarMessage)}
           autoHideDuration={4000}
           onClose={() => setSnackbarMessage(null)}
-          anchorOrigin={{vertical: "bottom", horizontal: "left"}}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
           message={snackbarMessage}/>
       </div>
     </Container>
@@ -62,40 +62,39 @@ const CounselorRegister = ({snackbarMessage, setSnackbarMessage}) => {
 
 const Wrapper = () => {
   const [snackBarMessage, setSnackbarMessage] = useState(null)
-  const register = useApiMutation({path: "me", opts: {method: "PATCH"}})
+  const register = useApiMutation({ path: 'me', opts: { method: 'PATCH' } })
   const router = useRouter()
 
   const handleSubmit = async values => {
-    console.log(values)
     if(values.password === values.repeatPass) {
       const payload = { ...values }
       delete payload.repeatPass
       await register.mutate(payload, {
         onSuccess: () => {
-          setSnackbarMessage("Registro exitoso")
+          setSnackbarMessage('Registro exitoso')
           setTimeout(() => {
-            router.replace("/counselor")
+            router.replace('/counselor')
           },2000)
         },
         onError: () => {
-          setSnackbarMessage("Hubo un error")
+          setSnackbarMessage('Hubo un error')
         }
       })
     } else {
-      setSnackbarMessage("Las contraseñas no coinciden")
+      setSnackbarMessage('Las contraseñas no coinciden')
     }
   }
   return (
-      <Formik
-        initialValues={getRegisterValues}
-        validationSchema={getRegisterSchema}
-        onSubmit={handleSubmit}> 
-        <Form>
-            <CounselorRegister 
-              snackbarMessage={snackBarMessage}
-              setSnackbarMessage={setSnackbarMessage}/>
-        </Form>
-      </Formik>
+    <Formik
+      initialValues={getRegisterValues}
+      validationSchema={getRegisterSchema}
+      onSubmit={handleSubmit}> 
+      <Form>
+        <CounselorRegister 
+          snackbarMessage={snackBarMessage}
+          setSnackbarMessage={setSnackbarMessage}/>
+      </Form>
+    </Formik>
   )
 }
 
