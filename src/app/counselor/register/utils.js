@@ -2,16 +2,12 @@ import * as Yup from 'yup'
 
 export const getRegisterValidationSchema = () => Yup.object({
   names: Yup.string().required('Ingrese su nombre'),
-  paternalSurname: Yup.string().required('Ingresa sus apellidos'),
-  maternalSurname: Yup.string().required('Ingresa sus apellidos'),
   password: Yup.string().required('Ingresa una nueva contraseña'),
-  repeatPass: Yup.string().required('Ingresa de nuevo la nueva contraseña'),
+  repeatPass: Yup.string().required('Ingresa de nuevo la nueva contraseña').oneOf([Yup.ref('password'),null], 'Las contraseñas no coinciden'),
 })
 
 export const getRegisterInitialValues = () => ({
   names: '',
-  paternalSurname: '',
-  maternalSurname: '',
   password: '',
   repeatPass: ''
 })

@@ -1,11 +1,14 @@
 import * as Yup from 'yup'
 
-export const getForgotInitialValues = () => ({
+export const getResetPasswordInitialValues = () => ({
   password: '',
   repeatPass: '',
 })
 
-export const getForgotValidationSchema = () => Yup.object({
-  password: Yup.string().required('Ingresa una nueva contraseña'),
-  repeatPass: Yup.string().required('Ingresa de nuevo la nueva contraseña'),
+export const getResetPasswordValidationSchema = () => Yup.object({
+  password: Yup.string().
+    required('Ingresa una nueva contraseña'),
+  repeatPass: Yup.string().
+    required('Ingresa de nuevo la nueva contraseña').
+    oneOf([Yup.ref('password'), null], 'Las contraseñas no coinciden'),
 })
