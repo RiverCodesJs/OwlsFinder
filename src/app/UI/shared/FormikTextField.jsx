@@ -18,7 +18,7 @@ const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => 
   const { errors, setFieldValue } = useFormikContext()
 
   return (
-    <Stack width="100%" alignItems="center">
+    <Stack width="100%" alignItems="flex-start">
       <CustomField 
         {...props}
         placeholder={props.placeholder}
@@ -34,7 +34,7 @@ const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => 
         }: null
         } 
       />
-      {errors[field?.name] ? <Typography width="60%" color="error" fontSize={10} textAlign="left">{errors[field?.name]}</Typography> : null}
+      {errors[field?.name] ? <Typography width="60%" color="error" fontSize={10}>{errors[field?.name]}</Typography> : null}
     </Stack>
   )
 }
