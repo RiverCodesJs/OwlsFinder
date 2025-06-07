@@ -19,7 +19,7 @@ const ForgotRedirect = () => {
       client.clear()
       router.replace('/forgot')
     }
-  }, [])
+  }, [client, router, token, setToken])
 }
 
 const Wrapper = () => {
