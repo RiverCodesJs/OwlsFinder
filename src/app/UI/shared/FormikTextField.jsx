@@ -34,7 +34,7 @@ const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => 
         }: null
         } 
       />
-      {errors[field?.name] ? <Typography width="60%" color="error" fontSize={10}>{errors[field?.name]}</Typography> : null}
+      {errors[field?.name] ? <Typography width="60%" color="error" fontSize={10} textAlign="left">{errors[field?.name]}</Typography> : null}
     </Stack>
   )
 }
