@@ -1,14 +1,16 @@
 'use client'
 import { Button, Snackbar, Stack, Typography } from '@mui/material'
-import Image from 'next/image'
 import { styled } from '@mui/material/styles'
+import Image from 'next/image'
+import { useState } from 'react '
+import { Form, Formik, Field } from 'formik'
+
 import getClassPrefixer from '~/app/UI/classPrefixer'
 import { images } from '~/app/images'
-import { useState } from 'react'
-import { Form, Formik, Field } from 'formik'
-import { getForgotSchema, getForgotValues } from './utils'
 import TextField from '~/app/UI/shared/FormikTextField'
 import { useApiMutation } from '~/app/Lib/apiFetch'
+
+import { getForgotValidationSchema, getForgotInitialValues } from './utils'
 
 const displayName = 'ForgotPassword'
 const classes = getClassPrefixer(displayName)
@@ -82,8 +84,8 @@ const Wrapper = () => {
   }
   return (
     <Formik
-      initialValues={getForgotValues}
-      validationSchema={getForgotSchema}
+      initialValues={getForgotInitialValues}
+      validationSchema={getForgotValidationSchema}
       onSubmit={handleSubmit}>
       <Success 
         snackbarMessage={snackbarMessage} 
