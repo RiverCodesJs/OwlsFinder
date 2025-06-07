@@ -11,11 +11,9 @@ const theme = createTheme({
     },
     h2: {
       fontSize: '3rem',
-      fontWeight: 'bold',
     },
     h3: {
       fontSize: '2rem',
-      fontWeight: 'bold',
     },
     body1: {
       fontSize: '1rem',
