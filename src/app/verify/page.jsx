@@ -1,12 +1,13 @@
 'use client'
 import { Button, Typography } from '@mui/material'
-import Image from 'next/image'
 import { styled } from '@mui/material/styles'
+import { useStore } from 'zustand'
+import Image from 'next/image'
+import Link from 'next/link'
+
 import getClassPrefixer from '../UI/classPrefixer'
 import { images } from '../images'
 import useToken from '../store/useToken'
-import Link from 'next/link'
-import { useStore } from 'zustand'
 
 const displayName = 'VerifyEmail'
 const classes = getClassPrefixer(displayName)
@@ -18,7 +19,6 @@ const Container = styled('div')(({ theme }) => ({
   height: '100vh',
   width: '100vw',
   backgroundColor: theme.palette.primary.main,
-  
   [`& .${classes.contentBox}`]: {
     display: 'flex',
     flexDirection: 'column',
