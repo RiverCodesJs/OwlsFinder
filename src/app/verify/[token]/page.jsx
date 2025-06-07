@@ -1,34 +1,13 @@
 'use client'
-import { useQueryClient } from '@tanstack/react-query'
-import { useParams, useRouter } from 'next/navigation'
-import { Suspense, useEffect } from 'react'
-import useToken from '~/app/store/useToken'
+import { Suspense } from 'react'
+
 import Loading from '~/app/UI/shared/Loading'
-
-const VerifyRedirect = () => {
-
-  const { token } = useParams()
-  const router = useRouter()
-  const client = useQueryClient()
-  const { setToken } = useToken() 
-
-  useEffect(() => {
-    if (token) {
-      setToken(token)
-      router.replace('/verify')
-    } else {
-      client.clear()
-      router.replace('/login')
-    }
-  }, [token, router, client, setToken])
-
-  return null
-}
+import { TokenRedirect } from '~/app/UI/shared/TokenRedirect'
 
 const Wrapper = () => {
   return (
     <Suspense fallback={<Loading/>}>
-      <VerifyRedirect/>
+      <TokenRedirect route='verify'/>
     </Suspense>
   )
 }
