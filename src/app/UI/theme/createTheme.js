@@ -11,9 +11,11 @@ const theme = createTheme({
     },
     h2: {
       fontSize: '3rem',
+      fontWeight: 'bold',
     },
     h3: {
       fontSize: '2rem',
+      fontWeight: 'bold',
     },
     body1: {
       fontSize: '1rem',
@@ -30,7 +32,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 10,
-          paddingBlock: '2rem',
+          paddingBlock: '0.5rem',
           paddingInline: '1rem',
         },
       },
