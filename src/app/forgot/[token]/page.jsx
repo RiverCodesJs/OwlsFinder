@@ -1,9 +1,9 @@
 'use client'
-import { useQueryClient } from "@tanstack/react-query"
-import { useParams, useRouter } from "next/navigation"
-import { Suspense, useEffect } from "react"
-import useToken from "~/app/store/useToken"
-import Loading from "~/app/UI/shared/Loading"
+import { useQueryClient } from '@tanstack/react-query'
+import { useParams, useRouter } from 'next/navigation'
+import { Suspense, useEffect } from 'react'
+import useToken from '~/app/store/useToken'
+import Loading from '~/app/UI/shared/Loading'
 
 const ForgotRedirect = () => {
   const { token } = useParams()
@@ -14,7 +14,7 @@ const ForgotRedirect = () => {
   useEffect(() => {
     if (token) {
       setToken(token)
-      router.replace("/forgot/success")
+      router.replace('/forgot/success')
     } else {
       client.clear()
       router.replace('/forgot')
