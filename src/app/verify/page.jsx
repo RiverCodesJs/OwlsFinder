@@ -1,41 +1,41 @@
 'use client'
-import { Button, Stack, Typography } from "@mui/material"
-import Image from "next/image"
+import { Button, Typography } from '@mui/material'
+import Image from 'next/image'
 import { styled } from '@mui/material/styles'
-import getClassPrefixer from "../UI/classPrefixer"
-import { images } from "../images"
-import useToken from "../store/useToken"
-import Link from "next/link"
-import { useStore } from "zustand"
+import getClassPrefixer from '../UI/classPrefixer'
+import { images } from '../images'
+import useToken from '../store/useToken'
+import Link from 'next/link'
+import { useStore } from 'zustand'
 
 const displayName = 'VerifyEmail'
 const classes = getClassPrefixer(displayName)
 
 const Container = styled('div')(({ theme }) => ({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100vh",
-  width: "100vw",
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100vh',
+  width: '100vw',
   backgroundColor: theme.palette.primary.main,
   
   [`& .${classes.contentBox}`]: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "1rem",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "450px",
-    height: "500px",
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '450px',
+    height: '500px',
     backgroundColor: theme.palette.contrast.main,  
     borderRadius: 4,
-    padding: "1rem",
-    textAlign: "center"
+    padding: '1rem',
+    textAlign: 'center'
   },
 }))
 
 const Verify = () => {
-  const token = useStore(useToken, (state) => state.token)
+  const token = useStore(useToken, state => state.token)
 
   if(token) {
     return (
