@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import Loading from '~/app/UI/shared/Loading'
 import { TokenRedirect } from '~/app/UI/shared/TokenRedirect'
 
-const Wrapper = () => {
+const ForgotPasswordRedirect = () => {
   return (
     <Suspense fallback={<Loading/>}>
       <TokenRedirect route='forgot'/>
@@ -11,4 +11,4 @@ const Wrapper = () => {
   )
 }
 
-export default Wrapper
+export default ForgotPasswordRedirect

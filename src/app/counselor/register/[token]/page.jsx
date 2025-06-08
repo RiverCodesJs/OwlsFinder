@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 import Loading from '~/app/UI/shared/Loading'
 import { TokenRedirect } from '~/app/UI/shared/TokenRedirect'
 
-const Wrapper = () => {
+const CounselorRegisterRedirect = () => {
 
   return (
     <Suspense fallback={<Loading/>}>
@@ -12,4 +12,4 @@ const Wrapper = () => {
   )
 }
 
-export default Wrapper
+export default CounselorRegisterRedirect

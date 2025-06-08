@@ -4,7 +4,7 @@ import { Suspense } from 'react'
 import Loading from '~/app/UI/shared/Loading'
 import { TokenRedirect } from '~/app/UI/shared/TokenRedirect'
 
-const Wrapper = () => {
+const VerifyRedirect = () => {
   return (
     <Suspense fallback={<Loading/>}>
       <TokenRedirect route='verify'/>
@@ -12,4 +12,4 @@ const Wrapper = () => {
   )
 }
 
-export default Wrapper
+export default VerifyRedirect
