@@ -7,11 +7,14 @@ import { useState } from 'react'
 import { Field, Form, Formik } from 'formik'
 import { omit } from 'ramda'
 
-import { getRegisterValidationSchema, getRegisterInitialValues } from '~/app/counselor/register/utils'
+import { 
+  getRegisterValidationSchema, 
+  getRegisterInitialValues 
+} from '~/app/counselor/register/utils'
 import TextField from '~/app/UI/shared/FormikTextField'
 import getClassPrefixer from '~/app/UI/classPrefixer'
 import { useApiMutation } from '~/app/Lib/apiFetch'
-import { images } from '~/app/images'
+import { buhosLogo } from '~/app/images'
 
 const displayName = 'CounselorRegister'
 const classes = getClassPrefixer(displayName)
@@ -23,7 +26,6 @@ const Container = styled('div')(({ theme }) => ({
   height: '100vh',
   width: '100vw',
   backgroundColor: theme.palette.primary.main,
-  
   [`& .${classes.contentBox}`]: {
     display: 'flex',
     flexDirection: 'column',
@@ -43,14 +45,28 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
   return(
     <Container>
       <div className={classes.contentBox}>
-        <Image src={images.buhosLogo} width={270} height={200} alt='Owls Logo'/>
+        <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
         <Typography variant="h5">Bienvenido a OwlsHub</Typography>
         <Stack spacing={1} width="90%">
-          <Field component={TextField} fullWidth name="names" placeholder="Nombre"/>
-          <Field component={TextField} fullWidth name="password" type="password" placeholder="Contraseña"/>
-          <Field component={TextField} fullWidth name="repeatPass" type="password" placeholder="Repetir contraseña"/>
+          <Field 
+            component={TextField} 
+            fullWidth name="names" 
+            placeholder="Nombre"/>
+          <Field 
+            component={TextField} 
+            fullWidth name="password" 
+            type="password" 
+            placeholder="Contraseña"/>
+          <Field 
+            component={TextField} 
+            fullWidth 
+            name="repeatPass" 
+            type="password" 
+            placeholder="Repetir contraseña"/>
         </Stack>
-        <Button variant="contained" type="submit">Enviar</Button>
+        <Form>
+          <Button type="submit" variant="contained" >Enviar</Button>
+        </Form>
         <Snackbar 
           open={Boolean(snackbarMessage)}
           autoHideDuration={4000}
@@ -66,35 +82,31 @@ const Wrapper = () => {
   const [snackBarMessage, setSnackbarMessage] = useState(null)
   const register = useApiMutation({ path: 'me', opts: { method: 'PATCH' } })
   const router = useRouter()
+  const initialValues = getRegisterInitialValues()
+  const validationSchema = getRegisterValidationSchema()
 
   const handleSubmit = async values => {
-    if(values.password === values.repeatPass) {
-      const payload = omit(['repeatPass'], values)
-      await register.mutate(payload, {
-        onSuccess: () => {
-          setSnackbarMessage('Registro exitoso')
-          setTimeout(() => {
-            router.replace('/counselor')
-          },2000)
-        },
-        onError: () => {
-          setSnackbarMessage('Hubo un error')
-        }
-      })
-    } else {
-      setSnackbarMessage('Las contraseñas no coinciden')
-    }
+    const payload = omit(['repeatPass'], values)
+    await register.mutate(payload, {
+      onSuccess: () => {
+        setSnackbarMessage('Registro exitoso')
+        setTimeout(() => {
+          router.replace('/counselor')
+        },2000)
+      },
+      onError: () => {
+        setSnackbarMessage('Lo sentimos, ha ocurrido un error')
+      }
+    })
   }
   return (
     <Formik
-      initialValues={getRegisterInitialValues}
-      validationSchema={getRegisterValidationSchema}
+      initialValues={initialValues}
+      validationSchema={validationSchema}
       onSubmit={handleSubmit}> 
-      <Form>
-        <CounselorRegister 
-          snackbarMessage={snackBarMessage}
-          setSnackbarMessage={setSnackbarMessage}/>
-      </Form>
+      <CounselorRegister 
+        snackbarMessage={snackBarMessage}
+        setSnackbarMessage={setSnackbarMessage}/>
     </Formik>
   )
 }
