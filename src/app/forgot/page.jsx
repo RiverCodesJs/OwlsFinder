@@ -1,5 +1,5 @@
 'use client'
-import { Button, Snackbar, Stack, Typography } from '@mui/material'
+import { Button, Snackbar, Stack, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import Image from 'next/image'
 import { Field, Form, Formik } from 'formik'
@@ -46,22 +46,24 @@ const ForgotPassword = ({ snackbarMessage, setSnackbarMessage }) => {
         <Image src={buhosLogo} width={270} height={200} alt="Buhos Logo"/>
         <Stack spacing={2} alignItems="center">
           <Stack>
-            <Typography variant="h5">Reestablece tu contraseña</Typography>
-            <Typography>Ingresa tu correo para reestablecer tu contraseña</Typography>
+            <T variant="h5">Reestablece tu contraseña</T>
+            <T>Ingresa tu correo para reestablecer tu contraseña</T>
           </Stack>
           <Field 
             component={TextField} 
             fullWidth 
             name="email" 
             type="email" 
-            placeholder="Correo electrónico"/>
+            placeholder="Correo electrónico"  
+          />
           <Button variant="contained" type="submit">Enviar</Button>
         </Stack>
         <Snackbar
           open={Boolean(snackbarMessage)}
           autoHideDuration={3000}
           onClose={() => setSnackbarMessage(null)}
-          message={snackbarMessage}/>
+          message={snackbarMessage}
+        />
       </div>
     </Container>
   )
@@ -87,11 +89,13 @@ const Wrapper = () => {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+    >
       <Form>
         <ForgotPassword 
           snackbarMessage={snackbarMessage} 
-          setSnackbarMessage={setSnackbarMessage}/>
+          setSnackbarMessage={setSnackbarMessage}
+        />
       </Form>
     </Formik>
   )
