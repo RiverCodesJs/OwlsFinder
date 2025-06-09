@@ -1,5 +1,5 @@
 'use client'
-import { Button, Typography } from '@mui/material'
+import { Button, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useStore } from 'zustand'
 import Image from 'next/image'
@@ -42,8 +42,8 @@ const Verify = () => {
       <Container>
         <div className={classes.contentBox}>
           <Image src={buhosLogo} width={330} height={250} alt="Buho's Logo"/>
-          <Typography variant="h4">Verifica tu cuenta</Typography>
-          <Typography variant="body1">Para comenzar a utilizar todas las herramientas y recursos disponibles, por favor, confirma tu cuenta haciendo clic en el botón de abajo.</Typography>
+          <T variant="h4">Verifica tu cuenta</T>
+          <T variant="body1">Para comenzar a utilizar todas las herramientas y recursos disponibles, por favor, confirma tu cuenta haciendo clic en el botón de abajo.</T>
           <Link href="/students"><Button variant="contained">Ingresar</Button></Link>
         </div>
       </Container>
@@ -54,8 +54,8 @@ const Verify = () => {
     <Container>
       <div className={classes.contentBox}>
         <Image src={buhosLogo} width={330} height={250} alt="Buho's Logo"/>
-        <Typography variant="h4">Verifica tu correo</Typography>
-        <Typography variant="body1">Un correo ha sido enviado a tu cuenta. Revísalo para acceder al proceso de selección</Typography>
+        <T variant="h4">Verifica tu correo</T>
+        <T variant="body1">Un correo ha sido enviado a tu cuenta. Revísalo para acceder al proceso de selección</T>
       </div>
     </Container>
   )
