@@ -1,12 +1,12 @@
 'use client'
-import { Snackbar, Stack, Typography } from '@mui/material'
+import { Snackbar, Stack, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useState } from 'react'
 
 import getClassPrefixer from '~/app/UI/classPrefixer'
 
-import { TeachersFormik } from './components/TeachersFormik'
-import { StudentsFormik } from './components/StudentsFormik'
+import { ProfessorForm } from './components/ProfessorForm'
+import { StudentsForm } from './components/StudentsForm'
 import Image from 'next/image'
 import { buho, buhosLogo } from '../images'
 
@@ -53,29 +53,32 @@ const Login = ({
       <Stack direction="row">
         <div 
           className={focused ? classes.unfocusedContainer : classes.focusedContainer}
-          onFocus={() => setFocused(true)}>
+          onFocus={() => setFocused(true)}
+        >
           {focused 
             ? <Image src={buhosLogo} width={250} height={180} alt="Owls Logo"/> 
             : null}
-          <Typography variant="h3">Inicio de sesión</Typography>
-          <Typography variant="body1">Si ya tienes una cuenta</Typography>
-          <TeachersFormik setSnackbarMessage={setSnackbarMessage} focused={focused}/>
+          <T variant="h3">Inicio de sesión</T>
+          <T variant="body1">Si ya tienes una cuenta</T>
+          <ProfessorForm setSnackbarMessage={setSnackbarMessage} focused={focused}/>
         </div>
         <div 
           className={focused ? classes.focusedContainer : classes.unfocusedContainer}
-          onFocus={() => setFocused(false)}>
+          onFocus={() => setFocused(false)}
+        >
           {!focused 
             ? <Image src={buho} width={200} height={100} alt="Owls Logo"/> 
             : null}
-          <Typography variant="h3">Alumnos</Typography>
-          <Typography variant="body1">Verifica tu informacion</Typography>
-          <StudentsFormik setSnackbarMessage={setSnackbarMessage} focused={focused}/>
+          <T variant="h3">Alumnos</T>
+          <T variant="body1">Verifica tu informacion</T>
+          <StudentsForm setSnackbarMessage={setSnackbarMessage} focused={focused}/>
         </div>
         <Snackbar
           open={Boolean(snackbarMessage)}
           onClose={() => setSnackbarMessage(null)}
           autoHideDuration={5000}
-          message={snackbarMessage}/>
+          message={snackbarMessage}
+        />
       </Stack>
     </Container>
   )
@@ -87,7 +90,8 @@ const Wrapper = () => {
   return (
     <Login 
       snackbarMessage={snackbarMessage} 
-      setSnackbarMessage={setSnackbarMessage}/>
+      setSnackbarMessage={setSnackbarMessage}
+    />
   )
 }
 
