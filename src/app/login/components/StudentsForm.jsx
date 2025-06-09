@@ -1,6 +1,6 @@
 import { Field, Form, Formik } from 'formik'
 import { styled } from '@mui/material/styles'
-import { getAlumniInitialValues, getAlumniValidationSchema } from '../utils'
+import { getStudentsLoginInitialValues, getStudentsLoginValidationSchema } from '../utils'
 import { useApiMutation } from '~/app/Lib/apiFetch'
 import { useRouter } from 'next/navigation'
 
@@ -36,49 +36,56 @@ const FormComponent = ({ focused }) => (
       component={CustomField} 
       fullWidth 
       name='names' 
-      placeholder="Nombre"/>
+      placeholder="Nombre"
+    />
     <Stack direction="row" spacing={1}>
       <Field 
         fullWidth
         component={CustomField} 
         name='paternalSurname' 
-        placeholder="Apellido Paterno"/>
+        placeholder="Apellido Paterno"
+      />
       <Field 
         fullWidth
         component={CustomField} 
         name='maternalSurname' 
-        placeholder="Apellido Materno"/>
+        placeholder="Apellido Materno"
+      />
     </Stack>
     <Field 
       component={CustomField} 
       fullWidth 
       name='enrollmentId' 
-      placeholder="Matricula"/>
+      placeholder="Matricula"
+    />
     <Stack direction="row" spacing={1}>
       <Field 
         component={CustomField} 
         fullWidth 
         name='shift' 
-        placeholder="Turno"/>
+        placeholder="Turno"
+      />
       <Field 
         component={CustomField} 
         fullWidth 
         name='currentGroup' 
-        placeholder="Grupo"/>
+        placeholder="Grupo"  
+      />
     </Stack>
     <Form>
       <Button 
         type='submit' 
         className={focused 
           ? classes.focusedButton 
-          : classes.unfocusedButton}>Ingresar</Button>
+          : classes.unfocusedButton}
+      >Ingresar</Button>
     </Form>
   </Container>
 )
 
-export const StudentsFormik = ({ focused, setSnackbarMessage }) => {
-  const initialValues = getAlumniInitialValues()
-  const validationSchema = getAlumniValidationSchema()
+export const StudentsForm = ({ focused, setSnackbarMessage }) => {
+  const initialValues = getStudentsLoginInitialValues()
+  const validationSchema = getStudentsLoginValidationSchema()
   const studentsLogin = useApiMutation({ path: 'students/login', opts: { method: 'POST' } })
   const router = useRouter()
 
@@ -91,7 +98,7 @@ export const StudentsFormik = ({ focused, setSnackbarMessage }) => {
         router.replace('/verify')
       },
       onError: () => {
-        setSnackbarMessage('Datos incorrectos. Intenta ingresarlos de nuevo.')
+        setSnackbarMessage('Lo sentimos, ha ocurrido un error.')
       }
     })
   }
@@ -100,7 +107,8 @@ export const StudentsFormik = ({ focused, setSnackbarMessage }) => {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+    >
       <FormComponent focused={focused}/>
     </Formik>
   )
