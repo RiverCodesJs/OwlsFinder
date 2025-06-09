@@ -78,7 +78,9 @@ const FormComponent = ({ focused }) => (
         className={focused 
           ? classes.focusedButton 
           : classes.unfocusedButton}
-      >Ingresar</Button>
+      >
+        Ingresar
+      </Button>
     </Form>
   </Container>
 )
