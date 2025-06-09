@@ -13,7 +13,8 @@ const FormikSelect = ({ label, options, field, ...props }) => {
         value={field?.value || ''}
         onChange={event => setFieldValue(field?.name, event.target.value)}
         label={label}
-        SelectDisplayProps={{ disableUnderline: true }}>
+        SelectDisplayProps={{ disableUnderline: true }}
+      >
         {options.map((option, index) => (
           <MenuItem key={index} value={option.value}>
             {option.label}
