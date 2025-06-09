@@ -15,6 +15,7 @@ import TextField from '~/app/UI/shared/FormikTextField'
 import getClassPrefixer from '~/app/UI/classPrefixer'
 import { useApiMutation } from '~/app/Lib/apiFetch'
 import { buhosLogo } from '~/app/images'
+import { Permitted } from '~/app/Permissions/Permitted'
 
 const displayName = 'CounselorRegister'
 const classes = getClassPrefixer(displayName)
@@ -104,16 +105,18 @@ const Wrapper = () => {
     })
   }
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    > 
-      <CounselorRegister 
-        snackbarMessage={snackBarMessage}
-        setSnackbarMessage={setSnackbarMessage}
-      />
-    </Formik>
+    <Permitted>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      > 
+        <CounselorRegister 
+          snackbarMessage={snackBarMessage}
+          setSnackbarMessage={setSnackbarMessage}
+        />
+      </Formik>
+    </Permitted>
   )
 }
 
