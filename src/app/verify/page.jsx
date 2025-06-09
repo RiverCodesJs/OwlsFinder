@@ -1,7 +1,6 @@
 'use client'
 import { Button, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { useStore } from 'zustand'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -35,8 +34,8 @@ const Container = styled('div')(({ theme }) => ({
 }))
 
 const Verify = () => {
-  const token = useStore(useToken, state => state.token)
-
+  const { token } = useToken()
+  
   if(token) {
     return (
       <Container>
