@@ -3,12 +3,12 @@ import { Suspense } from 'react'
 import Loading from '~/app/UI/shared/Loading'
 import { TokenRedirect } from '~/app/UI/shared/TokenRedirect'
 
-const ForgotPasswordRedirect = () => {
+const ResetPasswordRedirect = () => {
   return (
     <Suspense fallback={<Loading/>}>
-      <TokenRedirect route='forgot'/>
+      <TokenRedirect route='reset/success'/>
     </Suspense>
   )
 }
 
-export default ForgotPasswordRedirect
+export default ResetPasswordRedirect

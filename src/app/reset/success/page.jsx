@@ -2,7 +2,7 @@
 import { Button, Snackbar, Stack, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Form, Formik, Field } from 'formik'
 import { omit } from 'ramda'
 
@@ -15,6 +15,8 @@ import {
   getResetPasswordValidationSchema, 
   getResetPasswordInitialValues 
 } from './utils'
+import { useRouter } from 'next/navigation'
+import useToken from '~/app/store/useToken'
 
 const displayName = 'ForgotPassword'
 const classes = getClassPrefixer(displayName)
@@ -51,13 +53,15 @@ const Success = ({ snackbarMessage, setSnackbarMessage }) => (
           component={TextField} 
           fullWidth name="password" 
           type="password" 
-          placeholder="Nueva contraseña"/>
+          placeholder="Nueva contraseña"
+        />
         <Field 
           component={TextField} 
           fullWidth 
           name="repeatPass" 
           type="password" 
-          placeholder="Repetir contraseña"/>
+          placeholder="Repetir contraseña"
+        />
       </Stack>
       <Form>
         <Button type="submit" variant="contained">Ingresar</Button>
@@ -68,7 +72,8 @@ const Success = ({ snackbarMessage, setSnackbarMessage }) => (
       autoHideDuration={4000}
       onClose={() => setSnackbarMessage(null)}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      message={snackbarMessage}/>
+      message={snackbarMessage}
+    />
   </Container>
 )
 
@@ -77,12 +82,23 @@ const Wrapper = () => {
   const [snackbarMessage, setSnackbarMessage] = useState(null)
   const initialValues = getResetPasswordInitialValues
   const validationSchema = getResetPasswordValidationSchema
+  const router = useRouter()
+  const token = useToken()
+
+  useEffect(() => {
+    if(!token) {
+      router.replace('login')
+    }
+  })
 
   const handleSubmit = async values => {
     const payload = omit(['repeatPass'], values)
     await resetPass.mutate(payload, {
       onSuccess: () => {
         setSnackbarMessage('Información cambiada correctamente')
+        setTimeout(() => {
+          router.replace('/login')
+        }, 1000)
       },
       onError: () => {
         setSnackbarMessage('Hubo un problema en el servidor.')
@@ -93,11 +109,13 @@ const Wrapper = () => {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+    >
       <Success 
         snackbarMessage={snackbarMessage} 
         setSnackbarMessage={setSnackbarMessage}
-        handleSubmit={handleSubmit}/>
+        handleSubmit={handleSubmit}
+      />
     </Formik>
   )
 }
