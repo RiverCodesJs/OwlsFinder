@@ -9,7 +9,7 @@ import getClassPrefixer from '~/app/UI/classPrefixer'
 import { useApiMutation } from '~/app/Lib/apiFetch'
 import useToken from '~/app/store/useToken'
 
-import { getEmailInitialValues, getEmailValidationSchema } from '../utils'
+import { getProfessorLoginInitialValues, getProfessorLoginValidationSchema } from '../utils'
 
 const displayName = 'TeachersFormik'
 const classes = getClassPrefixer(displayName)
@@ -47,13 +47,15 @@ const FormComponent = ({ focused }) => (
       fullWidth 
       type="email" 
       name='email' 
-      placeholder="Correo"/>
+      placeholder="Correo"
+    />
     <Field 
       component={CustomField} 
       fullWidth 
       type="password" 
       name='password' 
-      placeholder="Contraseña"/>
+      placeholder="Contraseña"
+    />
     {focused 
       ? <Link href="/forgot" className={classes.forgot_link}>¿Olvidó su contraseña?</Link> 
       : null}
@@ -62,17 +64,18 @@ const FormComponent = ({ focused }) => (
         type='submit' 
         className={focused 
           ? classes.unfocusedButton 
-          : classes.focusedButton}>Ingresar</Button>
+          : classes.focusedButton}
+      >Ingresar</Button>
     </Form>
   </Container>
 )
 
-export const TeachersFormik = ({ setSnackbarMessage, focused }) => {
+export const ProfessorForm = ({ setSnackbarMessage, focused }) => {
   const userLogin = useApiMutation({ path: 'login', opts: { method: 'POST' } })
   const { setToken } = useToken()
   const router = useRouter()
-  const initialValues = getEmailInitialValues()
-  const validationSchema = getEmailValidationSchema()
+  const initialValues = getProfessorLoginInitialValues()
+  const validationSchema = getProfessorLoginValidationSchema()
 
   const handleSubmit = async payload => {
     await userLogin.mutate(payload, {
@@ -94,7 +97,8 @@ export const TeachersFormik = ({ setSnackbarMessage, focused }) => {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+    >
       <FormComponent focused={focused}/>
     </Formik>
   )
