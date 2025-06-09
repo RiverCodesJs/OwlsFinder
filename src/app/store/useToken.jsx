@@ -9,7 +9,7 @@ const useToken = create(
       setToken: token => set({ token })
     }),
     {
-      name: 'owlsFinderData',
+      name: 'OwlsFinderCredentials',
       whitelist: ['token']
     }
   )
