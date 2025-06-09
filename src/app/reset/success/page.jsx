@@ -1,8 +1,9 @@
 'use client'
 import { Button, Snackbar, Stack, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Form, Formik, Field } from 'formik'
 import { omit } from 'ramda'
 
@@ -15,8 +16,7 @@ import {
   getResetPasswordValidationSchema, 
   getResetPasswordInitialValues 
 } from './utils'
-import { useRouter } from 'next/navigation'
-import useToken from '~/app/store/useToken'
+import { Permitted } from '~/app/Permissions/Permitted'
 
 const displayName = 'ForgotPassword'
 const classes = getClassPrefixer(displayName)
@@ -83,13 +83,6 @@ const Wrapper = () => {
   const initialValues = getResetPasswordInitialValues
   const validationSchema = getResetPasswordValidationSchema
   const router = useRouter()
-  const token = useToken()
-
-  useEffect(() => {
-    if(!token) {
-      router.replace('login')
-    }
-  })
 
   const handleSubmit = async values => {
     const payload = omit(['repeatPass'], values)
@@ -106,17 +99,19 @@ const Wrapper = () => {
     })
   }
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      <Success 
-        snackbarMessage={snackbarMessage} 
-        setSnackbarMessage={setSnackbarMessage}
-        handleSubmit={handleSubmit}
-      />
-    </Formik>
+    <Permitted>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        <Success 
+          snackbarMessage={snackbarMessage} 
+          setSnackbarMessage={setSnackbarMessage}
+          handleSubmit={handleSubmit}
+        />
+      </Formik>
+    </Permitted>
   )
 }
 
