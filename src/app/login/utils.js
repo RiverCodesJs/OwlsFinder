@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-export const getStudentsValidationSchema = () => Yup.object({
+export const getStudentsLoginValidationSchema = () => Yup.object({
   names: Yup.string().required('Ingresa tu nombre'),
   paternalSurname: Yup.string().required('Ingresa tu apellido paterno'),
   maternalSurname: Yup.string().required('Ingresa tu apellido materno'),
