@@ -1,5 +1,5 @@
 'use client'
-import { Button, Snackbar, Stack, Typography } from '@mui/material'
+import { Button, Snackbar, Stack, Typography as T } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { styled } from '@mui/material/styles'
@@ -46,23 +46,26 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
     <Container>
       <div className={classes.contentBox}>
         <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
-        <Typography variant="h5">Bienvenido a OwlsHub</Typography>
+        <T variant="h5">Bienvenido a OwlsHub</T>
         <Stack spacing={1} width="90%">
           <Field 
             component={TextField} 
             fullWidth name="names" 
-            placeholder="Nombre"/>
+            placeholder="Nombre"
+          />
           <Field 
             component={TextField} 
             fullWidth name="password" 
             type="password" 
-            placeholder="Contraseña"/>
+            placeholder="Contraseña"
+          />
           <Field 
             component={TextField} 
             fullWidth 
             name="repeatPass" 
             type="password" 
-            placeholder="Repetir contraseña"/>
+            placeholder="Repetir contraseña"
+          />
         </Stack>
         <Form>
           <Button type="submit" variant="contained" >Enviar</Button>
@@ -72,7 +75,8 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
           autoHideDuration={4000}
           onClose={() => setSnackbarMessage(null)}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-          message={snackbarMessage}/>
+          message={snackbarMessage}
+        />
       </div>
     </Container>
   )
@@ -103,10 +107,12 @@ const Wrapper = () => {
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}> 
+      onSubmit={handleSubmit}
+    > 
       <CounselorRegister 
         snackbarMessage={snackBarMessage}
-        setSnackbarMessage={setSnackbarMessage}/>
+        setSnackbarMessage={setSnackbarMessage}
+      />
     </Formik>
   )
 }
