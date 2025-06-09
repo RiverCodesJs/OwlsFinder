@@ -44,10 +44,4 @@ const NavBar = () => {
   )
 }
 
-const Wrapper = () => {
-  return (
-    <NavBar/>
-  )
-}
-
-export default Wrapper
+export default NavBar
