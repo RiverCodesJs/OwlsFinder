@@ -35,7 +35,7 @@ const Container = styled('div')(({ theme }) => ({
     textDecoration: 'none',
     color: theme.palette.grey.main,
     fontWeight: 'bold',
-    width: '60%',
+    width: '100%',
     textAlign: 'left',
   },
 }))
@@ -57,7 +57,7 @@ const FormComponent = ({ focused }) => (
       placeholder="Contraseña"
     />
     {focused 
-      ? <Link href="/forgot" className={classes.forgot_link}>¿Olvidó su contraseña?</Link> 
+      ? <Link href="/forgot" className={classes.forgotLink}>¿Olvidó su contraseña?</Link> 
       : null}
     <Form>
       <Button 
@@ -87,7 +87,7 @@ export const ProfessorForm = ({ setSnackbarMessage, focused }) => {
       },
       onError: e => {
         if(e.error === 'Invalid Fields') {
-          setSnackbarMessage('Datos incorrectos. Intenta ingresarlos de nuevo')
+          setSnackbarMessage('Lo sentimos, ha ocurrido un error.')
         } else {
           setSnackbarMessage('Ocurrió un error')
         }
