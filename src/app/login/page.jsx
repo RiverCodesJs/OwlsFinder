@@ -2,12 +2,12 @@
 import { Snackbar, Stack, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useState } from 'react'
+import Image from 'next/image'
 
 import getClassPrefixer from '~/app/UI/classPrefixer'
 
 import { ProfessorForm } from './components/ProfessorForm'
 import { StudentsForm } from './components/StudentsForm'
-import Image from 'next/image'
 import { buho, buhosLogo } from '../images'
 
 const displayName = 'login'
