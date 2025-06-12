@@ -2,7 +2,7 @@
 import { Button, Snackbar, Stack, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import Image from 'next/image'
-import { Field, Form, Formik } from 'formik'
+import { Field, Form, Formik, useFormikContext } from 'formik'
 import { useState } from 'react'
 
 import { 
@@ -40,6 +40,8 @@ const Container = styled('div')(({ theme }) => ({
 }))
 
 const ForgotPassword = ({ snackbarMessage, setSnackbarMessage }) => {
+  const { isValid, dirty } = useFormikContext()
+
   return(
     <Container>
       <div className={classes.contentBox}>
@@ -56,7 +58,13 @@ const ForgotPassword = ({ snackbarMessage, setSnackbarMessage }) => {
             type="email" 
             placeholder="Correo electrónico"  
           />
-          <Button variant="contained" type="submit">Enviar</Button>
+          <Button 
+            variant="contained" 
+            type="submit"
+            disabled={!isValid || !dirty}
+          >
+            Enviar
+          </Button>
         </Stack>
         <Snackbar
           open={Boolean(snackbarMessage)}
