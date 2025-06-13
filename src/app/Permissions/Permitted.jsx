@@ -1,7 +1,6 @@
-import { Redirect } from './Redirect'
 import usePermitted from './utils'
 
-export const Permitted = ({ children }) => {
+export const Permitted = ({ children, Fallback }) => {
   const permitted = usePermitted()
 
   if (permitted) {
@@ -11,5 +10,5 @@ export const Permitted = ({ children }) => {
       </>
     )
   }
-  return <Redirect/>
+  return <Fallback/>
 }
