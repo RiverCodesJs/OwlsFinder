@@ -16,6 +16,7 @@ import getClassPrefixer from '~/app/UI/classPrefixer'
 import { useApiMutation } from '~/app/Lib/apiFetch'
 import { buhosLogo } from '~/app/images'
 import { Permitted } from '~/app/Permissions/Permitted'
+import { NotAvailable } from '~/app/UI/shared/NotAvailable'
 
 const displayName = 'CounselorRegister'
 const classes = getClassPrefixer(displayName)
@@ -105,7 +106,7 @@ const Wrapper = () => {
     })
   }
   return (
-    <Permitted>
+    <Permitted fallback={<NotAvailable/>}>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
