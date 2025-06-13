@@ -11,34 +11,33 @@ export const TokenRedirect = ({ route }) => {
 
   const { token } = useParams()
   const { setToken } = useToken()
-  const { setUserId } = useData()
+  const { setUserId, setRole } = useData()
   const router = useRouter()
   const client = useQueryClient()
   const { data, isLoading, error } = useApiQuery({ path: 'verify' })
-  const { data:meData } = useApiQuery({ path: 'me' })
   
   useEffect(() => {
     if(token) {
       setToken(token)
     }
-    if(data?.userId) {
-      if(meData?.type === 'Counselor' || meData?.type === 'Admin') {
-        setUserId(data?.userId)
-      }
+    if(data?.userId && data?.role) {
+      setUserId(data?.userId)
+      setRole(data?.role)
       router.replace(`/${route}`)
     }
+    
     if(error) {
       client.clear()
       router.replace('/login')
     }
   }, [
-    meData,
     data, 
     error, 
     token, 
     route, 
     router, 
     setUserId, 
+    setRole,
     client, 
     setToken
   ])
