@@ -3,9 +3,9 @@ import useToken from '../store/useToken'
 
 const usePermitted = () => {
   const { token } = useToken()
-  const { userId } = useData()
+  const { userId, role } = useData()
 
-  if (token && userId) {
+  if (token && userId && role) {
     return true
   }
   return false
