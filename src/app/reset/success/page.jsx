@@ -17,6 +17,7 @@ import {
   getResetPasswordInitialValues 
 } from './utils'
 import { Permitted } from '~/app/Permissions/Permitted'
+import { NotAvailable } from '~/app/UI/shared/NotAvailable'
 
 const displayName = 'ForgotPassword'
 const classes = getClassPrefixer(displayName)
@@ -108,7 +109,7 @@ const Wrapper = () => {
     })
   }
   return (
-    <Permitted>
+    <Permitted Fallback={NotAvailable}>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
