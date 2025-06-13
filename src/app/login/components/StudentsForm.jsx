@@ -1,89 +1,78 @@
-import { Field, Form, Formik } from 'formik'
+import { Field, Form, Formik, useFormikContext } from 'formik'
 import { styled } from '@mui/material/styles'
 import { Button, Stack } from '@mui/material'
 import { useRouter } from 'next/navigation'
 
 import { useApiMutation } from '~/app/Lib/apiFetch'
-import getClassPrefixer from '~/app/UI/classPrefixer'
 import CustomField from '~/app/UI/shared/FormikTextField'
 import { getStudentsLoginInitialValues, getStudentsLoginValidationSchema } from '../utils'
 
-const displayName = 'StudentsLogin'
-const classes = getClassPrefixer(displayName)
 
-const Container = styled('div')(({ theme }) => ({
+const Container = styled('div')(() => ({
   width: 450,
   display: 'flex',
   flexDirection: 'column',
   gap: '1ch',
   justifyContent: 'center',
   alignItems: 'center',
-  [`& .${classes.focusedButton}`]: {
-    marginTop: '1ch',
-    backgroundColor: theme.palette.contrast.main,
-    color: theme.palette.primary.main
-  },
-  [`& .${classes.unfocusedButton}`]: {
-    marginTop: '1ch',
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.contrast.main
-  },
 }))
 
-const FormComponent = ({ focused }) => (
-  <Container>
-    <Field 
-      component={CustomField} 
-      fullWidth 
-      name='names' 
-      placeholder="Nombre"
-    />
-    <Stack direction="row" spacing={1}>
-      <Field 
-        fullWidth
-        component={CustomField} 
-        name='paternalSurname' 
-        placeholder="Apellido Paterno"
-      />
-      <Field 
-        fullWidth
-        component={CustomField} 
-        name='maternalSurname' 
-        placeholder="Apellido Materno"
-      />
-    </Stack>
-    <Field 
-      component={CustomField} 
-      fullWidth 
-      name='enrollmentId' 
-      placeholder="Matricula"
-    />
-    <Stack direction="row" spacing={1}>
+const FormComponent = ({ focused }) => {
+  const { isValid, dirty } = useFormikContext()
+  return (
+    <Container>
       <Field 
         component={CustomField} 
         fullWidth 
-        name='shift' 
-        placeholder="Turno"
+        name='names' 
+        placeholder="Nombre"
       />
+      <Stack direction="row" spacing={1}>
+        <Field 
+          fullWidth
+          component={CustomField} 
+          name='paternalSurname' 
+          placeholder="Apellido Paterno"
+        />
+        <Field 
+          fullWidth
+          component={CustomField} 
+          name='maternalSurname' 
+          placeholder="Apellido Materno"
+        />
+      </Stack>
       <Field 
         component={CustomField} 
         fullWidth 
-        name='currentGroup' 
-        placeholder="Grupo"  
+        name='enrollmentId' 
+        placeholder="Matricula"
       />
-    </Stack>
-    <Form>
-      <Button 
-        type='submit' 
-        className={focused 
-          ? classes.focusedButton 
-          : classes.unfocusedButton}
-      >
-        Ingresar
-      </Button>
-    </Form>
-  </Container>
-)
+      <Stack direction="row" spacing={1}>
+        <Field 
+          component={CustomField} 
+          fullWidth 
+          name='shift' 
+          placeholder="Turno"
+        />
+        <Field 
+          component={CustomField} 
+          fullWidth 
+          name='currentGroup' 
+          placeholder="Grupo"  
+        />
+      </Stack>
+      <Form>
+        <Button 
+          type='submit' 
+          variant='contained'
+          disabled={focused || (!isValid || !dirty)}
+        >
+          Ingresar
+        </Button>
+      </Form>
+    </Container>
+  )
+}
 
 export const StudentsForm = ({ focused, setSnackbarMessage }) => {
   const initialValues = getStudentsLoginInitialValues()

@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { Field, Form, Formik } from 'formik'
+import { Field, Form, Formik, useFormikContext } from 'formik'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -21,16 +21,6 @@ const Container = styled('div')(({ theme }) => ({
   gap: '1ch',
   justifyContent: 'center',
   alignItems: 'center',
-  [`& .${classes.focusedButton}`]: {
-    marginTop: '1ch',
-    backgroundColor: theme.palette.contrast.main,
-    color: theme.palette.primary.main
-  },
-  [`& .${classes.unfocusedButton}`]: {
-    marginTop: '1ch',
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.contrast.main
-  },
   [`& .${classes.forgotLink}`]: {
     textDecoration: 'none',
     color: theme.palette.grey.main,
@@ -40,37 +30,39 @@ const Container = styled('div')(({ theme }) => ({
   },
 }))
 
-const FormComponent = ({ focused }) => (
-  <Container>
-    <Field 
-      component={CustomField} 
-      fullWidth 
-      type="email" 
-      name='email' 
-      placeholder="Correo"
-    />
-    <Field 
-      component={CustomField} 
-      fullWidth 
-      type="password" 
-      name='password' 
-      placeholder="Contraseña"
-    />
-    {focused 
-      ? <Link href="/forgot" className={classes.forgotLink}>¿Olvidó su contraseña?</Link> 
-      : null}
-    <Form>
-      <Button 
-        type='submit' 
-        className={focused 
-          ? classes.unfocusedButton 
-          : classes.focusedButton}
-      >
-        Ingresar
-      </Button>
-    </Form>
-  </Container>
-)
+const FormComponent = ({ focused }) => {
+  const { isValid, dirty } = useFormikContext()
+  return (
+    <Container>
+      <Field 
+        component={CustomField} 
+        fullWidth 
+        type="email" 
+        name='email' 
+        placeholder="Correo"
+      />
+      <Field 
+        component={CustomField} 
+        fullWidth 
+        type="password" 
+        name='password' 
+        placeholder="Contraseña"
+      />
+      {focused 
+        ? <Link href="/forgot" className={classes.forgotLink}>¿Olvidó su contraseña?</Link> 
+        : null}
+      <Form>
+        <Button 
+          type='submit' 
+          variant='contained'
+          disabled={!focused || (!isValid || !dirty)}
+        >
+          Ingresar
+        </Button>
+      </Form>
+    </Container>
+  )
+}
 
 export const ProfessorForm = ({ setSnackbarMessage, focused }) => {
   const userLogin = useApiMutation({ path: 'login', opts: { method: 'POST' } })
