@@ -109,7 +109,10 @@ const Wrapper = () => {
     })
   }
   return (
-    <Permitted Fallback={NotAvailable}>
+    <Permitted 
+      requiredRole='Counselor'
+      Fallback={NotAvailable}
+    >
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
