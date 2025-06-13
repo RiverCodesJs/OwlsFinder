@@ -1,4 +1,3 @@
-import { useQueryClient } from '@tanstack/react-query'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useApiQuery } from '~/app/Lib/apiFetch'
@@ -13,7 +12,6 @@ export const TokenRedirect = ({ route }) => {
   const { setToken } = useToken()
   const { setUserId, setRole } = useData()
   const router = useRouter()
-  const client = useQueryClient()
   const { data, isLoading, error } = useApiQuery({ path: 'verify' })
   
   useEffect(() => {
@@ -27,7 +25,7 @@ export const TokenRedirect = ({ route }) => {
     }
     
     if(error) {
-      client.clear()
+      setToken(null)
       router.replace('/login')
     }
   }, [
@@ -38,7 +36,6 @@ export const TokenRedirect = ({ route }) => {
     router, 
     setUserId, 
     setRole,
-    client, 
     setToken
   ])
 
