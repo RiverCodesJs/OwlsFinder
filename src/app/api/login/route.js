@@ -19,7 +19,7 @@ export const POST = async request => {
       if(!user) return ERROR.INVALID_FIELDS()
       const isPasswordValid = await bcrypt.compare(data.password, user.password)
       if(isPasswordValid){
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET)
+        const token = jwt.sign({ userId: user.id, role: user.type }, process.env.JWT_SECRET)
         return NextResponse.json(token, { status: 200 })
       }
     }
