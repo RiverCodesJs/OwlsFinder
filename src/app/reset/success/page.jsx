@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { useState } from 'react'
-import { Form, Formik, Field } from 'formik'
+import { Form, Formik, Field, useFormikContext } from 'formik'
 import { omit } from 'ramda'
 
 import getClassPrefixer from '~/app/UI/classPrefixer'
@@ -43,39 +43,48 @@ const Container = styled('div')(({ theme }) => ({
   },
 }))
 
-const Success = ({ snackbarMessage, setSnackbarMessage }) => (
-  <Container>
-    <div className={classes.contentBox}>
-      <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
-      <Typography variant="h5">Reestablece tu contraseña</Typography>
-      <Stack spacing={2} width="90%">
-        <Field 
-          component={TextField} 
-          fullWidth name="password" 
-          type="password" 
-          placeholder="Nueva contraseña"
-        />
-        <Field 
-          component={TextField} 
-          fullWidth 
-          name="repeatPass" 
-          type="password" 
-          placeholder="Repetir contraseña"
-        />
-      </Stack>
-      <Form>
-        <Button type="submit" variant="contained">Ingresar</Button>
-      </Form>
-    </div>
-    <Snackbar 
-      open={Boolean(snackbarMessage)}
-      autoHideDuration={4000}
-      onClose={() => setSnackbarMessage(null)}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      message={snackbarMessage}
-    />
-  </Container>
-)
+const Success = ({ snackbarMessage, setSnackbarMessage }) => {
+  const { isValid, dirty } = useFormikContext()
+  return (
+    <Container>
+      <div className={classes.contentBox}>
+        <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
+        <Typography variant="h5">Reestablece tu contraseña</Typography>
+        <Stack spacing={2} width="90%">
+          <Field 
+            component={TextField} 
+            fullWidth name="password" 
+            type="password" 
+            placeholder="Nueva contraseña"
+          />
+          <Field 
+            component={TextField} 
+            fullWidth 
+            name="repeatPass" 
+            type="password" 
+            placeholder="Repetir contraseña"
+          />
+        </Stack>
+        <Form>
+          <Button 
+            type="submit" 
+            variant="contained"
+            disabled={!isValid || !dirty}
+          >
+            Ingresar
+          </Button>
+        </Form>
+      </div>
+      <Snackbar 
+        open={Boolean(snackbarMessage)}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarMessage(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        message={snackbarMessage}
+      />
+    </Container>
+  )
+}
 
 const Wrapper = () => {
   const resetPass = useApiMutation({ path: 'me', opts: { method: 'PATCH' } })
