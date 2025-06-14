@@ -1,7 +1,7 @@
 import usePermitted from './utils'
 
-export const Permitted = ({ children, Fallback, requiredRole = 'Admin' }) => {
-  const permitted = usePermitted({ requiredRole })
+export const Permitted = ({ children, Fallback, requiredType = 'Admin' }) => {
+  const permitted = usePermitted({ requiredType })
 
   if (permitted) {
     return children 
