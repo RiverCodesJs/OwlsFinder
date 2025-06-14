@@ -5,9 +5,9 @@ import ERROR from '~/error'
 
 export const GET = async request => {
   try {
-    const { userId, role } = authenticateToken(request)
-    if (!userId || !role) return ERROR.FORBIDDEN()
-    return NextResponse.json({ userId, role }, { status: 200 })
+    const { userId, type } = authenticateToken(request)
+    if (!userId || !type) return ERROR.FORBIDDEN()
+    return NextResponse.json({ userId, type }, { status: 200 })
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: error.status || 401 })
   }

@@ -35,7 +35,7 @@ export const POST = async request => {
     })
     const token = jwt.sign({ 
       userId: counselor.id,
-      role: counselor.type
+      type: counselor.type
     }, process.env.JWT_SECRET)
     await emailSender({ reciver: email, template: registerCounselor({ token }) })
     return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 })
