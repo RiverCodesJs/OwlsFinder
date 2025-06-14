@@ -107,7 +107,7 @@ const Wrapper = () => {
   }
   return (
     <Permitted 
-      requiredRole='Counselor'
+      requiredType='Counselor'
       Fallback={NotAvailable}
     >
       <Formik

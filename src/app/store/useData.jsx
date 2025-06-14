@@ -5,9 +5,9 @@ export const useData = create(
   persist(
     set => ({
       userId: null,
-      role: null,
+      type: null,
       setUserId: userId => set({ userId }),
-      setRole: role => set({ role })
+      setType: type => set({ type })
     }),
     {
       name: 'OwlsFinderData',

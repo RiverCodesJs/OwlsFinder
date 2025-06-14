@@ -10,7 +10,7 @@ export const TokenRedirect = ({ route }) => {
 
   const { token } = useParams()
   const { setToken } = useToken()
-  const { setUserId, setRole } = useData()
+  const { setUserId, setType } = useData()
   const router = useRouter()
   const { data, isLoading, error } = useApiQuery({ path: 'verify' })
   
@@ -18,9 +18,9 @@ export const TokenRedirect = ({ route }) => {
     if(token) {
       setToken(token)
     }
-    if(data?.userId && data?.role) {
+    if(data?.userId && data?.type) {
       setUserId(data?.userId)
-      setRole(data?.role)
+      setType(data?.type)
       router.replace(`/${route}`)
     }
     
@@ -35,7 +35,7 @@ export const TokenRedirect = ({ route }) => {
     route, 
     router, 
     setUserId, 
-    setRole,
+    setType,
     setToken
   ])
 

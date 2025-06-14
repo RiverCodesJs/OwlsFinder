@@ -50,7 +50,7 @@ const Container = styled('div')(({ theme }) => ({
 
 const Success = ({ snackbarMessage, setSnackbarMessage }) => {
   const { data, isLoading, error } = useApiQuery({ path: 'verify' })
-  const { setUserId, setRole } = useData()
+  const { setUserId, setType } = useData()
   const { setToken } = useToken()
   const router = useRouter()
   const client = useQueryClient()
@@ -62,9 +62,9 @@ const Success = ({ snackbarMessage, setSnackbarMessage }) => {
     if(token) {
       setToken(token)
     }
-    if(data?.userId && data?.role) {
+    if(data?.userId && data?.type) {
       setUserId(data?.userId)
-      setRole(data?.role)
+      setType(data?.type)
     }
     if(error) {
       setToken(null)
@@ -76,14 +76,14 @@ const Success = ({ snackbarMessage, setSnackbarMessage }) => {
     setToken,
     data,
     setUserId,
-    setRole,
+    setType,
     error,
     client,
     router
   ])
   
   if(isLoading) return <Loading/>
-  
+
   return (
     <Container>
       <div className={classes.contentBox}>
@@ -150,7 +150,7 @@ const Wrapper = () => {
   return (
     <Suspense fallback={<Loading/>}>
       <Permitted 
-        requiredRole='Counselor'
+        requiredType='Counselor'
         Fallback={NotAvailable}
       >
         <Formik
