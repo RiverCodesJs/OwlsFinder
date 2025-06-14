@@ -16,7 +16,7 @@ export const POST = async request => {
         queryType: 'findUnique',
         filter: {
           ...data,
-          type: 'student'
+          type: 'STUDENT',
         },
       })
       if(user){

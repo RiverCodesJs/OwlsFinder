@@ -26,7 +26,7 @@ export const POST = async request => {
       queryType: 'create',
       data: {
         email,
-        type: 'Counselor'
+        type: 'COUNSELOR'
       },
       relations: [{
         entity: 'permissions',
