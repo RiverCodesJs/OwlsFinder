@@ -18,7 +18,7 @@ describe('auth libs', () =>{
       mockImplementation: { userId: 1 }, 
       isAllowed: true,
       result: {
-        'role': undefined,
+        'type': undefined,
         'userId': 1
       }
     },
