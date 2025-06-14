@@ -49,7 +49,7 @@ const forgotYourPassword = ({ token }) => ({
           <div class="content">
             <p class="title">Restablece tu Contraseña</p>
             <p class="message">Si no solicitaste restablecer tu contraseña, ignora este correo.</p>
-            <a href="${process.env.HOST ?? 'http://localhost:3000'}/reset/${token}" class="btn">Restablece tu Contraseña</a>
+            <a href="${process.env.HOST ?? 'http://localhost:3000'}/reset?token=${token}" class="btn">Restablece tu Contraseña</a>
           </div>
         </div>
       </body>
