@@ -17,7 +17,7 @@ export const GET = async (request, { params }) => {
       queryType: 'findUnique',
       filter: { 
         id: Number(id),
-        type: 'student'
+        type: 'STUDENT'
       },
     })
     if(payload){
@@ -41,7 +41,7 @@ export const PUT = async (request, { params }) => {
         queryType: 'update',
         filter: { 
           id: Number(id),
-          type: 'student'
+          type: 'STUDENT'
         },
         data
       })
@@ -66,7 +66,7 @@ export const PATCH = async (request, { params }) => {
       queryType: 'update',
       filter: { 
         id: Number(id),
-        type: 'student'
+        type: 'STUDENT'
       },
       data
     })
@@ -90,7 +90,7 @@ export const DELETE = async (request, { params }) => {
       queryType: 'delete',
       filter: { 
         id: Number(id),
-        type: 'student'
+        type: 'STUDENT'
       },
       data: {
         active: false

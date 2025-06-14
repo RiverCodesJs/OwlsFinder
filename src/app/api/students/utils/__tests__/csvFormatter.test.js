@@ -39,7 +39,7 @@ describe('csvFormatter utils', () => {
           grade: 10,
           type: 'student',
           email: '12345678@cobachih.edu.mx',
-          shift: 'morning'
+          shift: 'MORNING'
         },
         {
           currentGroup: '150',
@@ -50,7 +50,7 @@ describe('csvFormatter utils', () => {
           grade: 8,
           type: 'student',
           email: '12345679@cobachih.edu.mx',
-          shift: 'afternoon'
+          shift: 'EVENING'
         }
       ]
     },
