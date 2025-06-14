@@ -2,8 +2,9 @@
 import { Button, Snackbar, Stack, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Form, Formik, Field, useFormikContext } from 'formik'
 import { omit } from 'ramda'
 
@@ -21,7 +22,6 @@ import { NotAvailable } from '~/app/UI/shared/NotAvailable'
 import useToken from '../store/useToken'
 import Loading from '../UI/shared/Loading'
 import { useData } from '../store/useData'
-import { useQueryClient } from '@tanstack/react-query'
 
 const displayName = 'ForgotPassword'
 const classes = getClassPrefixer(displayName)
@@ -51,43 +51,45 @@ const Container = styled('div')(({ theme }) => ({
 const Success = ({ snackbarMessage, setSnackbarMessage }) => {
   const { isValid, dirty } = useFormikContext()
   return (
-    <Container>
-      <div className={classes.contentBox}>
-        <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
-        <Typography variant="h5">Reestablece tu contraseña</Typography>
-        <Stack spacing={2} width="90%">
-          <Field 
-            component={TextField} 
-            fullWidth name="password" 
-            type="password" 
-            placeholder="Nueva contraseña"
-          />
-          <Field 
-            component={TextField} 
-            fullWidth 
-            name="repeatPass" 
-            type="password" 
-            placeholder="Repetir contraseña"
-          />
-        </Stack>
-        <Form>
-          <Button 
-            type="submit" 
-            variant="contained"
-            disabled={!isValid || !dirty}
-          >
-            Ingresar
-          </Button>
-        </Form>
-      </div>
-      <Snackbar 
-        open={Boolean(snackbarMessage)}
-        autoHideDuration={4000}
-        onClose={() => setSnackbarMessage(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        message={snackbarMessage}
-      />
-    </Container>
+    <Suspense fallback={<Loading/>}>
+      <Container>
+        <div className={classes.contentBox}>
+          <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
+          <Typography variant="h5">Reestablece tu contraseña</Typography>
+          <Stack spacing={2} width="90%">
+            <Field 
+              component={TextField} 
+              fullWidth name="password" 
+              type="password" 
+              placeholder="Nueva contraseña"
+            />
+            <Field 
+              component={TextField} 
+              fullWidth 
+              name="repeatPass" 
+              type="password" 
+              placeholder="Repetir contraseña"
+            />
+          </Stack>
+          <Form>
+            <Button 
+              type="submit" 
+              variant="contained"
+              disabled={!isValid || !dirty}
+            >
+              Ingresar
+            </Button>
+          </Form>
+        </div>
+        <Snackbar 
+          open={Boolean(snackbarMessage)}
+          autoHideDuration={4000}
+          onClose={() => setSnackbarMessage(null)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          message={snackbarMessage}
+        />
+      </Container>
+    </Suspense>
   )
 }
 
@@ -143,9 +145,7 @@ const Wrapper = () => {
     })
   }
 
-  if(isLoading) return (
-    <Loading/>
-  )
+  if(isLoading) return <Loading/>
 
   return (
     <Permitted 
