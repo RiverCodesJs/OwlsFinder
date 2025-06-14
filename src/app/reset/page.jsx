@@ -49,7 +49,41 @@ const Container = styled('div')(({ theme }) => ({
 }))
 
 const Success = ({ snackbarMessage, setSnackbarMessage }) => {
+  const { data, isLoading, error } = useApiQuery({ path: 'verify' })
+  const { setUserId, setRole } = useData()
+  const { setToken } = useToken()
+  const router = useRouter()
+  const client = useQueryClient()
+  const searchParams = useSearchParams()
+  const token = searchParams.get('token')
   const { isValid, dirty } = useFormikContext()
+  
+  useEffect(() => {
+    if(token) {
+      setToken(token)
+    }
+    if(data?.userId && data?.role) {
+      setUserId(data?.userId)
+      setRole(data?.role)
+    }
+    if(error) {
+      setToken(null)
+      client.clear()
+      router.replace('/login')
+    }
+  }, [
+    token,
+    setToken,
+    data,
+    setUserId,
+    setRole,
+    error,
+    client,
+    router
+  ])
+  
+  if(isLoading) return <Loading/>
+  
   return (
     <Container>
       <div className={classes.contentBox}>
@@ -93,40 +127,10 @@ const Success = ({ snackbarMessage, setSnackbarMessage }) => {
 
 const Wrapper = () => {
   const resetPass = useApiMutation({ path: 'me', opts: { method: 'PATCH' } })
-  const { data, isLoading, error } = useApiQuery({ path: 'verify' })
+  const [snackbarMessage, setSnackbarMessage] = useState(null)
   const initialValues = getResetPasswordInitialValues
   const validationSchema = getResetPasswordValidationSchema
-  const { setUserId, setRole } = useData()
-  const { setToken } = useToken()
   const router = useRouter()
-  const client = useQueryClient()
-  const searchParams = useSearchParams()
-  const token = searchParams.get('token')
-  const [snackbarMessage, setSnackbarMessage] = useState(null)
-  
-  useEffect(() => {
-    if(token) {
-      setToken(token)
-    }
-    if(data?.userId && data?.role) {
-      setUserId(data?.userId)
-      setRole(data?.role)
-    }
-    if(error) {
-      setToken(null)
-      client.clear()
-      router.replace('/login')
-    }
-  }, [
-    token,
-    setToken,
-    data,
-    setUserId,
-    setRole,
-    error,
-    client,
-    router
-  ])
   
   const handleSubmit = async values => {
     const payload = omit(['repeatPass'], values)
@@ -142,9 +146,7 @@ const Wrapper = () => {
       }
     })
   }
-  
-  if(isLoading) return <Loading/>
-  
+    
   return (
     <Suspense fallback={<Loading/>}>
       <Permitted 
