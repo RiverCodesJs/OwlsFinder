@@ -7,17 +7,16 @@ import { useApiMutation } from '~/app/Lib/apiFetch'
 import CustomField from '~/app/UI/shared/FormikTextField'
 import { getStudentsLoginInitialValues, getStudentsLoginValidationSchema } from '../utils'
 
-
-const Container = styled('div')(() => ({
+const Container = styled('div')({
   width: 450,
   display: 'flex',
   flexDirection: 'column',
   gap: '1ch',
   justifyContent: 'center',
   alignItems: 'center',
-}))
+})
 
-const FormComponent = ({ focused }) => {
+const FormComponent = ({ isActive }) => {
   const { isValid, dirty } = useFormikContext()
   return (
     <Container>
@@ -62,19 +61,21 @@ const FormComponent = ({ focused }) => {
         />
       </Stack>
       <Form>
-        <Button 
-          type='submit' 
-          variant='contained'
-          disabled={focused || (!isValid || !dirty)}
-        >
-          Ingresar
-        </Button>
+        {!isActive 
+          ? <Button 
+            type='submit' 
+            disabled={isActive || (!isValid || !dirty)}
+          >
+            Ingresar
+          </Button>
+          : null}
+        
       </Form>
     </Container>
   )
 }
 
-export const StudentsForm = ({ focused, setSnackbarMessage }) => {
+export const StudentsForm = ({ isActive, setSnackbarMessage }) => {
   const initialValues = getStudentsLoginInitialValues()
   const validationSchema = getStudentsLoginValidationSchema()
   const studentsLogin = useApiMutation({ path: 'students/login', opts: { method: 'POST' } })
@@ -100,7 +101,7 @@ export const StudentsForm = ({ focused, setSnackbarMessage }) => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      <FormComponent focused={focused}/>
+      <FormComponent isActive={isActive}/>
     </Formik>
   )
 }

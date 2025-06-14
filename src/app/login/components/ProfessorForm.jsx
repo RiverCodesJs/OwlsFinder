@@ -30,7 +30,7 @@ const Container = styled('div')(({ theme }) => ({
   },
 }))
 
-const FormComponent = ({ focused }) => {
+const FormComponent = ({ isActive }) => {
   const { isValid, dirty } = useFormikContext()
   return (
     <Container>
@@ -48,23 +48,25 @@ const FormComponent = ({ focused }) => {
         name='password' 
         placeholder="Contraseña"
       />
-      {focused 
+      {isActive 
         ? <Link href="/forgot" className={classes.forgotLink}>¿Olvidó su contraseña?</Link> 
         : null}
       <Form>
-        <Button 
-          type='submit' 
-          variant='contained'
-          disabled={!focused || (!isValid || !dirty)}
-        >
-          Ingresar
-        </Button>
+        {!isActive
+          ? <Button 
+            type='submit' 
+            variant='contained'
+            disabled={!isActive || (!isValid || !dirty)}
+          >
+            Ingresar
+          </Button>
+          : null}
       </Form>
     </Container>
   )
 }
 
-export const ProfessorForm = ({ setSnackbarMessage, focused }) => {
+export const ProfessorForm = ({ setSnackbarMessage, isActive }) => {
   const userLogin = useApiMutation({ path: 'login', opts: { method: 'POST' } })
   const { setToken } = useToken()
   const router = useRouter()
@@ -93,7 +95,7 @@ export const ProfessorForm = ({ setSnackbarMessage, focused }) => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      <FormComponent focused={focused}/>
+      <FormComponent isActive={isActive}/>
     </Formik>
   )
 }
