@@ -2,7 +2,7 @@ import { useData } from '../store/useData'
 import useToken from '../store/useToken'
 
 const isValidType = ({ type, requiredType }) => {
-  if (type === 'Admin') return true
+  if (type === 'ADMIN') return true
   if (type === requiredType) return true
   return false
 }

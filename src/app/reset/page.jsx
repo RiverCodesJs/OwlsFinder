@@ -150,7 +150,7 @@ const Wrapper = () => {
   return (
     <Suspense fallback={<Loading/>}>
       <Permitted 
-        requiredType='Counselor'
+        requiredType='COUNSELOR'
         Fallback={NotAvailable}
       >
         <Formik
