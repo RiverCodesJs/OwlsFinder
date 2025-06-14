@@ -51,45 +51,43 @@ const Container = styled('div')(({ theme }) => ({
 const Success = ({ snackbarMessage, setSnackbarMessage }) => {
   const { isValid, dirty } = useFormikContext()
   return (
-    <Suspense fallback={<Loading/>}>
-      <Container>
-        <div className={classes.contentBox}>
-          <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
-          <Typography variant="h5">Reestablece tu contraseña</Typography>
-          <Stack spacing={2} width="90%">
-            <Field 
-              component={TextField} 
-              fullWidth name="password" 
-              type="password" 
-              placeholder="Nueva contraseña"
-            />
-            <Field 
-              component={TextField} 
-              fullWidth 
-              name="repeatPass" 
-              type="password" 
-              placeholder="Repetir contraseña"
-            />
-          </Stack>
-          <Form>
-            <Button 
-              type="submit" 
-              variant="contained"
-              disabled={!isValid || !dirty}
-            >
-              Ingresar
-            </Button>
-          </Form>
-        </div>
-        <Snackbar 
-          open={Boolean(snackbarMessage)}
-          autoHideDuration={4000}
-          onClose={() => setSnackbarMessage(null)}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-          message={snackbarMessage}
-        />
-      </Container>
-    </Suspense>
+    <Container>
+      <div className={classes.contentBox}>
+        <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
+        <Typography variant="h5">Reestablece tu contraseña</Typography>
+        <Stack spacing={2} width="90%">
+          <Field 
+            component={TextField} 
+            fullWidth name="password" 
+            type="password" 
+            placeholder="Nueva contraseña"
+          />
+          <Field 
+            component={TextField} 
+            fullWidth 
+            name="repeatPass" 
+            type="password" 
+            placeholder="Repetir contraseña"
+          />
+        </Stack>
+        <Form>
+          <Button 
+            type="submit" 
+            variant="contained"
+            disabled={!isValid || !dirty}
+          >
+            Ingresar
+          </Button>
+        </Form>
+      </div>
+      <Snackbar 
+        open={Boolean(snackbarMessage)}
+        autoHideDuration={4000}
+        onClose={() => setSnackbarMessage(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        message={snackbarMessage}
+      />
+    </Container>
   )
 }
 
@@ -105,7 +103,7 @@ const Wrapper = () => {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
   const [snackbarMessage, setSnackbarMessage] = useState(null)
-
+  
   useEffect(() => {
     if(token) {
       setToken(token)
@@ -129,7 +127,7 @@ const Wrapper = () => {
     client,
     router
   ])
-
+  
   const handleSubmit = async values => {
     const payload = omit(['repeatPass'], values)
     await resetPass.mutate(payload, {
@@ -144,26 +142,28 @@ const Wrapper = () => {
       }
     })
   }
-
+  
   if(isLoading) return <Loading/>
-
+  
   return (
-    <Permitted 
-      requiredRole='Counselor'
-      Fallback={NotAvailable}
-    >
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
+    <Suspense fallback={<Loading/>}>
+      <Permitted 
+        requiredRole='Counselor'
+        Fallback={NotAvailable}
       >
-        <Success 
-          snackbarMessage={snackbarMessage} 
-          setSnackbarMessage={setSnackbarMessage}
-          handleSubmit={handleSubmit}
-        />
-      </Formik>
-    </Permitted>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+        >
+          <Success 
+            snackbarMessage={snackbarMessage} 
+            setSnackbarMessage={setSnackbarMessage}
+            handleSubmit={handleSubmit}
+          />
+        </Formik>
+      </Permitted>
+    </Suspense>
   )
 }
 
