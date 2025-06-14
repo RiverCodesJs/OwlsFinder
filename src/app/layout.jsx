@@ -1,4 +1,7 @@
-import ThemeRegistry from '~/app/theme'
+'use client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import ThemeRegistry from '~/app/UI/theme'
+import { Stack } from '@mui/material'
 
 const metadata = {
   title: 'OwlsHub',
@@ -6,6 +9,8 @@ const metadata = {
 }
 
 const RootLayout = ({ children }) => {
+  const queryClient = new QueryClient()
+
   return (
     <html lang="en">
       <head>
@@ -13,9 +18,14 @@ const RootLayout = ({ children }) => {
         <meta name="description" content={metadata.description} />
       </head>
       <ThemeRegistry>
-        <body>
-          {children}
-        </body>
+        <QueryClientProvider client={queryClient}>
+          <body>
+            <Stack direction="row">
+              {/*token ? <NavBar/> : null*/}
+              {children}
+            </Stack>
+          </body>
+        </QueryClientProvider>
       </ThemeRegistry>
     </html>
   )

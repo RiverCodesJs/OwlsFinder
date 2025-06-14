@@ -1,0 +1,1 @@
+export const MUTATION_PATH_TO_INVALIDATIONS = {}

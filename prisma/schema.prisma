@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -19,11 +20,12 @@ model User {
   currentGroup    String?
   nextGroup       String?
   clubId          Int?
-  shift           String?
+  shift           Shift?
+  gender          Gender
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   active          Boolean      @default(true)
-  type            String
+  type            Type
   groups          String[]
   grade           String?
   club            Club?        @relation(fields: [clubId], references: [id])
@@ -71,7 +73,7 @@ model Training {
   description String
   images      String[]
   videos      String[]
-  shift       String
+  shift       Shift
   limit       Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -87,7 +89,7 @@ model Club {
   images      String[]
   videos      String[]
   limit       Int
-  shift       String?
+  shift       Shift?
   schedule    String
   professorId Int?
   createdAt   DateTime   @default(now())
@@ -131,4 +133,21 @@ model TrainingSelection {
   date              DateTime
   selectionConfigId Int
   selectionConfig   SelectionConfig @relation(fields: [selectionConfigId], references: [id])
+}
+
+enum Type {
+  STUDENT
+  COUNSELOR
+  ADMIN
+}
+
+enum Shift {
+  MORNING
+  EVENING
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  NON_BINARY
 }

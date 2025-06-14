@@ -17,7 +17,10 @@ describe('auth libs', () =>{
       headers: new Headers({ 'authorization': 'token' }),
       mockImplementation: { userId: 1 }, 
       isAllowed: true,
-      result: 1
+      result: {
+        'type': undefined,
+        'userId': 1
+      }
     },
     {
       descr: 'Not Token',

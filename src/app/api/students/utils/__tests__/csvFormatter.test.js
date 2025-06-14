@@ -37,9 +37,9 @@ describe('csvFormatter utils', () => {
           maternalSurname: 'LOPEZ',
           names: 'JUAN',
           grade: 10,
-          type: 'student',
+          type: 'STUDENT',
           email: '12345678@cobachih.edu.mx',
-          shift: 'morning'
+          shift: 'MORNING'
         },
         {
           currentGroup: '150',
@@ -48,9 +48,9 @@ describe('csvFormatter utils', () => {
           maternalSurname: 'DOE',
           names: 'JONH',
           grade: 8,
-          type: 'student',
+          type: 'STUDENT',
           email: '12345679@cobachih.edu.mx',
-          shift: 'afternoon'
+          shift: 'EVENING'
         }
       ]
     },

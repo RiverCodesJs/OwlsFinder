@@ -39,6 +39,10 @@
     "next/core-web-vitals"
   ],
   "rules": {
+    "react/jsx-closing-bracket-location": ["error", {
+      "nonEmpty": "line-aligned",
+      "selfClosing": "line-aligned"
+    }],
     "newline-per-chained-call": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-key": "off",
