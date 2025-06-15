@@ -52,7 +52,7 @@ const FormComponent = ({ isActive }) => {
         ? <Link href="/forgot" className={classes.forgotLink}>¿Olvidó su contraseña?</Link> 
         : null}
       <Form>
-        {!isActive
+        {isActive
           ? <Button 
             type='submit' 
             variant='contained'
