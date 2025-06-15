@@ -12,7 +12,7 @@ export const POST = async request => {
   try {
     const hasPermission = await validatePermission({ entity: Admin, action: 'create', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
-    const { email } = await request.json()
+    const { email, gender } = await request.json()
     if (!email) return ERROR.INVALID_FIELDS()
     const user = await queryDB({
       entity: 'user',
@@ -26,6 +26,7 @@ export const POST = async request => {
       queryType: 'create',
       data: {
         email,
+        gender,
         type: 'ADMIN'
       },
       relations: [{
@@ -34,7 +35,8 @@ export const POST = async request => {
       }]
     })
     const token = jwt.sign({
-      userId: admin.id
+      userId: admin.id,
+      type: admin.type
     }, process.env.JWT_SECRET)
     await emailSender({ reciver: email, template: registerCounselor({ token }) })
     return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 })
