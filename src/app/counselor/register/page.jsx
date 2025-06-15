@@ -97,7 +97,7 @@ const Wrapper = () => {
       onSuccess: () => {
         setSnackbarMessage('Registro exitoso')
         setTimeout(() => {
-          router.replace('/counselor')
+          router.replace('/login')
         },2000)
       },
       onError: () => {
