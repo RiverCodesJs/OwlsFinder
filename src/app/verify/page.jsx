@@ -7,6 +7,7 @@ import Link from 'next/link'
 import getClassPrefixer from '../UI/classPrefixer'
 import { buhosLogo } from '../images'
 import useToken from '../store/useToken'
+import { useData } from '../store/useData'
 
 const displayName = 'VerifyEmail'
 const classes = getClassPrefixer(displayName)
@@ -35,8 +36,9 @@ const Container = styled('div')(({ theme }) => ({
 
 const Verify = () => {
   const { token } = useToken()
+  const { type } = useData()
   
-  if(token) {
+  if(token && type === 'STUDENT') {
     return (
       <Container>
         <div className={classes.contentBox}>
