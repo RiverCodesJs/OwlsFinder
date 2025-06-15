@@ -1,3 +1,12 @@
+-- CreateEnum
+CREATE TYPE "Type" AS ENUM ('STUDENT', 'COUNSELOR', 'ADMIN');
+
+-- CreateEnum
+CREATE TYPE "Shift" AS ENUM ('MORNING', 'EVENING');
+
+-- CreateEnum
+CREATE TYPE "Gender" AS ENUM ('MALE', 'FEMALE', 'NON_BINARY');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -10,14 +19,14 @@ CREATE TABLE "User" (
     "currentGroup" TEXT,
     "nextGroup" TEXT,
     "clubId" INTEGER,
-    "shift" TEXT,
+    "shift" "Shift",
+    "gender" "Gender" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
-    "type" TEXT NOT NULL,
+    "type" "Type" NOT NULL,
     "groups" TEXT[],
     "grade" TEXT,
-    "permissions" JSONB NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -72,7 +81,7 @@ CREATE TABLE "Training" (
     "description" TEXT NOT NULL,
     "images" TEXT[],
     "videos" TEXT[],
-    "shift" TEXT NOT NULL,
+    "shift" "Shift" NOT NULL,
     "limit" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -91,7 +100,7 @@ CREATE TABLE "Club" (
     "images" TEXT[],
     "videos" TEXT[],
     "limit" INTEGER NOT NULL,
-    "shift" TEXT,
+    "shift" "Shift",
     "schedule" TEXT NOT NULL,
     "professorId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -100,6 +109,14 @@ CREATE TABLE "Club" (
     "groupNumber" INTEGER,
 
     CONSTRAINT "Club_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Permission" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "Permission_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -136,6 +153,14 @@ CREATE TABLE "TrainingSelection" (
     CONSTRAINT "TrainingSelection_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "_PermissionToUser" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL,
+
+    CONSTRAINT "_PermissionToUser_AB_pkey" PRIMARY KEY ("A","B")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -144,6 +169,12 @@ CREATE UNIQUE INDEX "User_enrollmentId_key" ON "User"("enrollmentId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Professor_email_key" ON "Professor"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Permission_name_key" ON "Permission"("name");
+
+-- CreateIndex
+CREATE INDEX "_PermissionToUser_B_index" ON "_PermissionToUser"("B");
 
 -- AddForeignKey
 ALTER TABLE "User" ADD CONSTRAINT "User_clubId_fkey" FOREIGN KEY ("clubId") REFERENCES "Club"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -156,3 +187,9 @@ ALTER TABLE "PackageSelection" ADD CONSTRAINT "PackageSelection_selectionConfigI
 
 -- AddForeignKey
 ALTER TABLE "TrainingSelection" ADD CONSTRAINT "TrainingSelection_selectionConfigId_fkey" FOREIGN KEY ("selectionConfigId") REFERENCES "SelectionConfig"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_PermissionToUser" ADD CONSTRAINT "_PermissionToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Permission"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_PermissionToUser" ADD CONSTRAINT "_PermissionToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
