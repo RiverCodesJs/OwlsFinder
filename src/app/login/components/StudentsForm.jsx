@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useApiMutation } from '~/app/Lib/apiFetch'
 import CustomField from '~/app/UI/shared/FormikTextField'
 import { getStudentsLoginInitialValues, getStudentsLoginValidationSchema } from '../utils'
+import { clone } from 'ramda'
 
 const Container = styled('div')({
   width: 450,
@@ -64,6 +65,7 @@ const FormComponent = ({ isActive }) => {
         {!isActive 
           ? <Button 
             type='submit' 
+            variant='contained'
             disabled={isActive || (!isValid || !dirty)}
           >
             Ingresar
@@ -81,9 +83,12 @@ export const StudentsForm = ({ isActive, setSnackbarMessage }) => {
   const studentsLogin = useApiMutation({ path: 'students/login', opts: { method: 'POST' } })
   const router = useRouter()
 
-  const handleSubmit = async payload => {
+  const handleSubmit = async values => {
+    const payload = clone(values)
     payload.email = `${payload.enrollmentId}@cobachih.edu.mx`
     payload.grade = payload.currentGroup[0]
+    payload.shift = payload.shift === 'Matutino' ? 'MORNING' : 'AFTERNOON'
+    console.log(payload)
     studentsLogin.mutate(payload, {
       onSuccess: () => {
         setSnackbarMessage('Inicio de sesión exitoso')
