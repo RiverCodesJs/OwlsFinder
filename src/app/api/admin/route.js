@@ -12,7 +12,7 @@ export const POST = async request => {
   try {
     const hasPermission = await validatePermission({ entity: Admin, action: 'create', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
-    const { email, gender } = await request.json()
+    const { email } = await request.json()
     if (!email) return ERROR.INVALID_FIELDS()
     const user = await queryDB({
       entity: 'user',
@@ -26,7 +26,6 @@ export const POST = async request => {
       queryType: 'create',
       data: {
         email,
-        gender,
         type: 'ADMIN'
       },
       relations: [{
