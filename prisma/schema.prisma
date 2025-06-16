@@ -21,7 +21,7 @@ model User {
   nextGroup       String?
   clubId          Int?
   shift           Shift?
-  gender          Gender
+  gender          Gender?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   active          Boolean      @default(true)

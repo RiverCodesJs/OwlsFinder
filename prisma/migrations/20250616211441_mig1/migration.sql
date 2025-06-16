@@ -20,7 +20,7 @@ CREATE TABLE "User" (
     "nextGroup" TEXT,
     "clubId" INTEGER,
     "shift" "Shift",
-    "gender" "Gender" NOT NULL,
+    "gender" "Gender",
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
