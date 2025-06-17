@@ -16,11 +16,11 @@ export const POST = async request => {
         queryType: 'findUnique',
         filter: {
           ...data,
-          type: 'student'
+          type: 'STUDENT',
         },
       })
       if(user){
-        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET)
+        const token = jwt.sign({ userId: user.id, type: user.type }, process.env.JWT_SECRET)
         await emailSender({ reciver: user.email, template: loginStudents({ token }) })
         return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 })
       }

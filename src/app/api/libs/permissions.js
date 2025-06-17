@@ -18,7 +18,7 @@ export const getPermissionsByEntity = ({ permissions, entity, action }) => {
 }
 
 export const validatePermission = async ({ entity, action, request }) => {
-  const userId = authenticateToken(request)
+  const { userId } = authenticateToken(request)
   const { permissions } = await queryDB({
     entity: 'user',
     queryType: 'findUnique',

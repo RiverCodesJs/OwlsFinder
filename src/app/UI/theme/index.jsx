@@ -1,5 +1,5 @@
 'use client'
-import themeConfig from '~/app/theme/createTheme'
+import themeConfig from '~/app/UI/theme/createTheme'
 import { ThemeProvider, CssBaseline } from '@mui/material'
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'

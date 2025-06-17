@@ -82,8 +82,8 @@ describe('API Students - POST', () => {
           maternalSurname: 'TORRES',
           currentGroup: '200',
           grade: '9',
-          type: 'student',
-          shift: 'morning',
+          type: 'STUDENT',
+          shift: 'MORNING',
         },
         2: {
           id: 2,
@@ -94,8 +94,8 @@ describe('API Students - POST', () => {
           paternalSurname: 'AGUIRRE',
           currentGroup: '250',
           grade: '8,9',
-          type: 'student',
-          shift: 'afternoon',
+          type: 'STUDENT',
+          shift: 'EVENING',
         }
       },
       expectedStatus: 201 
@@ -113,8 +113,8 @@ describe('API Students - POST', () => {
           maternalSurname: 'TORRES',
           currentGroup: '200',
           grade: '9',
-          type: 'student',
-          shift: 'morning',
+          type: 'STUDENT',
+          shift: 'MORNING',
         },
         4: {
           id: 4,
@@ -125,8 +125,8 @@ describe('API Students - POST', () => {
           paternalSurname: 'AGUIRRE',
           currentGroup: '250',
           grade: '8,9',
-          type: 'student',
-          shift: 'afternoon',
+          type: 'STUDENT',
+          shift: 'EVENING',
         }
       },
       expectedStatus: 201 

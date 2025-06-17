@@ -30,7 +30,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 10,
-          paddingBlock: '2rem',
+          paddingBlock: '0.5rem',
           paddingInline: '1rem',
         },
       },

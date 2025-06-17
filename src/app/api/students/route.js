@@ -17,7 +17,7 @@ export const POST = async request => {
         queryType: 'create',
         data: {
           ...data,
-          type: 'student'
+          type: 'STUDENT'
         }
       })
       const response = cleanerData({ payload })
@@ -36,7 +36,7 @@ export const GET = async request => {
     const payloads = await queryDB({
       entity: 'user',
       queryType: 'findMany',
-      filter: { type: 'student' }
+      filter: { type: 'STUDENT' }
     })
     if(payloads){
       const response = payloadFormatter(payloads.map(payload => cleanerData({ payload })))

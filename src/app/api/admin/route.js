@@ -26,7 +26,7 @@ export const POST = async request => {
       queryType: 'create',
       data: {
         email,
-        type: 'Admin'
+        type: 'ADMIN'
       },
       relations: [{
         entity: 'permissions',
@@ -34,7 +34,8 @@ export const POST = async request => {
       }]
     })
     const token = jwt.sign({
-      userId: admin.id
+      userId: admin.id,
+      type: admin.type
     }, process.env.JWT_SECRET)
     await emailSender({ reciver: email, template: registerCounselor({ token }) })
     return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 })
