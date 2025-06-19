@@ -21,7 +21,7 @@ const FormikSelect = ({ variant = 'filled', label, options, field, ...props }) =
           </MenuItem>
         ))}
       </Select>
-      {errors[field?.name] ? <Typography color="error" variant="caption">{errors[field?.name]}</Typography> : null}
+      {errors[field?.name] ? <Typography color="error" fontSize={10}>{errors[field?.name]}</Typography> : null}
     </FormControl>
   )
 }
