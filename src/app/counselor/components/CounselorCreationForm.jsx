@@ -3,13 +3,11 @@ import { Button, Stack, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { Field, Form, Formik, useFormikContext } from 'formik'
 
-import { genderOptions, shiftOptions } from '~/app/Lib/enums'
 import FormikTextField from '~/app/UI/shared/FormikTextField'
-import FormikSelect from '~/app/UI/shared/FormikSelect'
 import getClassPrefixer from '~/app/UI/classPrefixer'
 import { useApiMutation } from '~/app/Lib/apiFetch'
 
-import { getCounselorCreationInitialValues, getCounselorCreationValidationSchema } from './utils'
+import { setCounselorInitialValues, getCounselorValidationSchema } from './utils'
 
 const displayName = 'CounselorCreationForm'
 const classes = getClassPrefixer(displayName)
@@ -19,13 +17,13 @@ const ModalContainer = styled('div')(({ theme }) => ({
   justifyContent: 'center',
   alignItems: 'center',
   position: 'relative',
-  top: 50,
+  top: 100,
   bottom: 0,
   left: 0,
   right: 0,
   [`& .${classes.contentBox}`]: {
     width: 600,
-    height: 570,
+    height: 250,
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
@@ -46,18 +44,7 @@ const ModalContainer = styled('div')(({ theme }) => ({
 }))
 
 const CounselorCreationForm = ({ onClose }) => {
-  const { values, setValues, submitForm, isValid, dirty } = useFormikContext()
-
-  const sendData = () => {
-    setValues({
-      ...values,
-      groups: typeof values.groups === 'string'
-        ? values.groups.split(',').map(str => str.trim()).filter(str => str.length > 0)
-        : values.groups
-    })
-
-    submitForm()
-  }
+  const { isValid, dirty } = useFormikContext()
 
   return (
     <ModalContainer>
@@ -67,51 +54,9 @@ const CounselorCreationForm = ({ onClose }) => {
           <Field
             fullWidth
             component={FormikTextField}
-            name='names'
-            placeholder='Nombre(s)'
-          />
-          <Stack direction='row' spacing={1}>
-            <Field
-              fullWidth
-              component={FormikTextField}
-              name='paternalSurname'
-              placeholder='Apellido Paterno'
-            />
-            <Field
-              fullWidth
-              component={FormikTextField}
-              name='maternalSurname'
-              placeholder='Apellido Materno'
-            />
-          </Stack>
-          <Field
-            fullWidth
-            component={FormikTextField}
             name='email'
             type='email'
             placeholder='Correo electronico'
-          />
-          <Stack direction='row' spacing={1}>
-            <Field 
-              fullWidth
-              component={FormikSelect}
-              name='gender'
-              label='Género'
-              options={genderOptions}
-            />
-            <Field 
-              fullWidth
-              component={FormikSelect}
-              name='shift'
-              label='Turno'
-              options={shiftOptions}
-            />
-          </Stack>
-          <Field
-            fullWidth
-            component={FormikTextField}
-            name='groups'
-            placeholder='Grupos'
           />
         </div>
         <Stack direction='row' spacing={2} justifyContent='end'>
@@ -119,9 +64,11 @@ const CounselorCreationForm = ({ onClose }) => {
           <Form>
             <Button 
               variant='contained' 
-              onClick={() => sendData()}
+              type='submit'
               disabled={!isValid || !dirty}
-            >Registrar</Button>
+            >
+              Registrar
+            </Button>
           </Form>
         </Stack>
       </div>
@@ -131,13 +78,13 @@ const CounselorCreationForm = ({ onClose }) => {
 
 const Wrapper = ({ onClose, setSnackbarMessage }) => {
 
-  const initialValues = getCounselorCreationInitialValues()
-  const validationSchema = getCounselorCreationValidationSchema()
+  const initialValues = setCounselorInitialValues()
+  const validationSchema = getCounselorValidationSchema()
   const counselorRegister = useApiMutation({ path: 'counselor', opts: { method: 'POST' } })
 
   const handleSubmit = async payload => {
     await counselorRegister.mutate(payload, {
-      onSuccess: () => {
+      onSuccess: async () => {
         setSnackbarMessage('Orientador creado con éxito')
         onClose()
       },
