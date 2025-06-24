@@ -1,6 +1,6 @@
 'use client'
 import { AddSharp, CalendarTodaySharp } from '@mui/icons-material'
-import { IconButton, Modal, Snackbar, Stack, Typography } from '@mui/material'
+import { IconButton, Modal, Snackbar, Stack, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import getClassPrefixer from '../UI/classPrefixer'
 import { Permitted } from '../Permissions/Permitted'
@@ -31,7 +31,7 @@ const PanelCounselor = ({
     <Container>
       <Stack>
         <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-          <Typography variant="h2" fontWeight="bold">Clases</Typography>
+          <T variant="h2" fontWeight="bold">Clases</T>
           <Stack direction="row" justifyContent="right">
             <IconButton onClick={() => setOpenCounselorCreateModal(true)}>
               <AddSharp className={classes.iconButton}/>
