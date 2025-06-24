@@ -17,6 +17,8 @@ import { useApiMutation } from '~/app/Lib/apiFetch'
 import { buhosLogo } from '~/app/images'
 import { Permitted } from '~/app/Permissions/Permitted'
 import { NotAvailable } from '~/app/UI/shared/NotAvailable'
+import FormikSelect from '~/app/UI/shared/FormikSelect'
+import { genderOptions, shiftOptions } from '~/app/Lib/enums'
 
 const displayName = 'CounselorRegister'
 const classes = getClassPrefixer(displayName)
@@ -35,11 +37,14 @@ const Container = styled('div')(({ theme }) => ({
     justifyContent: 'center',
     alignItems: 'center',
     width: '420px',
-    height: '550px',
+    height: '650px',
     backgroundColor: theme.palette.contrast.main,  
     borderRadius: 4,
     padding: '1rem',
-    textAlign: 'center'
+    textAlign: 'center',
+    '@media(max-width: 768px)': {
+      width: '300px',
+    },
   },
 }))
 
@@ -52,12 +57,44 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
         <Stack spacing={1} width="90%">
           <Field 
             component={TextField} 
-            fullWidth name="names" 
+            fullWidth
+            name="names" 
             placeholder="Nombre"
           />
+          <Stack direction='row' spacing={1}>
+            <Field 
+              component={TextField} 
+              fullWidth
+              name="paternalSurname" 
+              placeholder="Apellido Paterno"
+            />
+            <Field 
+              component={TextField} 
+              fullWidth
+              name="maternalSurname" 
+              placeholder="Apellido Materno"
+            />
+          </Stack>
+          <Stack direction='row' spacing={1}>
+            <Field 
+              component={FormikSelect}
+              options={genderOptions} 
+              fullWidth
+              name="gender" 
+              label="Género"
+            />
+            <Field 
+              component={FormikSelect}
+              options={shiftOptions} 
+              fullWidth
+              name="shift" 
+              label="Turno"
+            />
+          </Stack>
           <Field 
             component={TextField} 
-            fullWidth name="password" 
+            fullWidth
+            name="password" 
             type="password" 
             placeholder="Contraseña"
           />
