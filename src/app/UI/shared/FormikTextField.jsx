@@ -1,16 +1,23 @@
-import { Stack, Typography, TextField } from '@mui/material'
+import { Typography, TextField } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useFormikContext } from 'formik'
 
-const CustomField = styled(TextField)(({ theme }) => ({
-  backgroundColor: theme.palette.contrast.main,
-  borderRadius: '4px',
-  ['& .MuiFilledInput-input']: {
-    padding: '16px 12px'
+const Container = styled('div')(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+
+  ['& [class*=MuiInputBase-root-MuiFilledInput-root]']: {
+    backgroundColor: theme.palette.contrast.main,
+    '& :hover': {
+      backgroundColor: theme.palette.grey[100],
+    }
   },
-  ['& .MuiFilledInput-root']: {
-    padding: 0
-  },
+  ['& [class*=MuiInputBase-input-MuiFilledInput-input]']: {
+    borderRadius: '4px 4px 0 0',
+    padding: '16px 12px',
+  }
 }))
 
 const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => {
@@ -18,8 +25,8 @@ const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => 
   const { errors, setFieldValue } = useFormikContext()
 
   return (
-    <Stack width="100%" alignItems="flex-start">
-      <CustomField 
+    <Container>
+      <TextField 
         {...props}
         placeholder={props.placeholder}
         error={Boolean(errors[field?.name])}
@@ -31,11 +38,11 @@ const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => 
           input: { 
             disableUnderline: true,
           }
-        }: null
+        } : null
         } 
       />
-      {errors[field?.name] ? <Typography color="error" fontSize={10} textAlign="left">{errors[field?.name]}</Typography> : null}
-    </Stack>
+      {errors[field?.name] ? <Typography color="error" variant='caption'>{errors[field?.name]}</Typography> : null}
+    </Container>
   )
 }
 
