@@ -1,7 +1,7 @@
 import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import { useFormikContext } from 'formik'
 
-const FormikSelect = ({ variant = 'filled', label, options, field, ...props }) => {
+const FormikSelect = ({ label, options, field, ...props }) => {
   const { errors, setFieldValue } = useFormikContext()
 
   return (
@@ -9,7 +9,6 @@ const FormikSelect = ({ variant = 'filled', label, options, field, ...props }) =
       <InputLabel>{label}</InputLabel>
       <Select
         {...props}
-        variant={variant}
         name={field?.name}
         value={field?.value || ''}
         onChange={event => setFieldValue(field?.name, event.target.value)}
@@ -21,7 +20,7 @@ const FormikSelect = ({ variant = 'filled', label, options, field, ...props }) =
           </MenuItem>
         ))}
       </Select>
-      {errors[field?.name] ? <Typography color="error" fontSize={10}>{errors[field?.name]}</Typography> : null}
+      {errors[field?.name] ? <Typography color="error" variant='caption'>{errors[field?.name]}</Typography> : null}
     </FormControl>
   )
 }
