@@ -33,15 +33,14 @@ const Container = styled('div')(({ theme }) => ({
   [`& .${classes.contentBox}`]: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
-    justifyContent: 'center',
+    gap: '1ch',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    width: '420px',
+    width: '550px',
     height: '650px',
     backgroundColor: theme.palette.contrast.main,  
     borderRadius: 4,
     padding: '1rem',
-    textAlign: 'center',
     '@media(max-width: 768px)': {
       width: '300px',
     },
@@ -52,9 +51,11 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
   return(
     <Container>
       <div className={classes.contentBox}>
-        <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
-        <T variant="h5">Bienvenido a OwlsHub</T>
-        <Stack spacing={1} width="90%">
+        <Stack alignItems='center'>
+          <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
+          <T variant="h5">Bienvenido a OwlsHub</T>
+        </Stack>
+        <Stack spacing={1}>
           <Field 
             component={TextField} 
             fullWidth
@@ -91,20 +92,22 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
               label="Turno"
             />
           </Stack>
-          <Field 
-            component={TextField} 
-            fullWidth
-            name="password" 
-            type="password" 
-            placeholder="Contraseña"
-          />
-          <Field 
-            component={TextField} 
-            fullWidth 
-            name="repeatPass" 
-            type="password" 
-            placeholder="Repetir contraseña"
-          />
+          <Stack direction='row' spacing={1}>
+            <Field 
+              component={TextField} 
+              fullWidth
+              name="password" 
+              type="password" 
+              placeholder="Contraseña"
+            />
+            <Field 
+              component={TextField} 
+              fullWidth 
+              name="repeatPass" 
+              type="password" 
+              placeholder="Repetir contraseña"
+            />
+          </Stack>
         </Stack>
         <Form>
           <Button type="submit" variant="contained" >Enviar</Button>

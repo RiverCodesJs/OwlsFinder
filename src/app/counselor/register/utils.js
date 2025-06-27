@@ -7,7 +7,7 @@ export const getRegisterValidationSchema = () => Yup.object({
   gender: Yup.string().required('Ingrese su género'),
   shift: Yup.string().required('Ingrese su turno asignado'),
   password: Yup.string().required('Ingresa una contraseña'),
-  repeatPass: Yup.string().required('Ingresa de nuevo la contraseña').oneOf([Yup.ref('password'),null], 'Las contraseñas no coinciden'),
+  repeatPass: Yup.string().required('Repite la contraseña').oneOf([Yup.ref('password'),null], 'Las contraseñas no coinciden'),
 })
 
 export const getRegisterInitialValues = () => ({
