@@ -8,13 +8,13 @@ const Container = styled('div')(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'flex-start',
 
-  ['& [class*=MuiInputBase-root-MuiFilledInput-root]']: {
+  '& [class*=MuiInputBase-root-MuiFilledInput-root]': {
     backgroundColor: theme.palette.contrast.main,
-    '& :hover': {
-      backgroundColor: theme.palette.grey[100],
+    '&:hover': {
+      backgroundColor: theme.palette.grey[200],
     }
   },
-  ['& [class*=MuiInputBase-input-MuiFilledInput-input]']: {
+  '& [class*=MuiInputBase-input-MuiFilledInput-input]': {
     borderRadius: '4px 4px 0 0',
     padding: '16px 12px',
   }
