@@ -7,7 +7,6 @@ const Container = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
-
   '& [class*=MuiInputBase-root-MuiFilledInput-root]': {
     backgroundColor: theme.palette.contrast.main,
     '&:hover': {
