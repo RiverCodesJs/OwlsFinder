@@ -1,6 +1,6 @@
 'use client'
 import { AddSharp, CalendarTodaySharp } from '@mui/icons-material'
-import { IconButton, Modal, Snackbar, Stack, Typography as T } from '@mui/material'
+import { IconButton, Snackbar, Stack, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import getClassPrefixer from '../UI/classPrefixer'
 import { Permitted } from '../Permissions/Permitted'
@@ -42,15 +42,11 @@ const PanelCounselor = ({
           </Stack>
         </Stack>
       </Stack>
-      <Modal
+      <CounselorCreationForm 
         open={openCounselorCreateModal}
         onClose={() => setOpenCounselorCreateModal(false)}
-      >
-        <CounselorCreationForm 
-          onClose={() => setOpenCounselorCreateModal(false)}
-          setSnackbarMessage={setSnackbarMessage}
-        />
-      </Modal>
+        setSnackbarMessage={setSnackbarMessage}
+      />
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         open={Boolean(snackbarMessage)}
