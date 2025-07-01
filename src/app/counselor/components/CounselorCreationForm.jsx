@@ -49,22 +49,22 @@ const CounselorCreationForm = ({ onClose }) => {
   return (
     <ModalContainer>
       <div className={classes.contentBox}>
-        <T variant='h3' fontWeight='bold'>Crear nuevo orientador</T>
+        <T variant="h3" fontWeight="bold">Crear nuevo orientador</T>
         <div className={classes.formSection}>
           <Field
             fullWidth
             component={FormikTextField}
-            name='email'
-            type='email'
-            placeholder='Correo electronico'
+            name="email"
+            type="email"
+            placeholder="Correo electronico"
           />
         </div>
-        <Stack direction='row' spacing={2} justifyContent='end'>
-          <Button variant='contained' onClick={onClose}>Cancelar</Button>
+        <Stack direction="row" spacing={2} justifyContent="end">
+          <Button variant="contained" onClick={onClose}>Cancelar</Button>
           <Form>
             <Button 
-              variant='contained' 
-              type='submit'
+              variant="contained"
+              type="submit"
               disabled={!isValid || !dirty}
             >
               Registrar

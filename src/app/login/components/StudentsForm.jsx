@@ -15,6 +15,9 @@ const Container = styled('div')({
   gap: '1ch',
   justifyContent: 'center',
   alignItems: 'center',
+  '@media (max-width: 768px)': {
+    width: 300,
+  },
 })
 
 const FormComponent = ({ isActive }) => {
@@ -24,48 +27,48 @@ const FormComponent = ({ isActive }) => {
       <Field 
         component={CustomField} 
         fullWidth 
-        name='names' 
+        name="names" 
         placeholder="Nombre"
       />
       <Stack direction="row" spacing={1}>
         <Field 
           fullWidth
           component={CustomField} 
-          name='paternalSurname' 
+          name="paternalSurname" 
           placeholder="Apellido Paterno"
         />
         <Field 
           fullWidth
           component={CustomField} 
-          name='maternalSurname' 
+          name="maternalSurname" 
           placeholder="Apellido Materno"
         />
       </Stack>
       <Field 
         component={CustomField} 
         fullWidth 
-        name='enrollmentId' 
+        name="enrollmentId" 
         placeholder="Matricula"
       />
       <Stack direction="row" spacing={1}>
         <Field 
           component={CustomField} 
           fullWidth 
-          name='shift' 
+          name="shift"
           placeholder="Turno"
         />
         <Field 
           component={CustomField} 
           fullWidth 
-          name='currentGroup' 
+          name="currentGroup" 
           placeholder="Grupo"  
         />
       </Stack>
       <Form>
         {!isActive 
           ? <Button 
-            type='submit' 
-            variant='contained'
+            type="submit"
+            variant="contained"
             disabled={isActive || (!isValid || !dirty)}
           >
             Ingresar

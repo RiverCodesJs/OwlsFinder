@@ -51,8 +51,8 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
   return(
     <Container>
       <div className={classes.contentBox}>
-        <Stack alignItems='center'>
-          <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
+        <Stack alignItems="center">
+          <Image src={buhosLogo} width={270} height={200} alt="Owls Logo"/>
           <T variant="h5">Bienvenido a OwlsHub</T>
         </Stack>
         <Stack spacing={1}>
@@ -62,7 +62,7 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
             name="names" 
             placeholder="Nombre"
           />
-          <Stack direction='row' spacing={1}>
+          <Stack direction="row" spacing={1}>
             <Field 
               component={TextField} 
               fullWidth
@@ -76,7 +76,7 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
               placeholder="Apellido Materno"
             />
           </Stack>
-          <Stack direction='row' spacing={1}>
+          <Stack direction="row" spacing={1}>
             <Field 
               component={FormikSelect}
               options={genderOptions} 

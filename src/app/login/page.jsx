@@ -1,5 +1,5 @@
 'use client'
-import { Snackbar, Stack, Typography as T } from '@mui/material'
+import { Snackbar, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useState } from 'react'
 import Image from 'next/image'
@@ -16,6 +16,9 @@ const classes = getClassPrefixer(displayName)
 
 const Container = styled('div')(({ theme }) => ({
   height: '100vh',
+  [`& .${classes.mainContainer}`]: {
+    display: 'flex',
+  },
   [`& .${classes.activeContainer}`]: {
     width: '50vw',
     height: '100vh',
@@ -26,7 +29,7 @@ const Container = styled('div')(({ theme }) => ({
     transition: 'all 0.3s ease',
     gap: '1ch',
     backgroundColor: theme.palette.contrast.main,
-    color: theme.palette.primary.main
+    color: theme.palette.primary.main,
   },
   [`& .${classes.inactiveContainer}`]: {
     width: '50vw',
@@ -51,7 +54,7 @@ const Login = ({
 
   return (
     <Container>
-      <Stack direction="row">
+      <div className={classes.mainContainer}>
         <div 
           className={classNames({
             [classes.activeContainer]: activeScreen,
@@ -86,7 +89,7 @@ const Login = ({
           autoHideDuration={5000}
           message={snackbarMessage}
         />
-      </Stack>
+      </div>
     </Container>
   )
 }

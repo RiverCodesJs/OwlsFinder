@@ -17,8 +17,6 @@ import {
   getResetPasswordValidationSchema, 
   getResetPasswordInitialValues 
 } from './utils'
-import { Permitted } from '~/app/Permissions/Permitted'
-import { NotAvailable } from '~/app/UI/shared/NotAvailable'
 import useToken from '../store/useToken'
 import Loading from '../UI/shared/Loading'
 import { useData } from '../store/useData'
@@ -87,7 +85,7 @@ const Success = ({ snackbarMessage, setSnackbarMessage }) => {
   return (
     <Container>
       <div className={classes.contentBox}>
-        <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
+        <Image src={buhosLogo} width={270} height={200} alt="Owls Logo"/>
         <Typography variant="h5">Reestablece tu contraseña</Typography>
         <Stack spacing={2} width="90%">
           <Field 
@@ -149,22 +147,17 @@ const Wrapper = () => {
     
   return (
     <Suspense fallback={<Loading/>}>
-      <Permitted 
-        requiredType='COUNSELOR'
-        Fallback={NotAvailable}
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
       >
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          <Success 
-            snackbarMessage={snackbarMessage} 
-            setSnackbarMessage={setSnackbarMessage}
-            handleSubmit={handleSubmit}
-          />
-        </Formik>
-      </Permitted>
+        <Success 
+          snackbarMessage={snackbarMessage} 
+          setSnackbarMessage={setSnackbarMessage}
+          handleSubmit={handleSubmit}
+        />
+      </Formik>
     </Suspense>
   )
 }

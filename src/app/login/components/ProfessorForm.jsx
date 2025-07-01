@@ -21,6 +21,9 @@ const Container = styled('div')(({ theme }) => ({
   gap: '1ch',
   justifyContent: 'center',
   alignItems: 'center',
+  '@media(max-width: 768px)': {
+    width: 300
+  },
   [`& .${classes.forgotLink}`]: {
     textDecoration: 'none',
     color: theme.palette.grey.main,
@@ -38,14 +41,14 @@ const FormComponent = ({ isActive }) => {
         component={CustomField} 
         fullWidth 
         type="email" 
-        name='email' 
+        name="email"
         placeholder="Correo"
       />
       <Field 
         component={CustomField} 
         fullWidth 
         type="password" 
-        name='password' 
+        name="password" 
         placeholder="Contraseña"
       />
       {isActive 
@@ -54,8 +57,8 @@ const FormComponent = ({ isActive }) => {
       <Form>
         {isActive
           ? <Button 
-            type='submit' 
-            variant='contained'
+            type="submit" 
+            variant="contained"
             disabled={!isActive || (!isValid || !dirty)}
           >
             Ingresar
