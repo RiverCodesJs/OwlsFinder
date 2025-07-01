@@ -83,7 +83,7 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
             name="shift" 
             label="Turno"
           />
-          <Stack direction='row' spacing={1}>
+          <Stack direction="row" spacing={1}>
             <Field 
               component={TextField} 
               fullWidth
@@ -138,7 +138,7 @@ const Wrapper = () => {
   }
   return (
     <Permitted 
-      requiredType='COUNSELOR'
+      requiredType="COUNSELOR"
       Fallback={NotAvailable}
     >
       <Formik

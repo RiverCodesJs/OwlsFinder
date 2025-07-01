@@ -7,7 +7,7 @@ import { TokenRedirect } from '~/app/UI/shared/TokenRedirect'
 const VerifyRedirect = () => {
   return (
     <Suspense fallback={<Loading/>}>
-      <TokenRedirect route='verify'/>
+      <TokenRedirect route="verify"/>
     </Suspense>
   )
 }
