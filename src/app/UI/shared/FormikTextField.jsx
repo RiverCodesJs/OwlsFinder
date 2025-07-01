@@ -1,4 +1,4 @@
-import { Typography, TextField } from '@mui/material'
+import { Typography as T, TextField } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useFormikContext } from 'formik'
 
@@ -40,7 +40,7 @@ const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => 
         } : null
         } 
       />
-      {errors[field?.name] ? <Typography color="error" variant='caption'>{errors[field?.name]}</Typography> : null}
+      {errors[field?.name] ? <T color="error" variant="caption">{errors[field?.name]}</T> : null}
     </Container>
   )
 }

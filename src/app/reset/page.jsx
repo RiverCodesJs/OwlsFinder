@@ -1,5 +1,5 @@
 'use client'
-import { Button, Snackbar, Stack, Typography } from '@mui/material'
+import { Button, Snackbar, Stack, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
@@ -86,7 +86,7 @@ const Success = ({ snackbarMessage, setSnackbarMessage }) => {
     <Container>
       <div className={classes.contentBox}>
         <Image src={buhosLogo} width={270} height={200} alt="Owls Logo"/>
-        <Typography variant="h5">Reestablece tu contraseña</Typography>
+        <T variant="h5">Reestablece tu contraseña</T>
         <Stack spacing={2} width="90%">
           <Field 
             component={TextField} 
