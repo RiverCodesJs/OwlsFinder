@@ -1,19 +1,18 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 
-export const DialogTemplate = ({ open, onClose, ...props }) => {
+export const DialogTemplate = ({ open, onClose, title, actions, content, ...props }) => {
   return (
     <Dialog
+      {...props}
       open={open}
       onClose={onClose}
-      maxWidth={props?.maxWidth ?? 'sm'}
-      fullWidth
     >
-      <DialogTitle>{props.title}</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        {props.content}
+        {content}
       </DialogContent>
       <DialogActions>
-        {props.actions}
+        {actions}
       </DialogActions>
     </Dialog>
   )

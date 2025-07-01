@@ -15,6 +15,7 @@ const CounselorCreationForm = ({ open, onClose }) => {
       open={open}
       onClose={onClose}
       maxWidth="sm"
+      fullWidth
       title="Crear nuevo orientador"
       content={
         <Field
