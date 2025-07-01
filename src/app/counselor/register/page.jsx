@@ -18,7 +18,7 @@ import { buhosLogo } from '~/app/images'
 import { Permitted } from '~/app/Permissions/Permitted'
 import { NotAvailable } from '~/app/UI/shared/NotAvailable'
 import FormikSelect from '~/app/UI/shared/FormikSelect'
-import { genderOptions, shiftOptions } from '~/app/Lib/enums'
+import { shiftOptions } from '~/app/Lib/enums'
 
 const displayName = 'CounselorRegister'
 const classes = getClassPrefixer(displayName)
@@ -76,22 +76,13 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
               placeholder="Apellido Materno"
             />
           </Stack>
-          <Stack direction="row" spacing={1}>
-            <Field 
-              component={FormikSelect}
-              options={genderOptions} 
-              fullWidth
-              name="gender" 
-              label="Género"
-            />
-            <Field 
-              component={FormikSelect}
-              options={shiftOptions} 
-              fullWidth
-              name="shift" 
-              label="Turno"
-            />
-          </Stack>
+          <Field 
+            component={FormikSelect}
+            options={shiftOptions} 
+            fullWidth
+            name="shift" 
+            label="Turno"
+          />
           <Stack direction='row' spacing={1}>
             <Field 
               component={TextField} 
