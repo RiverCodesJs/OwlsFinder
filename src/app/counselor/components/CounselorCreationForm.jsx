@@ -3,7 +3,7 @@ import { Button, Stack } from '@mui/material'
 import { Field, Form, Formik, useFormikContext } from 'formik'
 
 import { useApiMutation } from '~/app/Lib/apiFetch'
-import { DialogTemplate } from '~/app/UI/shared/DialogTemplate'
+import Dialog from '~/app/UI/shared/Dialog'
 import FormikTextField from '~/app/UI/shared/FormikTextField'
 import { setCounselorInitialValues, getCounselorValidationSchema } from './utils'
 
@@ -11,7 +11,7 @@ const CounselorCreationForm = ({ open, onClose }) => {
   const { isValid, dirty } = useFormikContext()
   
   return (
-    <DialogTemplate
+    <Dialog
       open={open}
       onClose={onClose}
       maxWidth="sm"

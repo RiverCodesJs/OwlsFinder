@@ -1,8 +1,8 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
+import { Dialog as MUIDialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 
-export const DialogTemplate = ({ open, onClose, title, actions, content, ...props }) => {
+const Dialog = ({ open, onClose, title, actions, content, ...props }) => {
   return (
-    <Dialog
+    <MUIDialog
       {...props}
       open={open}
       onClose={onClose}
@@ -14,6 +14,8 @@ export const DialogTemplate = ({ open, onClose, title, actions, content, ...prop
       <DialogActions>
         {actions}
       </DialogActions>
-    </Dialog>
+    </MUIDialog>
   )
 }
+
+export default Dialog
