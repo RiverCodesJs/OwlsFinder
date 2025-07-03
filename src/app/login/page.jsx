@@ -18,6 +18,9 @@ const Container = styled('div')(({ theme }) => ({
   height: '100vh',
   [`& .${classes.mainContainer}`]: {
     display: 'flex',
+    '@media(max-width: 768px)': {
+      flexDirection: 'column'
+    }
   },
   [`& .${classes.activeContainer}`]: {
     width: '50vw',
@@ -30,6 +33,9 @@ const Container = styled('div')(({ theme }) => ({
     gap: '1ch',
     backgroundColor: theme.palette.contrast.main,
     color: theme.palette.primary.main,
+    '@media(max-width: 768px)': {
+      width: '100vw',
+    }
   },
   [`& .${classes.inactiveContainer}`]: {
     width: '50vw',
@@ -41,7 +47,10 @@ const Container = styled('div')(({ theme }) => ({
     transition: 'all 0.3s ease',
     gap: '1ch',
     backgroundColor: theme.palette.primary.main,
-    color: theme.palette.contrast.main
+    color: theme.palette.contrast.main,
+    '@media (max-width: 768px)': {
+      width: '100vw',
+    }
   },
 }))
 
