@@ -36,6 +36,10 @@ const Container = styled('div')(({ theme }) => ({
     borderRadius: 4,
     padding: '1rem',
     textAlign: 'center',
+    '@media(max-width: 768px)': {
+      width: 350,
+      height: 500,
+    }
   },
 }))
 
