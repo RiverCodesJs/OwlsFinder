@@ -30,7 +30,10 @@ const Container = styled('div')(({ theme }) => ({
     backgroundColor: theme.palette.contrast.main,  
     borderRadius: 4,
     padding: '1rem',
-    textAlign: 'center'
+    textAlign: 'center',
+    '@media(max-width: 768px)': {
+      width: 300,
+    }
   },
 }))
 
