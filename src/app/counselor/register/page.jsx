@@ -17,6 +17,8 @@ import { useApiMutation } from '~/app/Lib/apiFetch'
 import { buhosLogo } from '~/app/images'
 import { Permitted } from '~/app/Permissions/Permitted'
 import { NotAvailable } from '~/app/UI/shared/NotAvailable'
+import FormikSelect from '~/app/UI/shared/FormikSelect'
+import { shiftOptions } from '~/app/Lib/enums'
 
 const displayName = 'CounselorRegister'
 const classes = getClassPrefixer(displayName)
@@ -31,15 +33,17 @@ const Container = styled('div')(({ theme }) => ({
   [`& .${classes.contentBox}`]: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
-    justifyContent: 'center',
+    gap: '1ch',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    width: '420px',
-    height: '550px',
+    width: '550px',
+    height: '650px',
     backgroundColor: theme.palette.contrast.main,  
     borderRadius: 4,
     padding: '1rem',
-    textAlign: 'center'
+    '@media(max-width: 768px)': {
+      width: '300px',
+    },
   },
 }))
 
@@ -47,27 +51,54 @@ const CounselorRegister = ({ snackbarMessage, setSnackbarMessage }) => {
   return(
     <Container>
       <div className={classes.contentBox}>
-        <Image src={buhosLogo} width={270} height={200} alt='Owls Logo'/>
-        <T variant="h5">Bienvenido a OwlsHub</T>
-        <Stack spacing={1} width="90%">
+        <Stack alignItems="center">
+          <Image src={buhosLogo} width={270} height={200} alt="Owls Logo"/>
+          <T variant="h5">Bienvenido a OwlsHub</T>
+        </Stack>
+        <Stack spacing={1}>
           <Field 
             component={TextField} 
-            fullWidth name="names" 
+            fullWidth
+            name="names" 
             placeholder="Nombre"
           />
+          <Stack direction="row" spacing={1}>
+            <Field 
+              component={TextField} 
+              fullWidth
+              name="paternalSurname" 
+              placeholder="Apellido Paterno"
+            />
+            <Field 
+              component={TextField} 
+              fullWidth
+              name="maternalSurname" 
+              placeholder="Apellido Materno"
+            />
+          </Stack>
           <Field 
-            component={TextField} 
-            fullWidth name="password" 
-            type="password" 
-            placeholder="Contraseña"
+            component={FormikSelect}
+            options={shiftOptions} 
+            fullWidth
+            name="shift" 
+            label="Turno"
           />
-          <Field 
-            component={TextField} 
-            fullWidth 
-            name="repeatPass" 
-            type="password" 
-            placeholder="Repetir contraseña"
-          />
+          <Stack direction="row" spacing={1}>
+            <Field 
+              component={TextField} 
+              fullWidth
+              name="password" 
+              type="password" 
+              placeholder="Contraseña"
+            />
+            <Field 
+              component={TextField} 
+              fullWidth 
+              name="repeatPass" 
+              type="password" 
+              placeholder="Repetir contraseña"
+            />
+          </Stack>
         </Stack>
         <Form>
           <Button type="submit" variant="contained" >Enviar</Button>
@@ -107,7 +138,7 @@ const Wrapper = () => {
   }
   return (
     <Permitted 
-      requiredType='COUNSELOR'
+      requiredType="COUNSELOR"
       Fallback={NotAvailable}
     >
       <Formik

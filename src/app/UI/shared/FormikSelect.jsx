@@ -1,4 +1,4 @@
-import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
+import { FormControl, InputLabel, MenuItem, Select, Typography as T } from '@mui/material'
 import { useFormikContext } from 'formik'
 
 const FormikSelect = ({ label, options, field, ...props }) => {
@@ -13,7 +13,6 @@ const FormikSelect = ({ label, options, field, ...props }) => {
         value={field?.value || ''}
         onChange={event => setFieldValue(field?.name, event.target.value)}
         label={label}
-        SelectDisplayProps={{ disableUnderline: true }}
       >
         {options.map((option, index) => (
           <MenuItem key={index} value={option.value}>
@@ -21,7 +20,7 @@ const FormikSelect = ({ label, options, field, ...props }) => {
           </MenuItem>
         ))}
       </Select>
-      {errors[field?.name] ? <Typography color="error" variant="caption">{errors[field?.name]}</Typography> : null}
+      {errors[field?.name] ? <T color="error" variant="caption">{errors[field?.name]}</T> : null}
     </FormControl>
   )
 }

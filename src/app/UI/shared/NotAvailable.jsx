@@ -29,11 +29,11 @@ export const NotAvailable = () => {
   return (
     <Container>
       <div className={classes.textContainer}>
-        <T variant='h2' color='primary.main'>¡Ha ocurrido un error!</T>
-        <T variant='h6'>Lo que buscas no está disponible en este momento. Haz click en el boton de abajo para continuar</T>
-        <Link href='/login'><Button variant='contained'>Regresar</Button></Link>
+        <T variant="h2" color="primary.main">¡Ha ocurrido un error!</T>
+        <T variant="h6">Lo que buscas no está disponible en este momento. Haz click en el boton de abajo para continuar</T>
+        <Link href="/login"><Button variant="contained">Regresar</Button></Link>
       </div>
-      <Image src={buhosLogo} alt='Buhos logo' width={500} height={350}/>
+      <Image src={buhosLogo} alt="Buhos logo" width={500} height={350}/>
     </Container>
   )
 }

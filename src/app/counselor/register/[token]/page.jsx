@@ -7,7 +7,7 @@ const CounselorRegisterRedirect = () => {
 
   return (
     <Suspense fallback={<Loading/>}>
-      <TokenRedirect route='counselor/register'/>
+      <TokenRedirect route="counselor/register"/>
     </Suspense>
   )
 }
