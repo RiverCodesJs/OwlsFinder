@@ -22,6 +22,10 @@ const Container = styled('div')(() => ({
     alignItems: 'center',
     textAlign: 'center',
     gap: '3ch',
+  },
+  '@media(max-width: 768px)': {
+    alignItems: 'center',
+    flexDirection: 'column'
   }
 }))
 
@@ -33,7 +37,7 @@ export const NotAvailable = () => {
         <T variant="h6">Lo que buscas no está disponible en este momento. Haz click en el boton de abajo para continuar</T>
         <Link href="/login"><Button variant="contained">Regresar</Button></Link>
       </div>
-      <Image src={buhosLogo} alt="Buhos logo" width={500} height={350}/>
+      <Image src={buhosLogo} alt="Buhos logo" width={350} height={230}/>
     </Container>
   )
 }

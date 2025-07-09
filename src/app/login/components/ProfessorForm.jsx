@@ -15,7 +15,7 @@ const displayName = 'TeachersFormik'
 const classes = getClassPrefixer(displayName)
 
 const Container = styled('div')(({ theme }) => ({
-  width: 450,
+  width: 400,
   display: 'flex',
   flexDirection: 'column',
   gap: '1ch',

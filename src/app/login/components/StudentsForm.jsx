@@ -9,7 +9,7 @@ import { getStudentsLoginInitialValues, getStudentsLoginValidationSchema } from 
 import { clone } from 'ramda'
 
 const Container = styled('div')({
-  width: 450,
+  width: 400,
   display: 'flex',
   flexDirection: 'column',
   gap: '1ch',
