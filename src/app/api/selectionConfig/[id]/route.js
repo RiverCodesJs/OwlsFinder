@@ -8,7 +8,7 @@ import validatorFields from '~/app/api/libs/validatorFields'
 
 export const GET = async (request, { params }) => {
   try {
-    const { id } = params
+    const { id } = await params
     if (!Number(id)) return ERROR.INVALID_FIELDS()
     const hasPermission = await validatePermission({ entity: SelectionConfig, action: 'findUnique', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
@@ -31,7 +31,7 @@ export const GET = async (request, { params }) => {
 
 export const PUT = async (request, { params }) => {
   try{
-    const { id } = params
+    const { id } = await params
     const hasPermission = await validatePermission({ entity: SelectionConfig, action: 'update', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: SelectionConfig.shape })){
@@ -68,7 +68,7 @@ export const PUT = async (request, { params }) => {
 
 export const DELETE = async (request, { params }) => {
   try {
-    const { id } = params
+    const { id } = await params
     const hasPermission = await validatePermission({ entity: SelectionConfig, action: 'delete', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
