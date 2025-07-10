@@ -9,7 +9,7 @@ import payloadFormatter from '~/app/api/utils/payloadFormatter'
 
 export const POST = async request => {
   try {
-    const hasPermission = await validatePermission({ entity: Subject, action: 'create', request })
+    const hasPermission = await validatePermission({ entity: Subject, action: 'CREATE', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: Subject.shape })){
       const payload = await queryDB({
