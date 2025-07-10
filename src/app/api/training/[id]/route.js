@@ -8,7 +8,7 @@ import cleanerData from '~/app/api/libs/cleanerData'
 
 export const GET = async (request, { params }) => {
   try{
-    const { id } = params
+    const { id } = await params
     if (!Number(id)) return ERROR.INVALID_FIELDS()
     const hasPermission = await validatePermission({ entity: Training, action: 'findUnique', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
@@ -29,8 +29,8 @@ export const GET = async (request, { params }) => {
 
 export const PUT = async (request, { params }) => {
   try{
-    const { id } = params
-    const hasPermission = await validatePermission({ entity: Training, action: 'update', request })
+    const { id } = await params
+    const hasPermission = await validatePermission({ entity: Training, action: 'UPDATE', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: Training.shape })){
       const payload = await queryDB({
@@ -51,8 +51,8 @@ export const PUT = async (request, { params }) => {
 
 export const PATCH = async (request, { params }) => {
   try {
-    const { id } = params
-    const hasPermission = await validatePermission({ entity: Training, action: 'update', request })
+    const { id } = await params
+    const hasPermission = await validatePermission({ entity: Training, action: 'UPDATE', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const data = await request.json()
     const payload = await queryDB({
@@ -73,8 +73,8 @@ export const PATCH = async (request, { params }) => {
 
 export const DELETE = async (request, { params }) => {
   try {
-    const { id } = params
-    const hasPermission = await validatePermission({ entity: Training, action: 'delete', request })
+    const { id } = await params
+    const hasPermission = await validatePermission({ entity: Training, action: 'DELETE', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
       entity: 'training',
