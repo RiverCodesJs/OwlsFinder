@@ -10,7 +10,7 @@ export const GET = async (request, { params }) => {
   try {
     const { id } = params
     if (!Number(id)) return ERROR.INVALID_FIELDS()
-    const hasPermission = await validatePermission({ entity: Student, action: 'findUnique', request })
+    const hasPermission = await validatePermission({ entity: Student, action: 'FINDUNIQUE', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
       entity: 'user',
@@ -32,8 +32,8 @@ export const GET = async (request, { params }) => {
 
 export const PUT = async (request, { params }) => {
   try{
-    const { id } = params
-    const hasPermission = await validatePermission({ entity: Student, action: 'update', request })
+    const { id } = await params
+    const hasPermission = await validatePermission({ entity: Student, action: 'UPDATE', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: Student.shape })){
       const payload = await queryDB({
@@ -57,8 +57,8 @@ export const PUT = async (request, { params }) => {
 
 export const PATCH = async (request, { params }) => {
   try{
-    const { id } = params
-    const hasPermission = await validatePermission({ entity: Student, action: 'update', request })
+    const { id } = await params
+    const hasPermission = await validatePermission({ entity: Student, action: 'UPDATE', request })
     const data = await request.json()
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
@@ -82,8 +82,8 @@ export const PATCH = async (request, { params }) => {
 
 export const DELETE = async (request, { params }) => {
   try {
-    const { id } = params
-    const hasPermission = await validatePermission({ entity: Student, action: 'delete', request })
+    const { id } = await params
+    const hasPermission = await validatePermission({ entity: Student, action: 'DELETE', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
       entity: 'user',
