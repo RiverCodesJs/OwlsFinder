@@ -9,7 +9,7 @@ import payloadFormatter from '~/app/api/utils/payloadFormatter'
 
 export const POST = async request => {
   try {
-    const hasPermission = await validatePermission({ entity: Club, action: 'create', request })
+    const hasPermission = await validatePermission({ entity: Club, action: 'CREATE', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: Club.shape })){
       const { professor, ...partialData } = data
