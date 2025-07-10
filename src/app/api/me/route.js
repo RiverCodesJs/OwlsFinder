@@ -10,14 +10,14 @@ import cleanerData from '~/app/api/libs/cleanerData'
 
 export const GET = async request => {
   try {
-    const userId = authenticateToken(request)
+    const { userId } = authenticateToken(request)
     const payload = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions: payload.permissions, entity: Me, action: 'findUnique' })
+    const hasPermission = getPermissionsByEntity({ permissions: payload.permissions, entity: Me, action: 'FINDUNIQUE' })
     if(hasPermission){
       const permissions = hydratedPermissions(payload.permissions)
       const response = cleanerData({ payload })
@@ -31,14 +31,14 @@ export const GET = async request => {
 
 export const PUT = async request => {
   try {
-    const userId = authenticateToken(request)
+    const { userId } = authenticateToken(request)
     const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'update' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'UPDATE' })
     const { password, ...data } = await request.json()
     if(hasPermission && validatorFields({ data, shape: Me.shape })){
       const payload = await queryDB({
@@ -63,14 +63,14 @@ export const PUT = async request => {
 
 export const PATCH = async request => {
   try {
-    const userId = authenticateToken(request)
+    const { userId } = authenticateToken(request)
     const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'update' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'UPDATE' })
     if(hasPermission){
       const { password, ...data } = await request.json()
       const payload = await queryDB({
@@ -95,14 +95,14 @@ export const PATCH = async request => {
 
 export const DELETE = async request => {
   try {
-    const userId = authenticateToken(request)
+    const { userId } = authenticateToken(request)
     const { permissions } = await queryDB({
       entity: 'user',
       queryType: 'findUnique',
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'delete' })
+    const hasPermission = getPermissionsByEntity({ permissions, entity: Me, action: 'DELETE' })
     if(hasPermission){
       const payload = await queryDB({
         entity: 'user',
