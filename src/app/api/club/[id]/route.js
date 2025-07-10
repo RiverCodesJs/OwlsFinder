@@ -29,7 +29,7 @@ export const GET = async (request, { params }) => {
 
 export const PUT = async (request, { params }) => {
   try{
-    const { id } = params
+    const { id } = await params
     const hasPermission = await validatePermission({ entity: Club, action: 'UPDATE', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: Club.shape })){
@@ -55,7 +55,7 @@ export const PUT = async (request, { params }) => {
 
 export const PATCH = async (request, { params }) => {
   try {
-    const { id } = params
+    const { id } = await params
     const hasPermission = await validatePermission({ entity: Club, action: 'UPDATE', request })
     if(!hasPermission) return ERROR.FORBIDDEN() 
     const data = await request.json()
@@ -81,7 +81,7 @@ export const PATCH = async (request, { params }) => {
 
 export const DELETE = async (request, { params }) => {
   try {
-    const { id } = params
+    const { id } = await params
     const hasPermission = await validatePermission({ entity: Club, action: 'DELETE', request })
     if(!hasPermission) return ERROR.FORBIDDEN() 
     const payload = await queryDB({

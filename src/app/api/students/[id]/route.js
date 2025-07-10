@@ -8,7 +8,7 @@ import cleanerData from '~/app/api/libs/cleanerData'
 
 export const GET = async (request, { params }) => {
   try {
-    const { id } = params
+    const { id } = await params
     if (!Number(id)) return ERROR.INVALID_FIELDS()
     const hasPermission = await validatePermission({ entity: Student, action: 'FINDUNIQUE', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
