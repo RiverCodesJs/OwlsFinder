@@ -17,7 +17,7 @@ export const GET = async request => {
       filter: { id: Number(userId) },
       includes: ['permissions']
     })
-    const hasPermission = getPermissionsByEntity({ permissions: payload.permissions, entity: Me, action: 'FINDUNIQUE' })
+    const hasPermission = getPermissionsByEntity({ permissions: payload.permissions, entity: Me, action: 'FIND_UNIQUE' })
     if(hasPermission){
       const permissions = hydratedPermissions(payload.permissions)
       const response = cleanerData({ payload })

@@ -10,7 +10,7 @@ export const GET = async (request, { params }) => {
   try {
     const { id } = await params
     if (!Number(id)) return ERROR.INVALID_FIELDS()
-    const hasPermission = await validatePermission({ entity: Student, action: 'FINDUNIQUE', request })
+    const hasPermission = await validatePermission({ entity: Student, action: 'FIND_UNIQUE', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
       entity: 'user',

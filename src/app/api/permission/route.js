@@ -28,7 +28,7 @@ export const POST = async request => {
 
 export const GET = async request => {
   try{
-    const hasPermission = await validatePermission({ entity: Permission, action: 'FINDMANY', request })
+    const hasPermission = await validatePermission({ entity: Permission, action: 'FIND_MANY', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payloads = await queryDB({
       entity: 'permission',
