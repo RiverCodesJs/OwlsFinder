@@ -9,7 +9,7 @@ import payloadFormatter from '~/app/api/utils/payloadFormatter'
 
 export const POST = async request => {
   try {
-    const hasPermission = await validatePermission({ entity: Package, action: 'create', request })
+    const hasPermission = await validatePermission({ entity: Package, action: 'CREATE', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: Package.shape })){
       const payload = await queryDB({
@@ -31,7 +31,7 @@ export const POST = async request => {
 
 export const GET = async request => {
   try {
-    const hasPermission = await validatePermission({ entity: Package, action: 'findMany', request })
+    const hasPermission = await validatePermission({ entity: Package, action: 'FIND_MANY', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payloads = await queryDB({
       entity: 'package',

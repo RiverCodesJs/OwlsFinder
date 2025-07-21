@@ -9,7 +9,7 @@ import payloadFormatter from '~/app/api/utils/payloadFormatter'
 
 export const POST = async request => {
   try {
-    const hasPermission = await validatePermission({ entity: Club, action: 'create', request })
+    const hasPermission = await validatePermission({ entity: Club, action: 'CREATE', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: Club.shape })){
       const { professor, ...partialData } = data
@@ -37,7 +37,7 @@ export const POST = async request => {
 
 export const GET = async request => {
   try{
-    const hasPermission = await validatePermission({ entity: Club, action: 'findMany', request })
+    const hasPermission = await validatePermission({ entity: Club, action: 'FIND_MANY', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payloads = await queryDB({
       entity: 'club',

@@ -10,7 +10,7 @@ import payloadFormatter from '~/app/api/utils/payloadFormatter'
 
 export const POST = async request => {
   try {
-    const hasPermission = await validatePermission({ entity: Student, action: 'create', request })
+    const hasPermission = await validatePermission({ entity: Student, action: 'CREATE', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const rawCsv = await request.text()
     const csv = rawCsv?.replace(/^"|"$/g, '').replace(/\\r\\n/g, '\r\n')

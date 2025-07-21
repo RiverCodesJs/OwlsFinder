@@ -52,7 +52,7 @@ vi.mock('~/app/api/libs/db', () => {
 })
 
 vi.mock('~/app/api/libs/auth', () => {
-  return { authenticateToken: () => (1) }
+  return { authenticateToken: () => ({ userId: 1, type: 'type' }) }
 })
 
 vi.mock('~/app/api/libs/permissions', async () => {

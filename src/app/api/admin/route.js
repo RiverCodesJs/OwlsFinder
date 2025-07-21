@@ -10,7 +10,7 @@ import emailSender from '~/app/api/libs/mail/emailSender'
 
 export const POST = async request => {
   try {
-    const hasPermission = await validatePermission({ entity: Admin, action: 'create', request })
+    const hasPermission = await validatePermission({ entity: Admin, action: 'CREATE', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const { email } = await request.json()
     if (!email) return ERROR.INVALID_FIELDS()

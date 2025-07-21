@@ -8,9 +8,9 @@ import cleanerData from '~/app/api/libs/cleanerData'
 
 export const GET = async (request, { params }) => {
   try {
-    const { id } = params
+    const { id } = await params
     if (!Number(id)) return ERROR.INVALID_FIELDS()
-    const hasPermission = await validatePermission({ entity: Professor, action: 'findUnique', request })
+    const hasPermission = await validatePermission({ entity: Professor, action: 'FIND_UNIQUE', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
       entity: 'professor',
@@ -29,8 +29,8 @@ export const GET = async (request, { params }) => {
 
 export const PUT = async (request, { params }) => {
   try{
-    const { id } = params
-    const hasPermission = await validatePermission({ entity: Professor, action: 'update', request })
+    const { id } = await params
+    const hasPermission = await validatePermission({ entity: Professor, action: 'UPDATE', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: Professor.shape })){
       const payload = await queryDB({
@@ -51,8 +51,8 @@ export const PUT = async (request, { params }) => {
 
 export const PATCH = async (request, { params }) => {
   try{
-    const { id } = params
-    const hasPermission = await validatePermission({ entity: Professor, action: 'update', request })
+    const { id } = await params
+    const hasPermission = await validatePermission({ entity: Professor, action: 'UPDATE', request })
     const data = await request.json()
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
@@ -73,8 +73,8 @@ export const PATCH = async (request, { params }) => {
 
 export const DELETE = async (request, { params }) => {
   try {
-    const { id } = params
-    const hasPermission = await validatePermission({ entity: Professor, action: 'delete', request })
+    const { id } = await params
+    const hasPermission = await validatePermission({ entity: Professor, action: 'DELETE', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payload = await queryDB({
       entity: 'professor',

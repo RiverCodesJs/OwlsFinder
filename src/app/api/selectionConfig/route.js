@@ -9,7 +9,7 @@ import validatorFields from '~/app/api/libs/validatorFields'
 
 export const POST = async request => {
   try {
-    const hasPermission = await validatePermission({ entity: SelectionConfig, action: 'create', request })
+    const hasPermission = await validatePermission({ entity: SelectionConfig, action: 'CREATE', request })
     const data = await request.json()
     if(hasPermission && validatorFields({ data, shape: SelectionConfig.shape })){
       const { packageSelection, trainingSelection, ...partialData } = data
@@ -40,7 +40,7 @@ export const POST = async request => {
 
 export const GET = async request => {
   try {
-    const hasPermission = await validatePermission({ entity: SelectionConfig, action: 'findMany', request })
+    const hasPermission = await validatePermission({ entity: SelectionConfig, action: 'FIND_MANY', request })
     if(!hasPermission) return ERROR.FORBIDDEN()
     const payloads = await queryDB({
       entity: 'selectionConfig',
