@@ -1,7 +1,7 @@
 'use client'
 import { Snackbar, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import classNames from 'clsx'
 
@@ -10,6 +10,8 @@ import getClassPrefixer from '~/app/UI/classPrefixer'
 import { ProfessorForm } from './components/ProfessorForm'
 import { StudentsForm } from './components/StudentsForm'
 import { buho, buhosLogo } from '../images'
+import useToken from '../store/useToken'
+import { useData } from '../store/useData'
 
 const displayName = 'Login'
 const classes = getClassPrefixer(displayName)
@@ -105,6 +107,14 @@ const Login = ({
 
 const Wrapper = () => {
   const [snackbarMessage, setSnackbarMessage] = useState(null)
+  const { setToken } = useToken()
+  const { setUserId, setType } = useData()
+
+  useEffect(() => {
+    setToken(null)
+    setUserId(null)
+    setType(null)
+  }, [setToken, setUserId, setType])
 
   return (
     <Login 
