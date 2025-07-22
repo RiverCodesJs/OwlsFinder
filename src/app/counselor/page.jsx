@@ -7,7 +7,7 @@ import { useState } from 'react'
 import getClassPrefixer from '../UI/classPrefixer'
 import { Permitted } from '../Permissions/Permitted'
 import CounselorCreationForm from './components/CounselorCreationForm'
-import { TokenRedirect } from '../UI/shared/TokenRedirect'
+import { NotAvailable } from '../UI/shared/NotAvailable'
 
 const displayName = 'PanelCounselor'
 const classes = getClassPrefixer(displayName)
@@ -65,7 +65,7 @@ const Wrapper = () => {
   const [snackbarMessage, setSnackbarMessage] = useState(null)
 
   return (
-    <Permitted Fallback={TokenRedirect} requiredType='Counselor'>
+    <Permitted Fallback={NotAvailable} requiredType='Counselor'>
       <PanelCounselor
         openCounselorCreateModal={openCounselorCreateModal}
         setOpenCounselorCreateModal={setOpenCounselorCreateModal}
