@@ -89,8 +89,7 @@ export const StudentsForm = ({ isActive, setSnackbarMessage }) => {
   const handleSubmit = async values => {
     const payload = clone(values)
     payload.email = `${payload.enrollmentId}@cobachih.edu.mx`
-    payload.grade = payload.currentGroup[0]
-    payload.shift = payload.shift === 'Matutino' ? 'MORNING' : 'AFTERNOON'
+    payload.shift = values.shift === 'Matutino' ? 'MORNING' : 'EVENING'
     studentsLogin.mutate(payload, {
       onSuccess: () => {
         setSnackbarMessage('Inicio de sesión exitoso')
