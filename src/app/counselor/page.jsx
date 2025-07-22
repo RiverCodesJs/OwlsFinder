@@ -2,11 +2,12 @@
 import { AddSharp, CalendarTodaySharp } from '@mui/icons-material'
 import { IconButton, Snackbar, Stack, Typography as T } from '@mui/material'
 import { styled } from '@mui/material/styles'
+import { useState } from 'react'
+
 import getClassPrefixer from '../UI/classPrefixer'
 import { Permitted } from '../Permissions/Permitted'
-import { NotAvailable } from '../UI/shared/NotAvailable'
-import { useState } from 'react'
 import CounselorCreationForm from './components/CounselorCreationForm'
+import { TokenRedirect } from '../UI/shared/TokenRedirect'
 
 const displayName = 'PanelCounselor'
 const classes = getClassPrefixer(displayName)
@@ -64,7 +65,7 @@ const Wrapper = () => {
   const [snackbarMessage, setSnackbarMessage] = useState(null)
 
   return (
-    <Permitted Fallback={NotAvailable} requiredType='Counselor'>
+    <Permitted Fallback={TokenRedirect} requiredType='Counselor'>
       <PanelCounselor
         openCounselorCreateModal={openCounselorCreateModal}
         setOpenCounselorCreateModal={setOpenCounselorCreateModal}
