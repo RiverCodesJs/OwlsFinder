@@ -21,7 +21,7 @@ export const TokenRedirect = ({ route }) => {
     if(data?.userId && data?.type) {
       setUserId(data?.userId)
       setType(data?.type)
-      router.replace(`/${route}`)
+      if(route) router.replace(`/${route}`)
     }
     
     if(error) {
