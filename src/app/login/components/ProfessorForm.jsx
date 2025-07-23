@@ -6,10 +6,11 @@ import Link from 'next/link'
 
 import CustomField from '~/app/UI/shared/FormikTextField'
 import getClassPrefixer from '~/app/UI/classPrefixer'
-import { useApiMutation } from '~/app/Lib/apiFetch'
+import { useApiMutation, useApiQuery } from '~/app/Lib/apiFetch'
 import useToken from '~/app/store/useToken'
 
 import { getProfessorLoginInitialValues, getProfessorLoginValidationSchema } from '../utils'
+import { useData } from '~/app/store/useData'
 
 const displayName = 'TeachersFormik'
 const classes = getClassPrefixer(displayName)
@@ -71,25 +72,36 @@ const FormComponent = ({ isActive }) => {
 
 export const ProfessorForm = ({ setSnackbarMessage, isActive }) => {
   const userLogin = useApiMutation({ path: 'login', opts: { method: 'POST' } })
+  const { promise: promiseMe } = useApiQuery({ 
+    path: 'me', 
+    opts: { queryOptions: { 
+      enabled: !!userLogin.data, 
+      experimental_prefetchInRender: true
+    } } 
+  })
   const { setToken } = useToken()
+  const { setUserId, setType } = useData()
   const router = useRouter()
   const initialValues = getProfessorLoginInitialValues()
   const validationSchema = getProfessorLoginValidationSchema()
 
   const handleSubmit = async payload => {
-    await userLogin.mutate(payload, {
+    const token = await userLogin.mutateAsync(payload, {
       onSuccess: response => {
         setToken(response)
-        router.replace('/counselor')
       },
-      onError: e => {
-        if(e.error === 'Invalid Fields') {
-          setSnackbarMessage('Lo sentimos, ha ocurrido un error.')
-        } else {
-          setSnackbarMessage('Ocurrió un error')
-        }
+      onError: () => {
+        setSnackbarMessage('Lo sentimos, ha ocurrido un error.')
       }
     })
+    if(token) {
+      const meData = await promiseMe
+      if(meData.id && meData.type) {
+        setUserId(meData.id)
+        setType(meData.type)
+        router.replace('/counselor')
+      }
+    }
   }
 
   return (
