@@ -7,7 +7,7 @@ const isValidType = ({ type, requiredType }) => {
   return false
 }
 
-const usePermitted = ({ requiredType = 'Admin' }) => {
+const usePermitted = ({ requiredType = 'ADMIN' }) => {
   const { token } = useToken()
   const { userId, type } = useData()
 
