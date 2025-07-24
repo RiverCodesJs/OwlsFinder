@@ -10,7 +10,7 @@ import loginStudents from '~/app/api/libs/mail/templates/loginStudents'
 export const POST = async request => {
   try {
     const data = await request.json()
-    if (validatorFields({ data, shape: Student.shape, optionals: ['grade'] })) {
+    if (validatorFields({ data, shape: Student.shape, omitProps: ['grade'] })) {
       const user = await queryDB({
         entity: 'user',
         queryType: 'findUnique',

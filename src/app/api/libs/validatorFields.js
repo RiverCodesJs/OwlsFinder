@@ -1,8 +1,8 @@
 import ERROR from '~/error'
 
-const validatorFields = ({ data, shape, optionals = [] }) => {
+const validatorFields = ({ data, shape, omitProps = [] }) => {
   const newShape = shape.reduce((acc, key) => {
-    if(optionals.includes(key)) return [...acc]
+    if(omitProps.includes(key)) return [...acc]
     return [...acc, key]
   }, [])
   if(!newShape.every(key => key in data)) return ERROR.INVALID_FIELDS()
