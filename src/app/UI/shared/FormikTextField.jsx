@@ -16,10 +16,13 @@ const Container = styled('div')(({ theme }) => ({
   '& [class*=MuiInputBase-input-MuiFilledInput-input]': {
     borderRadius: '4px 4px 0 0',
     padding: '16px 12px',
+  },
+  '& .MuiFilledInput-multiline': {
+    padding: 0
   }
 }))
 
-const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => {
+const FormikTextField = ({ variant = 'filled' , field, password, isArray, ...props }) => {
 
   const { errors, setFieldValue } = useFormikContext()
 
@@ -32,7 +35,9 @@ const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => 
         name={field?.name}
         variant={variant}
         value={field?.value ?? ''}
-        onChange={({ target }) => setFieldValue(field?.name, target.value)}
+        onChange={({ target }) => setFieldValue(field?.name, isArray 
+          ? target.value.split(',')
+          : target.value)}
         slotProps={password ? {
           input: { 
             disableUnderline: true,
