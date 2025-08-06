@@ -19,7 +19,7 @@ const Container = styled('div')(({ theme }) => ({
   }
 }))
 
-const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => {
+const FormikTextField = ({ variant = 'filled' , field, isArray, password, ...props }) => {
 
   const { errors, setFieldValue } = useFormikContext()
 
@@ -32,7 +32,10 @@ const FormikTextField = ({ variant = 'filled' , field, password, ...props }) => 
         name={field?.name}
         variant={variant}
         value={field?.value ?? ''}
-        onChange={({ target }) => setFieldValue(field?.name, target.value)}
+        onChange={({ target }) => setFieldValue(field?.name, isArray
+          ? target.value.split(',')
+          : target.value
+        )}
         slotProps={password ? {
           input: { 
             disableUnderline: true,
