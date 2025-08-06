@@ -13,9 +13,12 @@ const Container = styled('div')(({ theme }) => ({
       backgroundColor: theme.palette.grey[200],
     }
   },
-  '& [class*=MuiInputBase-input-MuiFilledInput-input]': {
+  '& [class*=MuiFilledInput-input]': {
     borderRadius: '4px 4px 0 0',
     padding: '16px 12px',
+  }, 
+  '& [class*=MuiInputBase-inputMultiline]': {
+    padding: 0,
   }
 }))
 
