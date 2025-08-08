@@ -14,6 +14,7 @@ import { useState } from 'react'
 import EditActivityDialog from './components/EditActivityDialog'
 import getClassPrefixer from '../UI/classPrefixer'
 import usePermitted from '../Permissions/utils'
+import { DeleteActivityDialog } from './components/DeleteActivityDialog'
 
 const displayName = 'PanelStudents'
 const classes = getClassPrefixer(displayName)
@@ -101,6 +102,13 @@ const PanelStudents = ({
           currentArea={currentTab}
           data={selectedClass}
         />
+        <DeleteActivityDialog
+          open={openDialog === 'deleteClass'}
+          onClose={handleDialogClose}
+          classType={currentTab}
+          id={selectedClass?.id}
+          setSnackbarMessage={setSnackbarMessage}
+        />
         <Snackbar
           open={Boolean(snackbarMessage)}
           message={snackbarMessage}
@@ -116,11 +124,13 @@ const Wrapper = () => {
   const [openDialog, setOpenDialog] = useState(null)
   const [status, setStatus] = useState('')
   const [snackbarMessage, setSnackbarMessage] = useState(null)
+  const [selectedClass, setSelectedClass] = useState(null)
   const [currentTab, setCurrentTab] = useState('club')
   const permitted = usePermitted({ requiredType: 'COUNSELOR' })
 
   const handleDialogClose = () => {
     setOpenDialog(null)
+    setSelectedClass(null)
   }
 
   const handleTabChange = (_, value) => {
@@ -134,6 +144,7 @@ const Wrapper = () => {
       setOpenDialog={setOpenDialog}
       status={status}
       setStatus={setStatus}
+      selectedClass={selectedClass}
       handleDialogClose={handleDialogClose}
       handleTabChange={handleTabChange}
       snackbarMessage={snackbarMessage}
