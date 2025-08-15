@@ -7,11 +7,12 @@ import {
   Tabs,
   Tab
 } from '@mui/material'
-import { AddSharp } from '@mui/icons-material'
+import { AddSharp, Book } from '@mui/icons-material'
 import { styled } from '@mui/material/styles'
 import { useState } from 'react'
 
 import EditActivityDialog from './components/EditActivityDialog'
+import SubjectCreateDialog from './components/SubjectCreateDialog'
 import getClassPrefixer from '../UI/classPrefixer'
 import usePermitted from '../Permissions/utils'
 import { DeleteActivityDialog } from './components/DeleteActivityDialog'
@@ -79,6 +80,11 @@ const PanelStudents = ({
           <T variant="h2" fontWeight="bold">{ permitted ? 'Clases' : 'Selección'}</T>
           { permitted 
             ? <Stack direction="row" justifyContent="right">
+              {currentTab === 'package'
+                ? <IconButton onClick={() => setOpenDialog('subject')}>
+                  <Book className={classes.iconButton}/>
+                </IconButton>
+                : null}
               <IconButton onClick={() => setOpenDialog('editClass')}>
                 <AddSharp className={classes.iconButton}/>
               </IconButton>
@@ -107,6 +113,11 @@ const PanelStudents = ({
           onClose={handleDialogClose}
           classType={currentTab}
           id={selectedClass?.id}
+          setSnackbarMessage={setSnackbarMessage}
+        />
+        <SubjectCreateDialog
+          open={openDialog === 'subject'}
+          onClose={handleDialogClose}
           setSnackbarMessage={setSnackbarMessage}
         />
         <Snackbar

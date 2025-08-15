@@ -27,3 +27,13 @@ export const getActivityValidationSchema = () => Yup.object({
   shift: Yup.string().optional().oneOf(['MORNING', 'EVENING']),
   schedule: Yup.string().optional()
 })
+
+export const getSubjectInitialValues = () => ({
+  name: '',
+  description: '',
+})
+
+export const getSubjectValidationSchema = () => Yup.object({
+  name: Yup.string().required('Ingrese el nombre de la materia'),
+  description: Yup.string().required('Ingrese una descripción')
+})
